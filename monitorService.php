@@ -26,13 +26,21 @@ foreach( $nodesArray as $key => $slice )
 	//echo shell_exec( "ping -c 1 $slice" )."\n";
 	if( ping($slice) )
 	{
-		if( $ping1 == '' )
+		echo 'Yes: '.$slice."\n\n";
+		$command = 'ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa '.$slice.' "sudo yum install php -y"';
+		$result = shell_exec($command." 2>&1");
+		echo 'Result: '.$result."\n";
+		echo stristr($result, 'Setting up');
+		if( $ping1 == '' and stristr($result, 'Setting up') != false)
 		{
+			echo 'Found Server';
+
 			$ping1 = $slice;
 			//WRITE $SLICE TO RESULTS.TXT + ONLINE
 		}
-		elseif( $ping2 == '' )
+		elseif( $ping2 == ''  and stristr($result, 'Setting up') != false)
 		{
+			echo 'Found Server';
 			$ping2 = $slice;
 			//WRITE $SLICE TO RESULTS.TXT + ONLINE
 			break;
@@ -50,6 +58,8 @@ foreach( $nodesArray as $key => $slice )
 		//WRITE $SLICE TO RESULTS.TXT + OFFLINE
 	}
 }
+
+
 
 echo $key."\n";
 
@@ -71,9 +81,10 @@ $array1String = trim( implode("\n", $array1) );
 echo $array1String;
 //file_put_contents( 'nodes.txt', $array1 );
 //upload ssh shit
-$command = 'scp \'nodes.txt\' ubc_eece411_5@'.$ping1.':';
+echo "\n";
+$command = 'scp -i ~/.ssh/id_rsa \'nodes.txt\' ubc_eece411_5@'.$ping1.':';
 echo $command."\n";
-
+system($command);
 
 
 echo "\n\n\n";
