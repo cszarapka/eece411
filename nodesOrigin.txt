@@ -8,7 +8,6 @@ planetlab1.aub.edu.lb
 planetlab-1.vuse.vanderbilt.edu
 planetlab2.iin-bit.com.cn
 planetlab2.olsztyn.rd.tp.pl
-pl2.bit.uoit.ca
 planetlab-1.rml.ryerson.ca
 planetlab2.cs.unb.ca
 planetlab1.engr.ccny.cuny.edu
@@ -21,7 +20,6 @@ planetlab2.engr.ccny.cuny.edu
 planetlab1.nowogrodzka.rd.tp.pl
 planetlab2.iitr.ernet.in
 planetlab0.ias.csusb.edu
-pl1.bit.uoit.ca
 planetlab2.cse.msu.edu
 node0.planetlab.etl.luc.edu
 mnc2.pusan.ac.kr
