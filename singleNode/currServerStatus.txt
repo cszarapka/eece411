@@ -1,0 +1,196 @@
+pllab1.kamgu.ru|0|n/a|n/a|n/a|n/a|n/a
+pli1-br-2.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+pllab2.kamgu.ru|0|n/a|n/a|n/a|n/a|n/a
+planetlab5.cs.duke.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab-2.rml.ryerson.ca|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.aub.edu.lb|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.aub.edu.lb|0|n/a|n/a|n/a|n/a|n/a
+planetlab-1.vuse.vanderbilt.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.iin-bit.com.cn|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.olsztyn.rd.tp.pl|0|n/a|n/a|n/a|n/a|n/a
+planetlab-1.rml.ryerson.ca|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.unb.ca|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.engr.ccny.cuny.edu|0|n/a|n/a|n/a|n/a|n/a
+planet-lab.iki.rssi.ru|0|n/a|n/a|n/a|n/a|n/a
+plab2.psgtech.ac.in|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.unb.ca|0|n/a|n/a|n/a|n/a|n/a
+itchy.cs.uga.edu|0|n/a|n/a|n/a|n/a|n/a
+scratchy.cs.uga.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.engr.ccny.cuny.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.nowogrodzka.rd.tp.pl|1|n/a|n/a|n/a|n/a|n/a
+planetlab2.iitr.ernet.in|0|n/a|n/a|n/a|n/a|n/a
+planetlab0.ias.csusb.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cse.msu.edu|0|n/a|n/a|n/a|n/a|n/a
+node0.planetlab.etl.luc.edu|0|n/a|n/a|n/a|n/a|n/a
+mnc2.pusan.ac.kr|0|n/a|n/a|n/a|n/a|n/a
+pl2.ernet.in|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.wayne.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cse.nd.edu|0|n/a|n/a|n/a|n/a|n/a
+charon.cs.binghamton.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.homelinux.org|0|n/a|n/a|n/a|n/a|n/a
+planetlab-2.vuse.vanderbilt.edu|0|n/a|n/a|n/a|n/a|n/a
+node1.planetlab.etl.luc.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.iitb.ac.in|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.iitb.ac.in|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.iin-bit.com.cn|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.duke.edu|0|n/a|n/a|n/a|n/a|n/a
+pl2.cewit.stonybrook.edu|0|n/a|n/a|n/a|n/a|n/a
+pl1.cewit.stonybrook.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.nileu.edu.eg|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.nileu.edu.eg|0|n/a|n/a|n/a|n/a|n/a
+planetlabnode-1.docomolabs-usa.com|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.simula.no|0|n/a|n/a|n/a|n/a|n/a
+planetlabnode-2.docomolabs-usa.com|0|n/a|n/a|n/a|n/a|n/a
+pluto.cs.binghamton.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.pop-ce.rnp.br|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.pop-ce.rnp.br|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.lublin.rd.tp.pl|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.csee.usf.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.gdansk.rd.tp.pl|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.csg.uzh.ch|0|n/a|n/a|n/a|n/a|n/a
+pl1.tailab.eu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.ionio.gr|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.canterbury.ac.nz|0|n/a|n/a|n/a|n/a|n/a
+pl-node-1.csl.sri.com|2|486M|9.6G|2 days, 15:03|5.49, 4.31, 3.98|12:57:13
+onelab3.info.ucl.ac.be|1|n/a|n/a|n/a|n/a|n/a
+ricepl-1.cs.rice.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.xeno.cl.cam.ac.uk|1|n/a|n/a|n/a|n/a|n/a
+planetlab-4.eecs.cwru.edu|1|n/a|n/a|n/a|n/a|n/a
+peeramide.irisa.fr|0|n/a|n/a|n/a|n/a|n/a
+planetlab01.tkn.tu-berlin.de|1|n/a|n/a|n/a|n/a|n/a
+planetlab-2.cs.auckland.ac.nz|1|n/a|n/a|n/a|n/a|n/a
+planetlab3.postel.org|0|n/a|n/a|n/a|n/a|n/a
+pl3.sos.info.hiroshima-cu.ac.jp|0|n/a|n/a|n/a|n/a|n/a
+planetlab-2.sysu.edu.cn|1|n/a|n/a|n/a|n/a|n/a
+pl2.tailab.eu|0|n/a|n/a|n/a|n/a|n/a
+csplanetlab3.kaist.ac.kr|0|n/a|n/a|n/a|n/a|n/a
+planetlab4.wail.wisc.edu|1|n/a|n/a|n/a|n/a|n/a
+icnalplabs2.epfl.ch|1|n/a|n/a|n/a|n/a|n/a
+planetlab4.ie.cuhk.edu.hk|0|n/a|n/a|n/a|n/a|n/a
+plab-2.sinp.msu.ru|0|n/a|n/a|n/a|n/a|n/a
+planetlab7.millennium.berkeley.edu|0|n/a|n/a|n/a|n/a|n/a
+icnalplabs1.epfl.ch|1|n/a|n/a|n/a|n/a|n/a
+planetlab-13.e5.ijs.si|0|n/a|n/a|n/a|n/a|n/a
+planetlab-coffee.ait.ie|1|n/a|n/a|n/a|n/a|n/a
+ple2.tu.koszalin.pl|1|n/a|n/a|n/a|n/a|n/a
+pl2.eecs.utk.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab-3.cs.ucy.ac.cy|0|n/a|n/a|n/a|n/a|n/a
+planetlab4.canterbury.ac.nz|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.sics.se|1|n/a|n/a|n/a|n/a|n/a
+planet-lab4.uba.ar|1|n/a|n/a|n/a|n/a|n/a
+aguila2.lsi.upc.edu|0|n/a|n/a|n/a|n/a|n/a
+planck249ple.test.iminds.be|0|n/a|n/a|n/a|n/a|n/a
+planck250ple.test.iminds.be|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.uml.edu|2|44K|9.6G|2 days, 16:00|7.68, 9.03, 8.51|12:59:15
+plan1.project.cwi.nl|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.di.unito.it|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.buaa.edu.cn|1|n/a|n/a|n/a|n/a|n/a
+planetlab-02.kusa.ac.jp|1|n/a|n/a|n/a|n/a|n/a
+planetlab2.acis.ufl.edu|2|24K|9.6G|2 days, 14:17|6.38, 5.35, 5.38|12:59:36
+planetx.scs.cs.nyu.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.hust.edu.cn|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.iii.u-tokyo.ac.jp|0|n/a|n/a|n/a|n/a|n/a
+planetlab-2.usask.ca|0|n/a|n/a|n/a|n/a|n/a
+planet-lab1.cs.ucr.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab4.eecs.umich.edu|0|n/a|n/a|n/a|n/a|n/a
+earth.cs.brown.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.pitt.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab2.cnds.jhu.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.csuohio.edu|2|24K|9.6G|2 days, 15:39|3.74, 3.35, 3.20|12:59:46
+plab1.cs.msu.ru|0|n/a|n/a|n/a|n/a|n/a
+roam2.cs.ou.edu|0|n/a|n/a|n/a|n/a|n/a
+planet-lab2.ufabc.edu.br|0|n/a|n/a|n/a|n/a|n/a
+pl2.cs.unm.edu|2|24K|9.6G|2 days, 16:04|2.30, 3.22, 3.28|12:59:51
+kc-sce-plab2.umkc.edu|2|24K|9.6G|2 days, 14:18|3.48, 6.10, 6.91|12:59:55
+planetlab-1.cmcl.cs.cmu.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab-3.cmcl.cs.cmu.edu|0|n/a|n/a|n/a|n/a|n/a
+plab1.nec-labs.com|0|n/a|n/a|n/a|n/a|n/a
+plonk.cs.uwaterloo.ca|2|44K|9.6G|2 days, 14:02|3.49, 3.98, 4.14|13:00:05
+planetlab2.cs.purdue.edu|2|24K|9.6G|2 days, 14:22|12.55, 14.27, 14.34|13:00:18
+pl-dccd-02.cua.uam.mx|0|n/a|n/a|n/a|n/a|n/a
+planetlab7.csres.utexas.edu|0|n/a|n/a|n/a|n/a|n/a
+planet-plc-3.mpi-sws.org|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.inf.ethz.ch|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.singaren.net.sg|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.uiuc.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab5.csail.mit.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.csie.nuk.edu.tw|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.koganei.itrc.net|2|36K|9.6G|2 days, 14:52|1.73, 1.68, 1.68|13:00:34
+planetlab1.cs.ucl.ac.uk|0|n/a|n/a|n/a|n/a|n/a
+planetlab-1.scie.uestc.edu.cn|0|n/a|n/a|n/a|n/a|n/a
+planet1.scs.cs.nyu.edu|0|n/a|n/a|n/a|n/a|n/a
+planet1.pnl.nitech.ac.jp|2|40K|9.6G|2 days, 13:38|24.90, 24.51, 24.69|12:57:36
+planetlab1.koganei.itrc.net|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.umass.edu|0|n/a|n/a|n/a|n/a|n/a
+newbootcd.cs.princeton.edu|0|n/a|n/a|n/a|n/a|n/a
+ricepl-2.cs.rice.edu|2|52K|9.6G|2 days, 15:18|37.05, 32.81, 23.01|13:01:12
+planetlab2.ntu.nodes.planet-lab.org|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.informatik.uni-erlangen.de|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.aut.ac.nz|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.eecs.umich.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cnds.jhu.edu|0|n/a|n/a|n/a|n/a|n/a
+planet3.cc.gt.atl.ga.us|2|60K|9.6G|2 days, 15:34|23.35, 13.53, 11.03|13:01:34
+kc-sce-plab1.umkc.edu|0|n/a|n/a|n/a|n/a|n/a
+host2.planetlab.informatik.tu-darmstadt.de|1|n/a|n/a|n/a|n/a|n/a
+kupl2.ittc.ku.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab-n1.wand.net.nz|2|24K|9.6G|2 days, 15:14|3.36, 4.10, 3.99|13:01:49
+planetlab2.comp.nus.edu.sg|2|24K|9.6G|1 day, 15:25|0.63, 0.71, 0.62|13:01:56
+75-130-96-13.static.oxfr.ma.charter.com|2|24K|9.6G|2 days, 13:58|6.41, 6.55, 6.52|13:01:59
+planet01.hhi.fraunhofer.de|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.postel.org|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.bgu.ac.il|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.pop-rj.rnp.br|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.iii.u-tokyo.ac.jp|0|n/a|n/a|n/a|n/a|n/a
+of-planet5.stanford.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.een.orst.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.informatik.uni-kl.de|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.informatik.uni-kl.de|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.een.orst.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab-1.ece.iastate.edu|0|n/a|n/a|n/a|n/a|n/a
+fobos.cecalc.ula.ve|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.gdansk.rd.tp.pl|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.cs.uchicago.edu|0|n/a|n/a|n/a|n/a|n/a
+pli2-br-1.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+pli1-br-3.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+pli1-br-1.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+pli2-br-2.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+pli1-tlnx.hpl.hp.com|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.millennium.berkeley.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.cesnet.cz|2|24K|9.6G|2 days, 14:25|0.93, 2.09, 2.20|13:02:15
+planetlab4.cs.duke.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab4.singaren.net.sg|0|n/a|n/a|n/a|n/a|n/a
+f20bootcd.cs.princeton.edu|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cqupt.edu.cn|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.unr.edu|2|24K|9.6G|2 days, 15:07|4.91, 7.10, 7.05|13:02:21
+planetlab1.exp-math.uni-essen.de|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.dojima.wide.ad.jp|2|52K|9.6G|2 days, 14:58|6.47, 6.97, 6.79|13:54:43
+planetlab-2.cmcl.cs.cmu.edu|1|n/a|n/a|n/a|n/a|n/a
+ple1.zcu.cz|0|n/a|n/a|n/a|n/a|n/a
+planetlab-n2.wand.net.nz|2|48K|9.6G|2 days, 13:47|2.63, 3.86, 3.90|13:03:11
+planetlab1.netlab.uky.edu|2|24K|9.6G|2 days, 14:49|28.44, 23.81, 21.67|13:03:29
+planet-plc-6.mpi-sws.org|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.cis.upenn.edu|2|24K|9.6G|2 days, 15:05|3.33, 2.88, 2.78|13:03:35
+csplanetlab4.kaist.ac.kr|0|n/a|n/a|n/a|n/a|n/a
+planet1.l3s.uni-hannover.de|0|n/a|n/a|n/a|n/a|n/a
+planetlab3.georgetown.edu|0|n/a|n/a|n/a|n/a|n/a
+cs-planetlab3.cs.surrey.sfu.ca|2|28K|9.6G|2 days, 13:55|3.97, 5.83, 5.93|13:03:40
+pl2.rcc.uottawa.ca|1|n/a|n/a|n/a|n/a|n/a
+planetlab4.georgetown.edu|1|n/a|n/a|n/a|n/a|n/a
+pl3.cs.unm.edu|2|16K|9.6G|2 days, 13:33|3.55, 3.16, 3.07|13:04:07
+planetlab1.singaren.net.sg|0|n/a|n/a|n/a|n/a|n/a
+planet1.cc.gt.atl.ga.us|0|n/a|n/a|n/a|n/a|n/a
+pl1.prakinf.tu-ilmenau.de|1|n/a|n/a|n/a|n/a|n/a
+pl2.prakinf.tu-ilmenau.de|1|n/a|n/a|n/a|n/a|n/a
+pl1.cis.uab.edu|0|n/a|n/a|n/a|n/a|n/a
+pli1-pa-1.hpl.hp.com|2|44K|9.6G|2 days, 14:44|0.72, 0.54, 0.60|13:04:15
+pl221nassau0.cs.princeton.edu|0|n/a|n/a|n/a|n/a|n/a
+planet-lab2.uba.ar|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.net.in.tum.de|1|n/a|n/a|n/a|n/a|n/a
+planetlab6.csee.usf.edu|2|24K|9.6G|2 days, 14:11|1.76, 1.95, 1.96|13:04:23
+pl2.pku.edu.cn|0|n/a|n/a|n/a|n/a|n/a
+planetlab2.citadel.edu|1|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.uiuc.edu|2|||||
+planetlab1.pop-pa.rnp.br|0|n/a|n/a|n/a|n/a|n/a
+pl-dccd-01.cua.uam.mx|0|n/a|n/a|n/a|n/a|n/a
+planetlab1.cs.ubc.ca|1|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.ubc.ca|2|524M|9.6G|6 days, 12:35|6.89, 9.06, 8.62|13:05:43
