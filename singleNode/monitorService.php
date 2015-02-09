@@ -25,10 +25,12 @@ while(true){
 		{
 
 			echo 'CONNECTION: '.$slice."\n\n";
+			//ssh in, try to set up php, get disk used, get disk available, get uptime
 			$command = 'ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa '.$slice.' "sudo yum install php -y && du -s -h && df -h && uptime"';
 			$result = shell_exec($command." 2>&1");
 			echo 'Result: '.$result."\n";
 			echo stristr($result, 'Setting up');
+			//trim du, df, uptime commands to usable strings
 			$lines = explode("\n", $result);
 			$diskUsed = trim(strstr($lines[4], ".", TRUE));
 			$diskAvail = trim(strstr(trim(strstr($lines[6], " ")), " ", TRUE));
