@@ -1,5 +1,7 @@
 <?php
 //error_reporting(0);
+$hostname = trim(shell_exec('hostname'));
+
 $nodesText = file_get_contents("nodes.txt");
 //DELETE NODES.TXT
 //CREATE RESULTS.TXT
@@ -67,29 +69,29 @@ print_r($array2);
 
 $array1String = trim( implode("\n", $array1) );
 echo $array1String;
-file_put_contents( 'nodes.txt', $array1 );
+//file_put_contents( 'nodes.txt', $array1 );
 //upload ssh shit
+$command = 'scp \'nodes.txt\' ubc_eece411_5@'.$ping1.':';
+echo $command."\n";
+
 
 
 echo "\n\n\n";
 
 $array2String = trim( implode("\n", $array2) );
 echo $array2String;
-file_put_contents( 'nodes.txt', $array2 );
+//file_put_contents( 'nodes.txt', $array2 );
 //upload ssh shit
 
+//$command = 'ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa '.$slice.' "sudo yum install php -y"';
 
 
 
-//CREATE NODES.TXT
-//PUT FRONT HALF OF REMAINING NODES ARRAY IN NODES.TXT
-//SEND NODES.TXT TO PING1
 //SEND THIS PHP SCRIPT TO PING1
-//DELETE NODES.TXT
-//CREATE NODES.TXT
-//PUT BACK HALF OF REMAINING NODES ARRAY IN NODES.TXT
-//SEND NODES.TXT TO PING2
+
+
 //SEND THIS PHP SCRIPT TO PING2
+
 //SSH INTO PING1 AND INSTALL PHP AND RUN SCRIPT
 //SSH INTO PING2 AND INSTALL PHP AND RUN SCRIPT
 
