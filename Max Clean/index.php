@@ -63,7 +63,20 @@
             echo '<th>'.$nodeSpaceArray[4].'</th>';
             echo '<th>'.$nodeSpaceArray[5].'</th>';
             echo '<th>'.$nodeSpaceArray[6].'</th>';
-            echo '<th>'.$nodeSpaceArray[7].'</th>';
+            if($nodeSpaceArray[7] == 'n/a'){
+              echo '<th>'.$nodeSpaceArray[7].'</th>';
+            }
+            elseif($nodeSpaceArray[7] == 'No PHP')
+            {
+              echo '<th bgcolor="#FF0000">'.$nodeSpaceArray[7].'</th>';
+            }
+            else
+            {
+              echo '<th bgcolor="#40FF00">'.$nodeSpaceArray[7].'</th>';
+            }
+
+
+
             echo '</tr>';
           }
           //print_r($nodesString);

@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-$nodesText = file_get_contents("nodes.txt");
+$nodesText = trim(file_get_contents("nodes.txt"));
 
 //echo $nodesText."\n";
 

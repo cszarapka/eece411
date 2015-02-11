@@ -1,0 +1,1 @@
+php Client.php "planetlab1.cs.ubc.ca" "stephpoops" "echo \"hello there\" && ls"

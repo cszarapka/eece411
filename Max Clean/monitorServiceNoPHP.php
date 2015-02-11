@@ -19,6 +19,7 @@ while(true){
 	//						 1 -> server is alive but cannot be logged in to
 	//						 0 -> server is dead and cannot be logged in to
 	file_put_contents('results.txt',"");
+	echo "--------------------------------\n";
 	foreach( $nodesArray as $key => $slice )
 	{
 		echo "Node $i out of $nodeNum\n";	
@@ -90,7 +91,7 @@ while(true){
 		$i++;
 	}
 
-	echo "-----------CYCLE COMPLETE-----------\n\n\n\n\n\n\n\n\n\n";
+	echo "-----------CYCLE COMPLETE-----------\n\n\n";
 	// copy results computed to a complete file, so entire node status is available at all times
 	copy('results.txt', 'currServerStatus.txt');
 }

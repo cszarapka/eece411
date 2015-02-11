@@ -1,0 +1,197 @@
+planetlab1.urv.cat|2|20K|9.6G|20:00|0.26, 0.15, 0.14|21:05:55|No PHP
+planetlab-2.man.poznan.pl|2|20K|9.6G|19:57|3.44, 3.15, 2.66|21:05:57|No PHP
+planetlab1.cs.du.edu|2|24K|9.6G|18:54|23.64, 19.20, 17.39|21:06:01|PHP 5.2.6
+pl1.6test.edu.cn|2|20K|9.6G|18:48|3.25, 3.19, 3.03|21:06:06|PHP 5.2.6
+planetlab-01.vt.nodes.planet-lab.org|2|16K|9.6G|19:14|4.24, 4.21, 3.35|21:06:07|PHP 5.2.6
+planetlab1.mini.pw.edu.pl|2|16K|9.6G|20:06|0.31, 0.27, 0.25|21:06:10|No PHP
+pl2.uni-rostock.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.fri.uni-lj.si|0|n/a|n/a|n/a|n/a|n/a|n/a
+marie.iet.unipi.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2-buenosaires.lan.redclara.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.citadel.edu|2|16K|9.6G|20:03|8.77, 7.99, 7.55|21:24:19|PHP 5.2.6
+planetlab1.csee.usf.edu|2|16K|9.6G|20:03|1.28, 1.38, 1.53|21:06:20|PHP 5.2.6
+roti.mimuw.edu.pl|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-2.sjtu.edu.cn|2|16K|9.6G|20:36|1.98, 1.89, 1.97|21:06:25|PHP 5.2.6
+aladdin.planetlab.extranet.uni-passau.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.hiit.fi|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.hiit.fi|0|n/a|n/a|n/a|n/a|n/a|n/a
+salt.planetlab.cs.umd.edu|2|16K|9.6G|19:09|0.59, 0.60, 0.63|21:06:31|PHP 5.2.6
+planetlab1.ustc.edu.cn|2|16K|9.6G|20:18|1.82, 1.55, 1.58|21:06:35|PHP 5.2.6
+planetlab1.utdallas.edu|2|16K|9.6G|18:22|7.49, 8.02, 7.40|21:06:42|PHP 5.2.6
+planetlab-2.cs.colostate.edu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.jcp-consult.net|2|16K|9.6G|20:04|2.14, 2.26, 2.25|21:06:47|No PHP
+pl2.6test.edu.cn|2|16K|9.6G|20:08|2.06, 2.36, 2.39|21:06:51|PHP 5.2.6
+lefthand.eecs.harvard.edu|2|20K|9.6G|20:18|9.35, 8.75, 8.62|21:06:52|PHP 5.2.6
+planetlab01.dis.unina.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.jcp-consult.net|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-2.cse.ohio-state.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.utdallas.edu|2|16K|9.6G|20:08|4.26, 5.39, 4.85|21:07:04|PHP 5.2.6
+planetlab3.wail.wisc.edu|2|16K|9.6G|19:10|6.48, 7.68, 8.38|21:07:05|PHP 5.2.6
+ple01.fc.univie.ac.at|0|n/a|n/a|n/a|n/a|n/a|n/a
+onelab1.warsaw.rd.tp.pl|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.uml.edu|2|16K|9.6G|20:31|0.94, 0.88, 0.82|21:07:10|PHP 5.2.6
+host4.planetlab.informatik.tu-darmstadt.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.imperial.ac.uk|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-2.imag.fr|0|n/a|n/a|n/a|n/a|n/a|n/a
+dplanet1.uoc.edu|2|16K|9.6G|20:08|0.38, 0.32, 0.32|21:07:17|No PHP
+planetlab2.upc.es|2|16K|9.6G|20:00|3.14, 3.28, 3.22|21:07:20|No PHP
+utet.ii.uam.es|2|16K|9.6G|19:48|2.59, 1.81, 1.02|21:07:22|No PHP
+planetlab1.utt.fr|2|16K|9.6G|20:00|2.12, 2.23, 2.23|21:07:24|No PHP
+planetlab1.sfc.wide.ad.jp|2|16K|9.6G|19:52|2.41, 3.62, 4.17|21:07:28|PHP 5.2.6
+planetlab1.uta.edu|2|16K|9.6G|3:13|119.74, 118.47, 115.75|21:07:30|PHP 5.2.6
+planetlab1.cnis.nyit.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+pl2.cs.montana.edu|2|16K|9.6G|20:24|2.37, 2.10, 1.47|21:07:32|PHP 5.2.6
+planetlab3.net.in.tum.de|2|4|79G|4 days 4:05|0.36, 0.19, 0.16|21:07:35|No PHP
+planetlab2.dit.upm.es|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.cqupt.edu.cn|2|16K|9.6G|19:02|3.32, 2.74, 2.63|21:07:55|PHP 5.2.6
+planetvs2.informatik.uni-stuttgart.de|2|16K|9.6G|20:09|1.05, 1.08, 1.08|21:07:57|No PHP
+planetlab-2.scie.uestc.edu.cn|0|n/a|n/a|n/a|n/a|n/a|n/a
+pli1-pa-3.hpl.hp.com|2|16K|9.6G|18:45|1.97, 0.77, 0.55|21:08:01|PHP 5.2.6
+pl2.eng.monash.edu.au|2|16K|9.6G|19:16|4.23, 3.79, 3.46|21:08:05|PHP 5.2.6
+planetlab-1.ssvl.kth.se|2|16K|9.6G|18:44|13.59, 13.74, 14.21|21:08:18|PHP 5.2.6
+node2pl.planet-lab.telecom-lille1.eu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.upm.ro|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.tmit.bme.hu|2|16K|9.6G|20:11|0.18, 0.22, 0.18|21:08:27|No PHP
+planetlab2.cs.okstate.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.clemson.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.clemson.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-2.fhi-fokus.de|2|8|227G|77 days 7:46|0.34, 0.46, 0.53|21:08:31|No PHP
+pl2.ccsrfi.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+peeramidion.irisa.fr|1|n/a|n/a|n/a|n/a|n/a|n/a
+pl1.ccsrfi.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.netlab.uky.edu|2|16K|9.6G|19:04|14.73, 15.03, 15.12|21:09:18|PHP 5.2.6
+planetlab-um00.di.uminho.pt|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.cs.otago.ac.nz|2|16K|9.6G|19:05|2.95, 3.71, 3.01|21:09:24|PHP 5.2.6
+planetlab2.tau.ac.il|0|n/a|n/a|n/a|n/a|n/a|n/a
+planet-lab1.uba.ar|1|n/a|n/a|n/a|n/a|n/a|n/a
+dannan.disy.inf.uni-konstanz.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+147-179.surfsnel.dsl.internl.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+plab4.ple.silweb.pl|2|16K|9.6G|20:08|6.69, 9.11, 7.64|21:09:33|No PHP
+planetlab2.sfc.wide.ad.jp|1|n/a|n/a|n/a|n/a|n/a|n/a
+75-130-96-12.static.oxfr.ma.charter.com|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab02.dis.unina.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.imag.fr|0|n/a|n/a|n/a|n/a|n/a|n/a
+node2.planetlab.mathcs.emory.edu|2|16K|9.6G|18:44|16.01, 15.50, 15.13|21:09:41|PHP 5.2.6
+planetlab1.informatik.uni-goettingen.de|2|16K|9.6G|20:08|0.20, 0.23, 0.37|21:00:32|No PHP
+planet2.l3s.uni-hannover.de|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-js2.cert.org.cn|2|16K|9.6G|20:34|2.23, 2.03, 1.99|21:09:50|PHP 5.2.6
+planetlab-1.sjtu.edu.cn|2|16K|9.6G|19:41|2.20, 2.12, 2.04|21:09:54|PHP 5.2.6
+planetlab1.eecs.umich.edu|2|16K|9.6G|20:17|68.09, 62.85, 62.04|21:10:02|PHP 5.2.6
+pl4.cs.unm.edu|2|16K|9.6G|19:49|1.38, 1.31, 1.06|21:10:05|PHP 5.2.6
+planetlab2.fct.ualg.pt|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.cse.ohio-state.edu|2|16K|9.6G|19:01|4.29, 5.16, 5.12|21:10:08|PHP 5.2.6
+planetlab1.ionio.gr|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.ucsd.edu|2|16K|9.6G|18:50|36.57, 27.14, 23.43|21:09:59|PHP 5.2.6
+planetlab1lannion.elibel.tm.fr|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.science.unitn.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+uoepl1.essex.ac.uk|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.unineuchatel.ch|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab3.mini.pw.edu.pl|2|16K|9.6G|18:55|1.33, 1.48, 1.62|21:10:27|PHP 5.2.6
+planetlab1.ifi.uio.no|2|16K|9.6G|20:09|3.47, 3.57, 3.57|22:29:54|No PHP
+planetlab2.ifi.uio.no|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.eurecom.fr|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab4.hiit.fi|2|16K|9.6G|20:00|1.06, 1.06, 1.07|21:10:32|No PHP
+planetlab2.extern.kuleuven.be|2|16K|9.6G|20:00|1.21, 1.19, 1.18|21:10:34|No PHP
+planetlab2.tmit.bme.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.man.poznan.pl|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab02.cs.tcd.ie|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.mta.ac.il|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.cyfronet.pl|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.bgu.ac.il|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.extern.kuleuven.be|2|16K|9.6G|20:07|2.10, 2.05, 2.02|21:10:47|No PHP
+planet1.unipr.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+ple2.dmcs.p.lodz.pl|2|16K|9.6G|20:03|0.72, 0.44, 0.32|21:16:19|No PHP
+pandora.we.po.opole.pl|1|n/a|n/a|n/a|n/a|n/a|n/a
+planck227ple.test.ibbt.be|2|16K|9.6G|20:13|19.53, 18.09, 18.35|21:11:16|No PHP
+planetlab3.comp.nus.edu.sg|0|n/a|n/a|n/a|n/a|n/a|n/a
+planet2.servers.ua.pt|2|16K|9.6G|20:01|5.67, 5.81, 5.89|21:11:21|No PHP
+planetlab4.csee.usf.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.ecs.vuw.ac.nz|2|16K|9.6G|19:56|5.43, 5.41, 4.95|21:12:28|PHP 5.2.6
+host3.planetlab.informatik.tu-darmstadt.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+planet-lab-node2.netgroup.uniroma2.it|2|16K|9.6G|20:11|8.63, 6.11, 4.81|21:12:32|No PHP
+inriarennes2.irisa.fr|2|16K|9.6G|20:12|2.58, 3.33, 3.03|21:12:34|No PHP
+planet1.servers.ua.pt|2|16K|9.6G|20:05|4.61, 5.18, 4.71|21:12:38|No PHP
+pl1.sos.info.hiroshima-cu.ac.jp|2|16K|9.6G|18:47|1.91, 2.14, 2.06|21:12:41|PHP 5.2.6
+node1.planetlab.uni-luebeck.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+node2.planetlab.uni-luebeck.de|2|4|1.8T|14 days 13:02|0.36, 0.26, 0.29|21:12:45|No PHP
+host1.planetlab.informatik.tu-darmstadt.de|2|4|1.8T|34 days 7:40|0.21, 0.17, 0.15|21:12:46|No PHP
+iraplab1.iralab.uni-karlsruhe.de|2|16K|9.6G|20:12|3.21, 3.78, 3.09|21:10:06|No PHP
+planetlab3.hiit.fi|2|16K|9.6G|20:08|1.80, 1.53, 1.41|21:12:50|No PHP
+146-179.surfsnel.dsl.internl.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+evghu4.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+evghu5.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+evghu6.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+evghu7.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab4.williams.edu|2|16K|9.6G|19:19|4.95, 4.45, 3.92|21:12:55|PHP 5.2.6
+planetlab-1.research.netlab.hut.fi|2|16K|9.6G|20:12|2.19, 2.41, 2.48|21:12:57|No PHP
+planetlab1.cs.uoi.gr|2|16K|9.6G|6:54|1.13, 1.20, 1.18|21:13:00|No PHP
+planetlab04.cnds.unibe.ch|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.s3.kth.se|2|16K|9.6G|20:04|1.27, 1.42, 1.52|21:13:05|No PHP
+evghu10.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+evghu2.colbud.hu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.iscte.pt|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.ci.pwr.wroc.pl|2|16K|9.6G|20:09|1.26, 1.25, 1.19|21:13:09|No PHP
+planetlab01.cs.tcd.ie|0|n/a|n/a|n/a|n/a|n/a|n/a
+planet2.cs.huji.ac.il|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.diku.dk|2|16K|9.6G|15:48|919.51, 890.48, 846.82|21:14:22|No PHP
+ricepl-5.cs.rice.edu|2|16K|9.6G|20:04|1.46, 1.34, 1.24|21:13:16|PHP 5.2.6
+planetlab-4.imperial.ac.uk|2|16K|9.6G|10:12|162.10, 161.35, 158.51|21:13:18|No PHP
+planetlab2.cs.uit.no|2|16K|9.6G|6:51|99.13, 98.06, 95.11|21:13:20|No PHP
+planetlab-4.cs.ucy.ac.cy|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-12.e5.ijs.si|2|16K|9.6G|20:16|1.25, 1.28, 2.13|21:13:24|No PHP
+planetlab01.ethz.ch|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.fct.ualg.pt|2|16K|9.6G|20:10|15.83, 12.44, 11.14|21:13:29|No PHP
+planetlab1.dit.upm.es|2|16K|9.6G|20:13|3.75, 5.57, 5.15|21:13:31|No PHP
+iraplab2.iralab.uni-karlsruhe.de|2|16K|9.6G|20:10|1.26, 1.22, 1.18|20:26:35|No PHP
+planetlab6.goto.info.waseda.ac.jp|2|16K|9.6G|19:20|3.00, 4.07, 3.45|21:13:36|PHP 5.2.6
+planetlab-1.cs.ucy.ac.cy|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.informatik.uni-goettingen.de|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-1.ing.unimo.it|2|4|162G|76 days 10:17|0.16, 0.26, 0.32|21:13:41|No PHP
+planetlab2.cs.unc.edu|2|16K|9.6G|19:42|3.51, 4.81, 4.82|21:13:42|PHP 5.2.6
+orval.infonet.fundp.ac.be|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.thlab.net|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.willab.fi|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.willab.fi|0|n/a|n/a|n/a|n/a|n/a|n/a
+planet1.inf.tu-dresden.de|0|n/a|n/a|n/a|n/a|n/a|n/a
+plab1.tidprojects.com|0|n/a|n/a|n/a|n/a|n/a|n/a
+vn5.cse.wustl.edu|2|16K|9.6G|18:55|8.69, 7.50, 6.43|21:13:54|PHP 5.2.6
+ait05.us.es|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.urv.cat|0|n/a|n/a|n/a|n/a|n/a|n/a
+onelab-2.fhi-fokus.de|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.research.nicta.com.au|2|4|395G|19 days 16:26|1.68, 1.76, 1.82|21:14:03|No PHP
+prata.mimuw.edu.pl|2|16K|9.6G|20:11|0.30, 0.36, 0.33|21:14:05|No PHP
+ple1.dmcs.p.lodz.pl|2|16K|9.6G|20:13|0.32, 0.50, 0.52|21:18:11|No PHP
+planetlab1.upm.ro|2|16K|9.6G|20:16|1.80, 2.14, 1.89|21:14:09|No PHP
+planetlab1.di.unito.it|2|16K|9.6G|20:09|1.74, 2.34, 2.63|21:14:11|No PHP
+righthand.eecs.harvard.edu|2|16K|9.6G|19:04|0.94, 0.97, 0.93|21:14:12|PHP 5.2.6
+plab2.tidprojects.com|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlabeu-1.tssg.org|2|16K|9.6G|20:05|2.43, 2.39, 2.36|21:14:14|No PHP
+planetlab2lannion.elibel.tm.fr|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.ci.pwr.wroc.pl|2|16K|9.6G|20:05|1.17, 1.31, 1.26|21:14:18|No PHP
+planetlab1.rd.tut.fi|2|4|613G|39 days 7:56|0.30, 0.23, 0.27|21:14:20|No PHP
+planetlab1.uc3m.es|0|n/a|n/a|n/a|n/a|n/a|n/a
+chimay.infonet.fundp.ac.be|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-2.cs.unibas.ch|0|n/a|n/a|n/a|n/a|n/a|n/a
+plato.di.uoa.gr|2|4|861G|11:26|0.00, 0.01, 0.05|21:14:26|No PHP
+plutarch.di.uoa.gr|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.uc3m.es|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab2.utt.fr|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlabpc1.upf.edu|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.ecs.vuw.ac.nz|2|16K|9.6G|18:57|2.90, 3.04, 3.00|21:14:38|PHP 5.2.6
+onelab4.warsaw.rd.tp.pl|2|16K|9.6G|20:02|4.02, 7.92, 8.12|21:14:40|No PHP
+planetlab1.upc.es|2|16K|9.6G|20:07|4.73, 5.19, 5.22|21:14:43|No PHP
+onelab7.iet.unipi.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+onelab2.info.ucl.ac.be|2|16K|9.6G|20:15|1.52, 1.27, 1.32|21:15:48|No PHP
+planetlabeu-2.tssg.org|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab3.upc.es|2|16K|9.6G|20:05|3.27, 4.10, 4.15|21:14:57|No PHP
+planetlab2.eecs.jacobs-university.de|2|16K|9.6G|20:10|3.72, 7.26, 7.31|21:15:03|No PHP
+planetlab-2.ing.unimo.it|2|4|395G|76 days 10:24|0.50, 0.58, 0.67|21:15:05|No PHP
+planetlab3.bupt.edu.cn|2|16K|9.6G|19:50|1.73, 2.03, 2.36|21:15:09|PHP 5.2.6
+planet2.unipr.it|0|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab1.informatik.uni-erlangen.de|0|n/a|n/a|n/a|n/a|n/a|n/a
+ple1.ait.ac.th|2|16K|9.6G|20:05|6.56, 9.19, 10.34|21:15:17|No PHP
+planetlab-2.tagus.ist.utl.pt|2|16K|9.6G|20:12|3.75, 3.86, 4.24|21:15:24|No PHP
+gschembra3.diit.unict.it|2|16K|9.6G|20:09|5.78, 5.50, 5.56|21:15:27|No PHP
+planetlab3.informatik.uni-erlangen.de|2|4|56G|26 days 12:58|0.62, 0.41, 0.35|21:05:21|No PHP
+planetlab1.mta.ac.il|2|16K|9.6G|20:15|1.27, 1.33, 1.34|21:15:31|No PHP
+planetlab-node3.it-sudparis.eu|0|n/a|n/a|n/a|n/a|n/a|n/a
