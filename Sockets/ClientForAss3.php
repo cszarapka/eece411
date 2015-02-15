@@ -16,8 +16,7 @@ if($command == "put") {
 } else {
 	die("Command not recognized");
 }
-$message = $password.'--!--'.$text;
-echo "Message To server:  ".$text."\n";
+echo "Message To server:  ".$message."\n";
 // create socket
 $socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
 // connect to server

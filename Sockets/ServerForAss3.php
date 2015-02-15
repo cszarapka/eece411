@@ -29,10 +29,14 @@ while(1)
 
     $command = intval(substr($input,0,2),16);
     $key = intval(substr($input, 2,64),16);
-    $hashKey = substr(hash('md5',$key),0,2); //hash the key, get the first two characters, which represent an int between 0 and 255
+    $hashKey = intval(substr(hash('md5',$key),0,2),16); //hash the key, get the first two characters, which represent an int between 0 and 255
+    echo "\nMessage Recieved: ".$input;
+    echo "\nThe command was: ".$command;
+    echo "\nThe key was: ".$key." which hashed to: ".$hashKey;
+
     
-    if(($lowerRange < $upperRange and $lowerRange > intval($hashKey,16) and $upperRange <= intval($hashKey,16)) 
-        or ($lowerRange > $upperRange and ($lowerRange < intval($hashKey,16) or $upperRange >= intval($hashKey,16)))) 
+    if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
+        or ($lowerRange > $upperRange and ($lowerRange > $hashKey or $upperRange <= $hashKey))) 
     //check if the value is in the range serviced by this node
     {
 
@@ -43,8 +47,8 @@ while(1)
             
             $valueLength = intval(substr($input,66,4),16);
             $value = substr($input,70,$valueLength);
-            
-            if(file_put_contents($key,$value) == false) 
+            echo "\nValue length was: ".$valueLength." and value was: ".strval($value);
+            if(file_put_contents($key.".txt",$value) == false) 
             {
                 $response = '02'; //out of space response
             } 
@@ -57,7 +61,7 @@ while(1)
         elseif ($command == 2) 
         { //GET operation
             
-            $filecontents = file_get_contents($key);
+            $filecontents = file_get_contents($key.".txt");
             
             if($filecontents != false) {
                 $response = '00'.strlen($filecontents).$filecontents; //operation successful + value length + value
@@ -71,7 +75,7 @@ while(1)
         elseif ($command == 3) 
         { //REMOVE operation
             
-            if(unlink($key) == true) 
+            if(unlink($key.".txt") == true) 
             {
                 $response = '00'; //operation successful response
             } 
