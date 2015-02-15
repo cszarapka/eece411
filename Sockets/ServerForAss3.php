@@ -11,7 +11,7 @@ $result = socket_bind($socket, $host, $port) or die("Could not bind port, please
 // start listening for connections
 $result = socket_listen($socket, 3);
 $lowerRange = 0; //later we will get the range by joining the node network and requesting a node number
-$higherRange = 255;
+$upperRange = 255;
 
 echo trim(shell_exec('hostname'))."\n";
 echo "Port: $port\n";
@@ -25,14 +25,14 @@ while(1)
     $input = socket_read($spawn, 1024) or die("Could not read input\n");
     $input = trim($input);
    
-
+    $response = "Server: invalid command";
 
     $command = intval(substr($input,0,2),16);
     $key = intval(substr($input, 2,64),16);
     $hashKey = substr(hash('md5',$key),0,2); //hash the key, get the first two characters, which represent an int between 0 and 255
     
-    if(($lowerRange < $upperRange and $lowerRange > intval($hashKey,16) and $upperRange =< intval($hashKey,16)) 
-        or ($lowerRange > $upperRange and ($lowerRange < intval($hashKey,16) or $upperRange => intval($hashKey,16))) 
+    if(($lowerRange < $upperRange and $lowerRange > intval($hashKey,16) and $upperRange <= intval($hashKey,16)) 
+        or ($lowerRange > $upperRange and ($lowerRange < intval($hashKey,16) or $upperRange >= intval($hashKey,16)))) 
     //check if the value is in the range serviced by this node
     {
 
@@ -116,7 +116,7 @@ while(1)
     */
 
 
-    if(!socket_write($spawn, $output, strlen ($response)))
+    if(!socket_write($spawn, $response, strlen ($response)))
     {
         socket_close($socket);
         socket_close($spawn);
