@@ -64,7 +64,7 @@ while(1)
             $filecontents = file_get_contents($key.".txt");
             
             if($filecontents != false) {
-                $response = '00'.strlen($filecontents).$filecontents; //operation successful + value length + value
+                $response = '00'.str_pad(dechex(strlen($filecontents)), 4, "0", STR_PAD_LEFT).$filecontents; //operation successful + value length + value
             } 
             else 
             {
