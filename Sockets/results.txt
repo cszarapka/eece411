@@ -1,0 +1,25 @@
+planetlab1.cs.du.edu|1|n/a|n/a|n/a|n/a|n/a|n/a
+pl1.6test.edu.cn|1|n/a|n/a|n/a|n/a|n/a|n/a
+planetlab-01.vt.nodes.planet-lab.org|2|32K|9.6G|3 days 8:54|0.95, 2.13, 2.46|10:45:58|PHP 5.2.6
+planetlab1.citadel.edu|2|32K|9.6G|3 days 9:43|14.13, 9.77, 9.56|11:04:13|PHP 5.2.6
+planetlab1.csee.usf.edu|2|32K|9.6G|3 days 9:43|5.48, 4.46, 3.06|10:45:59|PHP 5.2.6
+planetlab-2.sjtu.edu.cn|2|36K|9.6G|3 days 10:16|2.17, 2.14, 2.09|10:46:00|PHP 5.2.6
+salt.planetlab.cs.umd.edu|2|32K|9.6G|3 days 8:49|0.92, 0.90, 0.84|10:46:00|PHP 5.2.6
+planetlab1.ustc.edu.cn|2|32K|9.6G|3 days 9:57|1.73, 1.86, 1.94|10:46:02|PHP 5.2.6
+planetlab1.utdallas.edu|2|32K|9.6G|3 days 8:02|5.97, 5.41, 4.96|10:46:02|PHP 5.2.6
+pl2.6test.edu.cn|2|32K|9.6G|3 days 9:47|2.87, 2.64, 2.58|10:46:03|PHP 5.2.6
+lefthand.eecs.harvard.edu|2|36K|9.6G|3 days 9:58|57.16, 67.79, 62.30|10:46:03|PHP 5.2.6
+planetlab2.utdallas.edu|2|32K|9.6G|3 days 9:47|4.18, 4.32, 3.91|10:46:04|PHP 5.2.6
+planetlab3.wail.wisc.edu|2|32K|9.6G|3 days 8:49|9.69, 9.56, 10.61|10:46:04|PHP 5.2.6
+planetlab2.cs.uml.edu|2|32K|9.6G|3 days 10:10|0.77, 0.86, 0.91|10:46:05|PHP 5.2.6
+planetlab1.sfc.wide.ad.jp|2|32K|9.6G|3 days 9:31|8.05, 6.48, 5.41|10:46:05|PHP 5.2.6
+planetlab1.uta.edu|2|32K|9.6G|12:31|274.88, 273.98, 271.12|10:46:06|PHP 5.2.6
+pl2.cs.montana.edu|2|32K|9.6G|3 days 10:02|1.66, 1.61, 1.34|10:46:07|PHP 5.2.6
+planetlab1.cqupt.edu.cn|2|32K|9.6G|3 days 8:40|2.78, 2.83, 2.82|10:46:08|PHP 5.2.6
+pli1-pa-3.hpl.hp.com|2|32K|9.6G|3 days 8:23|1.41, 0.91, 0.70|10:46:09|PHP 5.2.6
+pl2.eng.monash.edu.au|2|32K|9.6G|3 days 8:55|2.98, 3.25, 3.19|10:46:09|PHP 5.2.6
+planetlab-1.ssvl.kth.se|2|32K|9.6G|3 days 8:22|20.43, 16.61, 15.22|10:46:13|PHP 5.2.6
+planetlab2.netlab.uky.edu|2|32K|9.6G|3 days 8:41|18.86, 19.10, 19.32|10:46:18|PHP 5.2.6
+planetlab2.cs.otago.ac.nz|2|32K|9.6G|3 days 8:42|3.10, 3.87, 4.08|10:46:18|PHP 5.2.6
+node2.planetlab.mathcs.emory.edu|2|32K|9.6G|3 days 8:20|13.59, 12.61, 12.94|10:46:19|PHP 5.2.6
+planetlab-js2.cert.org.cn|2|32K|9.6G|3 days 10:10|2.04, 1.89, 1.88|10:46:20|PHP 5.2.6

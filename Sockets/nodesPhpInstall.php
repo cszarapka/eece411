@@ -1,9 +1,9 @@
 <?php
 error_reporting(0);
-$nodesText = trim(file_get_contents("nodes.txt"));
+$nodesText = trim(file_get_contents("PHPMachines.txt"));
 
 //echo $nodesText."\n";
-
+while(1){
 $nodesArray = explode ( "\n" , $nodesText );
 
 
@@ -22,12 +22,13 @@ foreach( $nodesArray as $key => $slice )
 	{
 		//echo 'Yes: '.$slice."\n\n";
 		$command = 'ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa '.
-		$slice.' "mkdir -p ~/group11/sockets" && scp Server.php hash.txt ubc_eece411_5@'.
+		$slice.' "mkdir -p ~/group11/sockets" && scp Server.php pass.txt ubc_eece411_5@'.
 		$slice.':~/group11/sockets && ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa '.
 		$slice.' "nohup php group11/sockets/Server.php > /dev/null 2>&1 &"';
 		//$result = shell_exec($command." 2>&1");
-		//system($command);
-		echo $command."\n\n";
+		echo "\n------------------------\n";
+		system($command);
+		echo $command."\n------------------------\n";
 	}
 	else
 	{
@@ -36,7 +37,7 @@ foreach( $nodesArray as $key => $slice )
 }
 
 
-
+}
 
 function ping($host)
 {

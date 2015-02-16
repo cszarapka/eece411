@@ -1,5 +1,5 @@
 <?php
-
+//while(1){
 
 $host    = trim($argv[1]);
 $port    = 4003;
@@ -15,8 +15,9 @@ $result = socket_connect($socket, $host, $port) or die("Could not connect to ser
 socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
 // get server response
 $result = socket_read ($socket, 1024) or die("Could not read server response\n");
-echo "Reply From Server\n---------------------\n";
-echo $result."\n---------------------\n";
+//echo "Reply From Server\n---------------------\n";
+//echo $result."\n---------------------\n";
+echo $result;
 // close socket
-socket_close($socket);
+socket_close($socket);//}
 ?>
