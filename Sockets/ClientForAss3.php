@@ -25,22 +25,27 @@ $result = socket_connect($socket, $host, $port) or die("Could not connect to ser
 socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
 // get server response
 $result = socket_read ($socket, 1024) or die("Could not read server response\n");
-echo "Reply From Server\n---------------------\n";
-switch ($result) {
-	case "00":
-		$outcome = "Success";
-		break;
-	case "01":
-		$outcome = "Key not found";
-		break;
-	case "02":
-		$outcome = "Out of space";
-		break;
-	default:
-		$outcome = "Unknown response";
-		break;
+$returnStatus = intval(substr($result,0,2),10);
+if($returnStatus == '00') {
+	echo "Operation Successful\n";
+} elseif (returnStatus == '01') {
+	echo "Non-existent Key\n";
+} elseif (returnStatus == '02') {
+	echo "Out of space in filesystem\n";
+} elseif (returnStatus == '03') {
+	echo "System Overload\n";
+} elseif (returnStatus == '04') {
+	echo "Internal KVStore failure\n";
+} elseif (returnStatus == '05') {
+	echo "Unrecognized command\n";
+} 
+if($command == "get") {
+	$resultLength = intval(substr($results,2,2),16);
+	$resultContents = substr($results,6,$resultLength);
+	echo "The file contents were:\n".$resultContents;
 }
-echo $result." - ".$outcome."\n---------------------\n";
+echo "Reply From Server\n---------------------\n";
+echo $result."\n---------------------\n";
 // close socket
 socket_close($socket);
 ?>
