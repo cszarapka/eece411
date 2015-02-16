@@ -40,9 +40,9 @@ if($returnStatus == '00') {
 	echo "Unrecognized command\n";
 } 
 if($command == "get") {
-	$resultLength = intval(substr($results,2,2),16);
-	$resultContents = substr($results,6,$resultLength);
-	echo "The file contents were:\n".$resultContents;
+	$resultLength = intval(substr($result,2,4),16);
+	$resultContents = substr($result,6,$resultLength);
+	echo "The file contents were:\n".$resultContents."\n";
 }
 echo "Reply From Server\n---------------------\n";
 echo $result."\n---------------------\n";
