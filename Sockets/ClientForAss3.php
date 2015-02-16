@@ -8,7 +8,7 @@ $key = trim($argv[3]);
 if($command == "put") {
 	$value = trim($argv[4]);
 	$valueLength = strlen($value);
-	$message = "01".$key.$valueLength.$value;
+	$message = "01".$key.str_pad($valueLength,4,'0',STR_PAD_LEFT).$value;
 } elseif ($command == "get") {
 	$message = "02".$key;
 } elseif ($command == "remove") {

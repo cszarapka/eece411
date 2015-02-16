@@ -28,7 +28,7 @@ while(1)
     $response = "Server: invalid command";
 
     $command = intval(substr($input,0,2),16);
-    $key = intval(substr($input, 2,64),10);
+    $key = substr($input, 2,64);
     $hashKey = intval(substr(hash('md5',$key),0,2),16); //hash the key, get the first two characters, which represent an int between 0 and 255
     echo "\nMessage Recieved: ".$input;
     echo "\nThe command was: ".$command;
@@ -45,7 +45,7 @@ while(1)
         if($command == 1) 
         { //PUT operation
             
-            $valueLength = intval(substr($input,66,4),16);
+            $valueLength = intval(substr($input,66,4),10);
             $value = substr($input,70,$valueLength);
             echo "\nValue length was: ".$valueLength." and value was: ".strval($value);
             if(file_put_contents($key.".txt",$value) == false) 
