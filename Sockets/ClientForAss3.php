@@ -26,7 +26,21 @@ socket_write($socket, $message, strlen($message)) or die("Could not send data to
 // get server response
 $result = socket_read ($socket, 1024) or die("Could not read server response\n");
 echo "Reply From Server\n---------------------\n";
-echo $result."\n---------------------\n";
+switch ($result) {
+	case "00":
+		$outcome = "Success";
+		break;
+	case "01":
+		$outcome = "Key not found";
+		break;
+	case "02":
+		$outcome = "Out of space";
+		break;
+	default:
+		$outcome = "Unknown response";
+		break;
+}
+echo $result." - ".$outcome."\n---------------------\n";
 // close socket
 socket_close($socket);
 ?>
