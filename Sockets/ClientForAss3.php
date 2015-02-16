@@ -4,7 +4,7 @@
 $host    = trim($argv[1]);
 $port    = 4003;
 $command = trim($argv[2]);
-$key = trim($argv[3]);
+$key = str_pad(trim($argv[3]), 64, '0', STR_PAD_LEFT);
 if($command == "put") {
 	$value = trim($argv[4]);
 	$valueLength = strlen($value);
