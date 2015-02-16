@@ -28,18 +28,18 @@ $result = socket_read ($socket, 1024) or die("Could not read server response\n")
 $returnStatus = intval(substr($result,0,2),10);
 if($returnStatus == '00') {
 	echo "Operation Successful\n";
-} elseif (returnStatus == '01') {
+} elseif ($returnStatus == '01') {
 	echo "Non-existent Key\n";
-} elseif (returnStatus == '02') {
+} elseif ($returnStatus == '02') {
 	echo "Out of space in filesystem\n";
-} elseif (returnStatus == '03') {
+} elseif ($returnStatus == '03') {
 	echo "System Overload\n";
-} elseif (returnStatus == '04') {
+} elseif ($returnStatus == '04') {
 	echo "Internal KVStore failure\n";
-} elseif (returnStatus == '05') {
+} elseif ($returnStatus == '05') {
 	echo "Unrecognized command\n";
 } 
-if($command == "get") {
+if($command == "get" and $returnStatus == '00') {
 	$resultLength = intval(substr($result,2,4),16);
 	$resultContents = substr($result,6,$resultLength);
 	echo "The file contents were:\n".$resultContents."\n";
