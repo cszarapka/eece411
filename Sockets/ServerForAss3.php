@@ -22,7 +22,7 @@ while(1)
     // spawn another socket to handle communication
     $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
     // read client input
-    $input = socket_read($spawn, 1024) or die("Could not read input\n");
+    $input = socket_read($spawn, 2048) or die("Could not read input\n");
     $input = trim($input);
    
     $response = "Server: invalid command";
@@ -45,7 +45,7 @@ while(1)
         if($command == 1) 
         { //PUT operation
             
-            $valueLength = intval(substr($input,66,4),10);
+            $valueLength = intval(substr($input,66,4),16);
             $value = substr($input,70,$valueLength);
             echo "\nValue length was: ".$valueLength." and value was: ".strval($value);
             if(file_put_contents($key.".txt",$value) == false) 
