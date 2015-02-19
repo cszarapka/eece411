@@ -15,7 +15,7 @@ In the two files included with this readme you will find our server and client c
 
 
 /* Design Choices */
-We decided to do 
+We implemented the solution to the problem in the way that we thought directly translated into the solution of the problem. There were no deviations.
 
 /* Testing */
 Correctness:
