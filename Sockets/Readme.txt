@@ -3,7 +3,7 @@ EECE 411 - Assignment 3
 Group 11, Slice 5 (ubc_eece411_5):
 22936116 - Cam Szarapka
 00000000 - Max Parker
-00000000 - Ryan Clarke
+45866100 - Ryan Clarke
 00000000 - Stephan Bouthot
 
 3 locations our service is running:
