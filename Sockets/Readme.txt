@@ -16,6 +16,7 @@ In the two files included with this readme you will find our server and client c
 
 /* Design Choices */
 We implemented the solution to the problem in the way that we thought directly translated into the solution of the problem. There were no deviations.
+To ensure that our process was always running, we have added a scheduled task every 20 minutes using crontab and another script that restarts the process if it is not currently running.
 
 /* Testing */
 Correctness:
@@ -24,6 +25,8 @@ Correctness:
 Performance:
 	Using the Time command in terminal we ran our client as "Time [command]"
 	When the client finished running, we had learned how long it takes to get a reply from our server: 12 - 15ms. 
+
+
 
 /* Performance Characterization Summary */
 
@@ -44,10 +47,6 @@ for($i = 0;$i < $argv[2];$i++) {
 
 }
 
-
-
-
-
 function generateRandomString($length = 64) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -57,5 +56,6 @@ function generateRandomString($length = 64) {
     }
     return $randomString;
 }
-
 ?>
+
+
