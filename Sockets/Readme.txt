@@ -8,15 +8,17 @@ Group 11, Slice 5 (ubc_eece411_5):
 
 3 locations our service is running:
 	1. 142.103.2.2 : 4003
-	2. 142.103.2.1 : 4003
-	3. 131.247.2.248 : 4003
+	2. 216.48.80.12 : 4003
+	3. 129.97.74.12 : 4003
 
 In the two files included with this readme you will find our server and client code.
 
 
 /* Design Choices */
 We implemented the solution to the problem in the way that we thought directly translated into the solution of the problem. There were no deviations.
-To ensure that our process was always running, we have added a scheduled task every 20 minutes using crontab and another script that restarts the process if it is not currently running.
+To ensure that our process was always running, we have added a scheduled task every 10 minutes using crontab and another script that restarts the process if it is not currently running.
+*/10 * * * * /etc/bin/php ~/ServerForAss3.php
+
 
 /* Testing */
 Correctness:

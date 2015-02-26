@@ -1,5 +1,5 @@
 <?php
-$output = shell_exec( "ps -ef | grep \"php ServerForAss3.php\"");
+$output = shell_exec( "ps -ef | grep /etc/bin/php ~/ServerForAss3.php");
 $res = stristr( $output, "00:00:00 php ServerForAss3.php");
 if( $res == false )
 {
