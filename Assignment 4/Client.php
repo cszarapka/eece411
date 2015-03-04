@@ -18,9 +18,11 @@ if($command == "put") {
 	$message = $messageID.pack('H*',"03").$key;
 } elseif ($command == "fileList") {
     $message = $messageID.pack('H*',"21");
+} elseif($command == "successorList"){
+    $message = $messageID.pack('H*',"22");
 } else {
 	die("Command not recognized");
-}
+} 
 echo "\nMessage To server:  ".$message."\n";
 
 // create socket
@@ -46,6 +48,9 @@ if($command == "get" and $returnStatus == 0) {
     for($i = 0; $i < strlen($filenamesString) / 32; $i++) {
         $filenames[] = substr($filenamesString, 32 * $i, 32);
     }
+    
+} elseif($command == "successorList" and $returnStatus == 0){
+    $array = explode(" ",substr($result, 17));    
 }
 
 // print results
@@ -60,6 +65,8 @@ if($command == "get" and $returnStatus == 0) {
     for($i = 0;$i < count($filenames); $i++) {
         echo "\nFile:             ".$filenames[$i];
     }
+} elseif($command == "successorList" and $returnStatus == 0){
+    echo "\nValue:            ".$array[0].$array[1].$array[2] ;
 }
 echo "\n------------------------------------------------------";
 

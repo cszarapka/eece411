@@ -17,7 +17,8 @@ $lowerRange = 0; //later we will get the range by joining the node network and r
 $upperRange = 255;
 
 //create successor list
-$successorList = [];
+$successorList = array();
+$successorList[1] = "fuck";
     
 
 echo trim(shell_exec('hostname'))."\n";
@@ -113,7 +114,7 @@ while(1)
     } 
     //space delimited list of ip's of successors
     elseif($command == 22){
-        $response = $messageID.pack('H',"1").$successorList[0]." ".$successorList[1]." ".$successorList[2];
+        $response = $messageID.pack('H',"0").$successorList[0]." ".$successorList[1]." ".$successorList[2];
     }
         
     
