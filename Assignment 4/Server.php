@@ -19,7 +19,7 @@ $upperRange = 255;
 //create successor list
 $successorList = array();
 $successorList[1] = "fuck";
-    
+
 
 echo trim(shell_exec('hostname'))."\n";
 echo "Port: $port\n";
@@ -81,9 +81,9 @@ while(1)
     *   0x01    put                                             [filename][file contents]
     *   0x02    get                                             [filename]
     *   0x03    remove                                          [filename]
-    *   0x21    return list of all files hashing within range   
-[successor list]    
+    *   0x21    return list of all files hashing within range
     *   0x22    return list successors
+    *   0x23    request to enter the hash table
     */
     
     //list all files that hash 
@@ -183,6 +183,30 @@ while(1)
     //pass message on to the next node    
     } else {
         
+    }
+
+    /*
+     * Respond to opcode: 0x22, a request to enter the hash table
+     * Action to take: cut our range in half, send the requesting node
+     * the upper half, and add that node to our successor list.
+     * The response follows this format:
+     *      $messageID . $opCode . $newLowerRange . $upperRange
+     */
+    if ($command == 23) {
+        // Cut the range in half
+        $newLowerRange = ceil(upperRange/2);
+
+        // Assemble the response
+        $response = $messageID;
+        $response = $response.pack('H', '22');
+        $response = $response.pack('I', $newLowerRange);
+        $response = $response.pack('I', $upperRange);
+
+        // Cut our own range
+        $upperRange = $newLowerRange - 1;
+
+        // Add this node to our successor list
+        // need Ryan's code
     }
 
     if($VERBOSE) {
