@@ -182,7 +182,7 @@ while(1)
      * The response follows this format:
      *      $messageID . $opCode . $newLowerRange . $upperRange
      */
-    if ($command == 22) {
+    if ($command == 23) {
         // Cut the range in half
         $newLowerRange = ceil(upperRange/2);
 
