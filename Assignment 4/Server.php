@@ -77,7 +77,8 @@ while(1)
     *   0x02    get                                             [filename]
     *   0x03    remove                                          [filename]
     *   0x21    return list of all files hashing within range
-    *   0x22    request to enter the hash table
+    *   0x22
+    *   0x23    request to enter the hash table
     */
     
     //list all files that hash 
