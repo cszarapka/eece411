@@ -2,14 +2,17 @@
 // set ip and port
 $host = "0.0.0.0";
 $port = 4003;
+$VERBOSE = true;
+
+
 // don't timeout!
 set_time_limit(0);
 // create socket
-$socket = socket_create(AF_INET, SOCK_STREAM, 0);
+$socket = socket_create(AF_INET, SOCK_DGRAM, 0);
 // bind socket to port
 $result = socket_bind($socket, $host, $port) or die("Could not bind port, please try again later\n");
 // start listening for connections
-$result = socket_listen($socket, 3);
+//$result = socket_listen($socket, 3);
 $lowerRange = 0; //later we will get the range by joining the node network and requesting a node number
 $upperRange = 255;
 
@@ -18,119 +21,137 @@ echo "Port: $port\n";
 echo "----------------\n";
 while(1)
 {
+    
+    /* Incoming Message format: [16 byte unique message ID]
+    *                           [1 byte command]
+    *                           [32 byte key]
+    *                           [2 byte value length]
+    *                           [variable length value]
+    *
+    *  Outgoing Message format: [16 byte unique message ID]
+    *                           [1 byte response]
+    *                           [2 byte value length]
+    *                           [variable length value]
+    */      
+    
     // accept incoming connections
     // spawn another socket to handle communication
-    $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
-    // read client input
-    $input = socket_read($spawn, 2048) or die("Could not read input\n");
-    $input = trim($input);
-   
-    $response = "Server: invalid command";
-
-    $command = intval(substr($input,0,2),16);
-    $key = substr($input, 2,64);
-    $hashKey = intval(substr(hash('md5',$key),0,2),16); //hash the key, get the first two characters, which represent an int between 0 and 255
-    echo "\nMessage Recieved: ".$input;
-    echo "\nThe command was: ".$command;
-    echo "\nThe key was: ".$key." which hashed to: ".$hashKey;
-
+    //$spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
     
+    // read client input
+    socket_recvfrom($socket, $buffer, 2048, 0, $remoteIP, $remotePort);
+    $input = trim($buffer);
+    
+    // parse the data coming in
+    $messageID = substr($input,0,16);
+    $messageArray = unpack('H',substr($input,16,1));
+    $command = $messageArray[1];
+    $key = substr($input,17,32);
+    if($command == 1) {
+        $array = unpack('v',substr($input,49,2));
+        $valueLength = $array[1];
+        $value = substr($input,51,$valueLength);
+    }
+    
+    //hash the key, get the first two characters, which represent an int between 0 and 255
+    $hashKey = intval(substr(hash('md5',$key),0,2),16);
+
+    //print relevant data for testing
+    if($VERBOSE) {
+        echo "\n------------------------------------------------------";
+        echo "\nMessage Recieved: ".$input;
+        echo "\nMessage ID:       ".$messageID;
+        echo "\nCommand:          ".$command;
+        echo "\nKey:              ".$key;
+        echo "\nKey Hash:         ".$hashKey;
+        if($command == 1) {
+            echo "\nValue Length:     ".$valueLength; 
+            echo "\nValue:            ".$value;   
+        }
+        echo "\n------------------------------------------------------";
+    }
+    
+    
+    //check if the value is in the range serviced by this node
     if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
         or ($lowerRange > $upperRange and ($lowerRange > $hashKey or $upperRange <= $hashKey))) 
-    //check if the value is in the range serviced by this node
     {
-
         
-
+        //put operation
         if($command == 1) 
-        { //PUT operation
-            
-            $valueLength = intval(substr($input,66,4),16);
-            $value = substr($input,70,$valueLength);
-            echo "\nValue length was: ".$valueLength." and value was: ".strval($value);
-            if(file_put_contents($key.".txt",$value) == false) 
+        { 
+            //write value to file
+            //assemble response if operation successful
+            if(file_put_contents($key.".txt",$value) == true) 
             {
-                $response = '02'; //out of space response
+                $response = $messageID.pack('H',"0"); 
             } 
+            
+            //assemble response if out of space
             else 
             {
-                $response = '00'; //operation successful response
+                $response = $messageID.pack('H',"2"); //operation successful response
             }
 
         } 
+        
+        //get operation
         elseif ($command == 2) 
-        { //GET operation
+        { 
             
+            //get contents from file
             $filecontents = file_get_contents($key.".txt");
             
+            //assemble response if operation successful
             if($filecontents != false) {
-                $response = '00'.str_pad(dechex(strlen($filecontents)), 4, "0", STR_PAD_LEFT).$filecontents; //operation successful + value length + value
+                $response = $messageID.pack('H',"0").pack('v',strlen($filecontents)).$filecontents; 
             } 
+            
+            //assemble response if key not found
             else 
             {
-                $response = '01'; //key not found response
+                $response = $messageID.pack('H',"1"); 
             }
 
         } 
+        
+        //remove operation
         elseif ($command == 3) 
-        { //REMOVE operation
+        { 
             
+            //remove file matching key
+            //response if operation successful
             if(unlink($key.".txt") == true) 
             {
-                $response = '00'; //operation successful response
+                $response = $messageID.pack('H',"0"); 
             } 
+            
+            //response if file not found
             else 
             {
-                $response = '01'; //key not found response
+                $response = $messageID.pack('H',"1"); 
             }
         
         }
+        
+    //pass message on to the next node    
     } else {
-        //pass query to node in successor list
+        
     }
 
-
-
-    /*
-    $password = substr($input, 0, strpos($input, "--!--"));
-    $command = trim(substr($input, strpos($input, "--!--")+5));
-
-    //echo $input."\n";
-    //echo $password."\n";
-    //echo $command."\n";
-    //echo trim(hash('md5', $password))."\n";
-    //echo trim(file_get_contents('pass.txt'))."\n";
-
-
-    if( trim(hash('md5', $password)) == trim(file_get_contents('pass.txt')) )
-    {
-        $output = shell_exec(trim($command).' 2>&1');
-        echo 'executed: '.$command."\n";
-    } 
-    else
-    {
-        $output = "Wrong password!";
-        echo "bad password\n";
-    } 
-    //echo $output."\n";
-
-    //echo "Client Message : ".$input."\n";
-    // reverse client input and send back
-    //$output = strrev($input) ."\n";
-    */
-
-
-    if(!socket_write($spawn, $response, strlen ($response)))
-    {
-        socket_close($socket);
-        socket_close($spawn);
-        die("Could not write to socket\n");
-
+    if($VERBOSE) {
+        echo "\n------------------------------------------------------";
+        echo "\nMessage Sent:";
+        echo "\n".$response;
+        echo "\n------------------------------------------------------";
     }
-    // close sockets
+    
+    //send the response
+    socket_sendto($socket, $response, strlen($response), 0, $remoteIP, $remotePort);
 
 }
 
+//exit gracefully
 socket_close($spawn);
 socket_close($socket);
 

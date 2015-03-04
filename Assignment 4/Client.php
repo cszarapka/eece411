@@ -4,49 +4,63 @@
 $host    = trim($argv[1]);
 $port    = 4003;
 $command = trim($argv[2]);
-$key = str_pad(trim($argv[3]), 64, '0', STR_PAD_LEFT);
+$key = str_pad(trim($argv[3]), 32, '0', STR_PAD_LEFT);
+$messageID = generateRandomString(16);
+
+// assemble message
 if($command == "put") {
 	$value = trim($argv[4]);
-	$valueLength = dechex(strlen($value));
-	$message = "01".$key.str_pad($valueLength,4,'0',STR_PAD_LEFT).$value;
+	$valueLength = pack('v',strlen($value));
+	$message = $messageID.pack('H',"1").$key.str_pad($valueLength,2,'0',STR_PAD_LEFT).$value;
 } elseif ($command == "get") {
-	$message = "02".$key;
+	$message =  $messageID.pack('H',"2").$key;
 } elseif ($command == "remove") {
-	$message = "03".$key;
+	$message =  $messageID.pack('H',"3").$key;
 } else {
 	die("Command not recognized");
 }
-//echo "Message To server:  ".$message."\n";
+echo "\nMessage To server:  ".$message."\n";
+
 // create socket
 $socket = socket_create(AF_INET, SOCK_DGRAM, 0) or die("Could not create socket\n");
-// connect to server
-//$result = socket_connect($socket, $host, $port) or die("Could not connect to server\n");  
+
 // send string to server
 socket_sendto($socket, $message, strlen($message), 0x00,$host, $port) or die("Could not send data to server\n");
-// get server response
 
+// get server response
 socket_recvfrom($socket, $result, 2048, 0,$a, $b) or die("Could not read server response\n");
-$returnStatus = intval(substr($result,0,2),10);
-if($returnStatus == '00') {
-	echo "Operation Successful\n";
-} elseif ($returnStatus == '01') {
-	echo "Non-existent Key\n";
-} elseif ($returnStatus == '02') {
-	echo "Out of space in filesystem\n";
-} elseif ($returnStatus == '03') {
-	echo "System Overload\n";
-} elseif ($returnStatus == '04') {
-	echo "Internal KVStore failure\n";
-} elseif ($returnStatus == '05') {
-	echo "Unrecognized command\n";
-} 
-if($command == "get" and $returnStatus == '00') {
-	$resultLength = intval(substr($result,2,4),16);
-	$resultContents = substr($result,6,$resultLength);
-	echo "The file contents were:\n".$resultContents."\n";
+
+//parse server response
+$messageID = substr($result,0,16);
+$responseArray = unpack('H',substr($result,16,1));
+$returnStatus = $responseArray[1];
+if($command == "get" and $returnStatus == 0) {
+    $array = unpack('v',substr($result,17,2));
+    $valueLength = $array[1];
+    $value = substr($result,19,$valueLength);
 }
-//echo "Reply From Server\n---------------------\n";
-//echo $result."\n---------------------\n";
-// close socket
-socket_close($socket);
+
+// print results
+echo "\n------------------------------------------------------";
+echo "\nMessage Recieved: ".$result;
+echo "\nMessage ID:       ".$messageID;
+echo "\nStatus:           ".$returnStatus;
+if($command == "get" and $returnStatus == 0) {
+    echo "\nValue Length:     ".$valueLength; 
+    echo "\nValue:            ".$value;   
+}
+echo "\n------------------------------------------------------";
+
+
+
+function generateRandomString($length = 64) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
 ?>
