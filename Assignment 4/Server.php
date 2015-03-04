@@ -40,11 +40,11 @@ while(1)
     
     // read client input
     socket_recvfrom($socket, $buffer, 2048, 0, $remoteIP, $remotePort);
-    $input = trim($buffer);
+    $input = $buffer;//trim($buffer);
     
     // parse the data coming in
     $messageID = substr($input,0,16);
-    $messageArray = unpack('H',substr($input,16,1));
+    $messageArray = unpack('H*',substr($input,16,1));
     $command = $messageArray[1];
     $key = substr($input,17,32);
     if($command == 1) {
@@ -71,6 +71,41 @@ while(1)
         echo "\n------------------------------------------------------";
     }
     
+    /* 
+    *   Command List:
+    *   0x01    put                                             [filename][file contents]
+    *   0x02    get                                             [filename]
+    *   0x03    remove                                          [filename]
+    *   0x21    return list of all files hashing within range   
+    */
+    
+    //list all files that hash 
+    if($command == 21) 
+    {
+        
+        //get a list of all files in local database
+        $fileList = scandir("~/database");
+        var_dump($fileList);
+        //assemble the response
+        $response = $messageID;
+        
+        //directory exists
+        if($fileList != false) {
+            $response = $response.pack('H',"0");
+            echo "\nFiles: \n";
+            for($i = 2; $i < count($fileList); $i++)
+            {
+                $hashKey = intval(substr(hash('md5',$fileList[$i]),0,2),16);
+                if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
+            or ($lowerRange > $upperRange and ($lowerRange > $hashKey or $upperRange <= $hashKey))) {
+                    $response = $response.substr($fileList[$i],0,32);
+                }
+            }
+        } else {
+            $response = $response.pack('H',"1");
+        }
+    }
+        
     
     //check if the value is in the range serviced by this node
     if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
@@ -82,7 +117,7 @@ while(1)
         { 
             //write value to file
             //assemble response if operation successful
-            if(file_put_contents($key.".txt",$value) == true) 
+            if(file_put_contents("~/database/".$key.".txt",$value) == true) 
             {
                 $response = $messageID.pack('H',"0"); 
             } 
@@ -100,7 +135,7 @@ while(1)
         { 
             
             //get contents from file
-            $filecontents = file_get_contents($key.".txt");
+            $filecontents = file_get_contents("~/database/".$key.".txt");
             
             //assemble response if operation successful
             if($filecontents != false) {
@@ -121,7 +156,7 @@ while(1)
             
             //remove file matching key
             //response if operation successful
-            if(unlink($key.".txt") == true) 
+            if(unlink("~/database/".$key.".txt") == true) 
             {
                 $response = $messageID.pack('H',"0"); 
             } 
