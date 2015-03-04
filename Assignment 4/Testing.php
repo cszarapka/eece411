@@ -33,6 +33,8 @@ if($testToRun == '0') {
     echo shell_exec("\nphp Client.php ".$ip." remove ".$key2." \"".$value."\"");
     echo shell_exec("\nphp Client.php ".$ip." remove ".$key3." \"".$value."\"");
     echo shell_exec("\nphp Client.php ".$ip." remove ".$key4." \"".$value."\"");
+} elseif($testToRun == '2'){
+    echo shell_exec("\php Client.php ".$ip." successorList");   
 }
 
 echo "\n";

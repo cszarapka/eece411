@@ -16,6 +16,11 @@ $result = socket_bind($socket, $host, $port) or die("Could not bind port, please
 $lowerRange = 0; //later we will get the range by joining the node network and requesting a node number
 $upperRange = 255;
 
+//create successor list
+$successorList = array();
+$successorList[1] = "fuck";
+
+
 echo trim(shell_exec('hostname'))."\n";
 echo "Port: $port\n";
 echo "----------------\n";
@@ -77,7 +82,8 @@ while(1)
     *   0x02    get                                             [filename]
     *   0x03    remove                                          [filename]
     *   0x21    return list of all files hashing within range
-    *   0x22    request to enter the hash table
+    *   0x22    return list successors
+    *   0x23    request to enter the hash table
     */
     
     //list all files that hash 
@@ -105,11 +111,15 @@ while(1)
         } else {
             $response = $response.pack('H',"1");
         }
+    } 
+    //space delimited list of ip's of successors
+    elseif($command == 22){
+        $response = $messageID.pack('H',"0").$successorList[0]." ".$successorList[1]." ".$successorList[2];
     }
         
     
     //check if the value is in the range serviced by this node
-    if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
+    elseif(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
         or ($lowerRange > $upperRange and ($lowerRange > $hashKey or $upperRange <= $hashKey))) 
     {
         
