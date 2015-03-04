@@ -35,6 +35,9 @@ if($testToRun == '0') {
     echo shell_exec("\nphp Client.php ".$ip." remove ".$key4." \"".$value."\"");
 }
 
+echo "\n";
+echo "\n";
+
 
 
 

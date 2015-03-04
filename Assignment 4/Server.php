@@ -16,6 +16,10 @@ $result = socket_bind($socket, $host, $port) or die("Could not bind port, please
 $lowerRange = 0; //later we will get the range by joining the node network and requesting a node number
 $upperRange = 255;
 
+//create successor list
+$successorList = [];
+    
+
 echo trim(shell_exec('hostname'))."\n";
 echo "Port: $port\n";
 echo "----------------\n";
