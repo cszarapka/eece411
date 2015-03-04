@@ -81,6 +81,8 @@ while(1)
     *   0x02    get                                             [filename]
     *   0x03    remove                                          [filename]
     *   0x21    return list of all files hashing within range   
+[successor list]    
+    *   0x22    return list successors
     */
     
     //list all files that hash 
@@ -108,11 +110,15 @@ while(1)
         } else {
             $response = $response.pack('H',"1");
         }
+    } 
+    //space delimited list of ip's of successors
+    elseif($command == 22){
+        $response = $messageID.pack('H',"1").$successorList[0]." ".$successorList[1]." ".$successorList[2];
     }
         
     
     //check if the value is in the range serviced by this node
-    if(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
+    elseif(($lowerRange < $upperRange and $lowerRange < $hashKey and $upperRange >= $hashKey) 
         or ($lowerRange > $upperRange and ($lowerRange > $hashKey or $upperRange <= $hashKey))) 
     {
         
