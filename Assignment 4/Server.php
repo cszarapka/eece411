@@ -18,7 +18,7 @@ $upperRange = 255;
 
 //create successor list
 $successorList = array();
-
+$successorListNum = array();
 
 echo trim(shell_exec('hostname'))."\n";
 echo "Port: $port\n";
@@ -113,8 +113,12 @@ while(1)
         }
     } 
     //space delimited list of ip's of successors
+    //string format after messageID:
+    //  "[successorNum1] [successorNum2] [successorNum3] [successor1] [successor2] [successor3]
+    // i.e.
+    //   "24 pl1.cs.ubc.ca 32 pl2.cs.ubc.ca 36  pl3.cs.ubc.ca"
     elseif($command == 22){
-        $response = $messageID.pack('H',"0").$successorList[0]." ".$successorList[1]." ".$successorList[2];
+        $response = $messageID.pack('H',"0").$successorListNum[0]." ".$successorList[0]." ".$successorListNum[1]." ".$successorList[1]." ".$successorListNum[2]." ".$successorList[2];
     }
     elseif($command == 23) {
         /*
