@@ -18,7 +18,6 @@ $upperRange = 255;
 
 //create successor list
 $successorList = array();
-$successorList[1] = "fuck";
 
 
 echo trim(shell_exec('hostname'))."\n";
@@ -76,7 +75,7 @@ while(1)
         echo "\n------------------------------------------------------";
     }
     
-    /* 
+    /*
     *   Command List:
     *   0x01    put                                             [filename][file contents]
     *   0x02    get                                             [filename]
