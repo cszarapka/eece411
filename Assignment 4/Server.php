@@ -83,6 +83,7 @@ while(1)
     *   0x21    return list of all files hashing within range
     *   0x22    return list successors
     *   0x23    request to enter the hash table
+    *   0x24    request for server status (alive)
     */
     
     //list all files that hash 
@@ -139,6 +140,10 @@ while(1)
         $successorList[2] = $successorList[1];
         $successorList[1] = $successorList[0];
         $successorList[0] = $remoteIP;
+    }
+    //returns a generic message proving that the server is alive
+    elseif($command == 24){
+            $response = $messageID.pack('H',"0");
     }
         
     

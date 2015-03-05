@@ -20,6 +20,8 @@ if($command == "put") {
     $message = $messageID.pack('H*',"21");
 } elseif($command == "successorList"){
     $message = $messageID.pack('H*',"22");
+} elseif($command == "ping"){
+    $message = $messageID.pack('H*',"24");
 } else {
 	die("Command not recognized");
 } 
