@@ -37,6 +37,25 @@ if($testToRun == '0') {
     echo shell_exec("\php Client.php ".$ip." successorList");   
 } elseif($testToRun == '3'){
     echo shell_exec("\php Client.php ".$ip." ping");
+} elseif($testToRun == '4'){
+        $key0 = generateRandomString();
+    $key1 = generateRandomString();
+    $key2 = generateRandomString();
+    $key3 = generateRandomString();
+    $key4 = generateRandomString();
+    $value = generateRandomString();
+    echo shell_exec("\nphp Client.php ".$ip." put ".$key0." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." put ".$key1." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." put ".$key2." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." put ".$key3." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." put ".$key4." \"".$value."\"");
+    
+    echo shell_exec("\nphp Client.php ".$ip." allFiles");
+    echo shell_exec("\nphp Client.php ".$ip." remove ".$key0." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." remove ".$key1." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." remove ".$key2." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." remove ".$key3." \"".$value."\"");
+    echo shell_exec("\nphp Client.php ".$ip." remove ".$key4." \"".$value."\"");
 }
 
 echo "\n";

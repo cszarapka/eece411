@@ -84,7 +84,9 @@ while(1)
     *   0x22    return list successors
     *   0x23    request to enter the hash table
     *   0x24    request for server status (alive)
+    *   0x25    return list of all files locally (unhashed or not)
     */
+    
     
     //list all files that hash 
     if($command == 21) 
@@ -138,16 +140,35 @@ while(1)
         $response = $response.pack('I', $upperRange);
 
         // Cut our own range
-        $upperRange = $newLowerRange - 1;
+        $upperRange = $newLowerRange;
 
         // Add this node to our successor list; bump the current 1st and 2nd to 2nd and 3rd respectively
         $successorList[2] = $successorList[1];
         $successorList[1] = $successorList[0];
         $successorList[0] = $remoteIP;
+        $successorListNum[2] = $successorListNum[1];
+        $successorListNum[1] = $successorListNum[0];
+        $successorListNum[0] = $upperRange;
     }
     //returns a generic message proving that the server is alive
     elseif($command == 24){
             $response = $messageID.pack('H',"0");
+    }
+    // returns list of ALL files locally
+    elseif($command == 25){
+        //get a list of all files in local database
+        $fileList = scanDir("~/database");
+        var_dump($fileList);
+        
+        //assemble the response
+        $response = $messageID;
+        
+        if($fileList != false){
+            $response = $response.pack('H',"0");
+            for($i = 2; $i < count($fileList); $i++){
+                   $response = $response.substr($fileList[$i],0,32);
+            }
+        }
     }
         
     

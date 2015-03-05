@@ -22,6 +22,8 @@ if($command == "put") {
     $message = $messageID.pack('H*',"22");
 } elseif($command == "ping"){
     $message = $messageID.pack('H*',"24");
+} elseif($command = "allfiles"){
+    $message = $messageID.pack('H*',"25");  
 } else {
 	die("Command not recognized");
 } 
@@ -53,7 +55,14 @@ if($command == "get" and $returnStatus == 0) {
     
 } elseif($command == "successorList" and $returnStatus == 0){
     $array = explode(" ",substr($result, 17));    
-}
+} elseif($command == "allFiles" and $returnStatus == 0) {
+    $filenamesString = substr($result,17);
+    $filenames = array();
+    for($i = 0; $i < strlen($filenamesString) / 32; $i++) {
+        $filenames[] = substr($filenamesString, 32 * $i, 32);
+    }
+    
+} 
 
 // print results
 echo "\n------------------------------------------------------";
@@ -69,7 +78,11 @@ if($command == "get" and $returnStatus == 0) {
     }
 } elseif($command == "successorList" and $returnStatus == 0){
     echo "\nValue:            ".$array[0].$array[1].$array[2] ;
-}
+} elseif($command == "allFiles" and $returnStatus == 0) {
+    for($i = 0;$i < count($filenames); $i++) {
+        echo "\nFile:             ".$filenames[$i];
+    }
+} 
 echo "\n------------------------------------------------------";
 
 
