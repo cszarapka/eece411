@@ -22,7 +22,7 @@ public class Main {
 	//TOODOO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
 
 	private static final boolean VERBOSE = true;
-	public static final int NUMBER_OF_NODES = 100;
+	public static final int NUMBER_OF_NODES = 50;
 	public static final int TIMEOUT = 1000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
