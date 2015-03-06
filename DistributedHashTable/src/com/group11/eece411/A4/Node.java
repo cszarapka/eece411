@@ -1,5 +1,8 @@
 package com.group11.eece411.A4;
 
+/*
+ * Node data structure
+ */
 public class Node {
 	private String IP;
 	private int port;
