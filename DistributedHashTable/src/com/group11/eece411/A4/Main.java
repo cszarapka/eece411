@@ -23,7 +23,7 @@ public class Main {
 
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
-	public static final int TIMEOUT = 2000;
+	public static final int TIMEOUT = 1;//2000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
 	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
@@ -59,7 +59,7 @@ public class Main {
 			}
 			sendData = receivePacket.getData();
 			ip = receivePacket.getAddress();
-			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIDList).start();
+			//new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIDList).start();
 
 		}
 	}
@@ -101,18 +101,19 @@ public class Main {
 
 
 
+			DatagramPacket receivePacket = null;
 			InetAddress IPAddress;
 			try {
 				IPAddress = InetAddress.getByName(nodeList[addressToTry]);
-
-				DatagramPacket receivePacket;
+				
 				byte[] receiveData = new byte[16000];
 				byte[] sendData = new byte[16000];
-				while(true) {
+				boolean foundDht = false;
+				while(!foundDht) {
 					if(addressToTry++ >= NUMBER_OF_NODES) {
 						addressToTry = 0;
 					}
-
+					System.out.println("number of nodes tried: "+i+++"\n");
 					byte[] uniqueID = MessageFormatter.generateUniqueID();
 					for(int i = 0; i < 16; i++) {
 						sendData[i] = uniqueID[i];
@@ -127,7 +128,7 @@ public class Main {
 					try {
 						//Node's living
 						clientSocket.receive(receivePacket);
-						break;
+						foundDht = true;
 					} catch (SocketTimeoutException e) {
 						//Node's dead
 					}
@@ -136,7 +137,7 @@ public class Main {
 				}
 				System.out.println("sent and received data" + "\n");
 
-				System.out.println("break down message received" + "\n");
+				System.out.println("breaking down message received" + "\n");
 				//get the node number byte
 				byte nodeNum = receiveData[16];
 				NODE_NUM = nodeNum;
