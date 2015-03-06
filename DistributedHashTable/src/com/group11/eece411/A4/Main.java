@@ -43,6 +43,7 @@ public class Main {
 
 
 
+	@SuppressWarnings("deprecation")
 	private static void joinTable() {
 		//function for joining the table initially
 		FileInputStream fin;
@@ -72,7 +73,7 @@ public class Main {
 			if(addressToTry++ >= NUMBER_OF_NODES) {
 				addressToTry = 0;
 			}
-			byte[] sendData = new request("jointable", "");
+			byte[] sendData = new request("jointable", ""); //TODO
 			
 			
 			//Send the join table request
@@ -140,7 +141,7 @@ public class Main {
 			
 			// if the hash of the file is in range
 			if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
-				byte[] sendData = MessageFormatter.createRequest(2, keyHash, null);
+				byte[] sendData = MessageFormatter.createRequest(2, key, null);
 				
 				InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
@@ -152,7 +153,7 @@ public class Main {
 					//Node's living
 					clientSocket.receive(receivePacket);
 					//check that both unique id's are the same
-					if(Arrays.deepEquals(MessageFormatter.getUniqueID(sendData),
+					if(Arrays.equals(MessageFormatter.getUniqueID(sendData),
 							MessageFormatter.getUniqueID(receiveData2)) ){
 						int cmd = MessageFormatter.getCommand(receiveData2);
 						
