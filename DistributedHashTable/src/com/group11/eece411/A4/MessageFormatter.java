@@ -11,6 +11,7 @@ public class MessageFormatter {
 	private static byte PUT = (byte) 2;
 	private static byte REMOVE = (byte) 3;
 	private static byte SHUTDOWN = (byte) 4;
+	private static byte GIVETOMEYOURSUCCESSORSLISTINGS = (byte) 34;
 	
 	/**
 	 * Generates a byte array response
@@ -112,6 +113,19 @@ public class MessageFormatter {
 			}
 		}
 			break;
+		
+		case 34: //give to me your successors listings
+		{
+			byte[] request = new byte[16 + 1 + 32];
+			for(int i = 0; i < 16; i++) {
+				request[i] = uniqueID[i];
+			}
+			request[17] = GIVETOMEYOURSUCCESSORSLISTINGS;
+			for(int i = 0; i < 32; i++) {
+				request[i + 16 + 1] = key[i];
+			}
+		}
+			break;
 			
 		default:
 			
@@ -120,7 +134,7 @@ public class MessageFormatter {
 		
 	}
 	
-	private static byte[] generateUniqueID() {
+	public static byte[] generateUniqueID() {
 		Random rand = new Random();
 		byte[] retval = new byte[16];
 		for(int i = 0; i < 16; i++) {
