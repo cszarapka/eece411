@@ -3,6 +3,8 @@ package com.group11.eece411.A4;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,25 +16,27 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerResponseThread extends Thread {
-	
+
 	private final ConcurrentHashMap<byte[], byte[]> db;
 	private byte[][][] uniqueIdList;
 
 	private MessageDigest md;
-	private final byte[] data;
+	private byte[] data;
 	private final InetAddress senderAddress;
 	private final int command;
 	private final int nodeNumber;
 	private final int upperRange;
+	private final SuccessorList successors;
 	private byte[] key;
 	private int keyHash;
-	
-	private byte[] value;
+
+	private byte[] value = null;
 	private byte[] uniqueId;
-	
+
 	public ServerResponseThread(byte[] d, InetAddress i,
-			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, byte[][][] u) {
+			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, byte[][][] u, SuccessorList s) {
 		data = d;
+		successors = s;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
@@ -40,7 +44,7 @@ public class ServerResponseThread extends Thread {
 		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
 		this.uniqueIdList = u;
-		
+
 		md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -48,7 +52,7 @@ public class ServerResponseThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {	
 		InetAddress responseTo;
@@ -66,7 +70,7 @@ public class ServerResponseThread extends Thread {
 					} catch (Exception e) {
 						//fuck it
 						System.out.println("couldn't find address");
-						shutdown();
+						return;
 					}
 					uniqueIdList[i] = uniqueIdList[uniqueIdList.length];
 					uniqueIdList = Arrays.copyOf(uniqueIdList, uniqueIdList.length - 1);
@@ -88,7 +92,13 @@ public class ServerResponseThread extends Thread {
 			shutdown();
 			break;
 		case 33: //0x21
-			joinTable();
+			try {
+				joinTable();
+			} catch (SocketException e) {
+				//can't do anything from this end
+			} catch (UnknownHostException e) {
+				//can't do anything from this end
+			}
 			break;
 		}
 	}
@@ -101,19 +111,28 @@ public class ServerResponseThread extends Thread {
 			// Only perform put if its in our range to screw with
 			if (isInRange(keyHash)) {
 				db.put(key, MessageFormatter.getValueRequest(data));
-				//TODO test what happens when it is full
-				//TODO build response with code 0
+				try {
+					byte[] message = MessageFormatter.createResponse(uniqueId, 0, null);
+					DatagramSocket serverSocket = new DatagramSocket();
+					DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+					serverSocket.send(sendPacket);
+				} catch (Exception e) {
+					//fuck it
+					System.out.println("couldn't find address");
+					return;
+				}
 			} else {
-				//TODO send put request to node in successor list that has it/should have it, or farthest away successor
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
 
-	
+
+
 	private void get() {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
@@ -123,21 +142,38 @@ public class ServerResponseThread extends Thread {
 				// they want a value we are responsible for; get it
 				value = db.get(key);
 				if (value == null) {
-					// we don't have this key-value pair, let em know
-					//TODO build response with code 1
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 1, null);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				} else {
-					// we've got it, give it to em
-					//TODO build response with code 0
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 0, value);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				}
 			} else {
-				//TODO send request to next node
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void remove() {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
@@ -146,28 +182,78 @@ public class ServerResponseThread extends Thread {
 			if(isInRange(keyHash)) {
 				// a value we are responsible for
 				value = db.remove(key);
-				if(value == null) {
-					// we don't have this key-value pair, let em know
-					//TODO build response with code 1
+				if (value == null) {
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 1, null);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				} else {
-					// we removed it
-					//TODO build response with code 0
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 0, value);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				}
 			} else {
-				//TODO send request to next node
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void passQuery(){
+		InetAddress sendTo;
+		byte[] newMessageId = MessageFormatter.generateUniqueID();
+		byte[] oldMessageId = Arrays.copyOf(data,  16);
+		synchronized(successors) {
+			try {
+				if(keyHash < successors.getSuccessor(1).getNodeNum()) {
+					sendTo = InetAddress.getByName(successors.getSuccessor(0).getIP());
+				} else if(keyHash < successors.getSuccessor(2).getNodeNum()) {
+					sendTo = InetAddress.getByName(successors.getSuccessor(1).getIP());
+				} else {
+					sendTo = InetAddress.getByName(successors.getSuccessor(2).getIP());
+				}
+				for(int i = 0; i < 16; i++) {
+					data[i] = newMessageId[i];
+				}
+				DatagramSocket serverSocket = new DatagramSocket();
+				DatagramPacket sendPacket = new DatagramPacket(data, data.length, sendTo, 4003);
+				serverSocket.send(sendPacket);
+			} catch (Exception e) {
+				//fuck it
+				System.out.println("couldn't find address");
+				return;
+			}
+			synchronized(uniqueIdList) {
+				uniqueIdList = Arrays.copyOf(uniqueIdList, uniqueIdList.length);
+				uniqueIdList[uniqueIdList.length-1][0] = oldMessageId;
+				uniqueIdList[uniqueIdList.length-1][1] = newMessageId;
+				uniqueIdList[uniqueIdList.length-1][2] = senderAddress.getAddress();
+			}
+		}
+	}
+
 	private void shutdown() {
 		// kill this node
 		System.exit(0);
 	}
-	
-	private void joinTable(){
+
+	private void joinTable() throws SocketException, UnknownHostException{
 		/*craft a response that sends:
 		*		16B 	[uniqueID]
 		*		1B		[assigned node number]
@@ -248,14 +334,11 @@ public class ServerResponseThread extends Thread {
 		}
 		
 		DatagramSocket clientSocket;
-		clientSocket = new DatagramSocket(4004);
+		clientSocket = new DatagramSocket(4003);
 		DatagramPacket sendPacket = new DatagramPacket(response, response.length, senderAddress, 4003);
 		
-		
-		
-		
 	}
-	
+
 	private boolean isInRange(int key) {
 		return (nodeNumber < upperRange && nodeNumber < key && upperRange >= key)
 				|| (nodeNumber > upperRange && (nodeNumber > key || upperRange <= key));
