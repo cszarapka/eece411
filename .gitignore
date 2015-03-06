@@ -1,16 +1,3 @@
-*target*
-*.jar
-*.war
-*.ear
-*.class
-
-# eclipse specific git ignore
-*.pydevproject
-.project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
 *.pydevproject
 .metadata
 .gradle
@@ -21,13 +8,11 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.classpath
 .settings/
 .loadpath
+.class
 
-.settings/
-.loadpath
-
+.recommenders
 # Eclipse Core
 .project
 
@@ -35,7 +20,6 @@ local.properties
 .externalToolBuilders/
 
 # Locally stored "Eclipse launch configurations"
-
 *.launch
 
 # CDT-specific
@@ -52,35 +36,3 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
-*.properties
-
-*.zip
-
-*.repositories
-
-*.lock
-
-*.fdt
-
-*.fdx
-
-*.fnm
-
-*.class
-
-*.frq
-
-*.nrm
-
-*.tii
-
-
-*.class
-
-*.class
-
-*.class
-
-*.class
-
-*.class
