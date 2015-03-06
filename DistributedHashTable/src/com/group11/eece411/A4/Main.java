@@ -39,8 +39,10 @@ public class Main {
 		successors.addSuccessor(node2, 2);
 		successors.addSuccessor(node3, 3);
 		
-		
+		//set up table
 		joinTable();
+		
+		
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
