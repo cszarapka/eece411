@@ -1,6 +1,11 @@
 package com.group11.eece411.A4;
 
 import java.net.DatagramPacket;
+<<<<<<< HEAD
+import java.net.InetAddress;
+import java.util.concurrent.ConcurrentHashMap;
+=======
+>>>>>>> origin/master
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +18,8 @@ public class ServerResponseThread extends Thread {
 	private ArrayList<ArrayList<byte[]>> uniqueIdList;
 
 	private MessageDigest md;
-	private final DatagramPacket requestPacket;
 	private final byte[] data;
+	private final InetAddress senderAddress;
 	private final int command;
 	private final int nodeNumber;
 	private final int upperRange;
@@ -24,16 +29,16 @@ public class ServerResponseThread extends Thread {
 	private byte[] value;
 	private byte[] uniqueId;
 	
-	public ServerResponseThread(DatagramPacket d,
-			ConcurrentHashMap<byte[], byte[]> db,
-			int nodeNumber,
-			int upperRange,
-			ArrayList<ArrayList<byte[]>> uniqueIdList) {
-		requestPacket = d;
+	public ServerResponseThread(byte[] d, InetAddress i,
+			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange) {
+		data = d;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
-		data = requestPacket.getData();
+		senderAddress = i;
+		this.db = db;
+		this.nodeNumber = nodeNumber;
+		this.upperRange = upperRange;
 		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
 		this.uniqueIdList = uniqueIdList;

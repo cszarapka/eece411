@@ -46,6 +46,7 @@ public class Main {
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
+		InetAddress ip;
 		while(true)
 		{
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -54,7 +55,9 @@ public class Main {
 				String sentence = new String( receivePacket.getData());
 				System.out.println("RECEIVED: " + sentence);
 			}
-			new ServerResponseThread(receivePacket, UPPER_RANGE).start();
+			sendData = receivePacket.getData();
+			ip = receivePacket.getAddress();
+			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE).start();
 
 		}
 	}
