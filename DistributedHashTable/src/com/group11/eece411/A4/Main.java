@@ -23,6 +23,16 @@ public class Main {
 	public static SuccessorList successors = new SuccessorList();
 
 	public static void main(String [] args) throws IOException {
+		
+		//initialize successors to ip 0.0.0.0 and node number -1
+		Node node1 = new Node("0.0.0.0", -1);
+		Node node2 = new Node("0.0.0.0", -1);
+		Node node3 = new Node("0.0.0.0", -1);
+		successors.addSuccessor(node1, 1);
+		successors.addSuccessor(node2, 2);
+		successors.addSuccessor(node3, 3);
+		
+		
 		joinTable();
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
