@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Main {
 
 	public ArrayList<ArrayList<byte[]>> uniqueIdList;
+
+	//TOODOO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
+
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
 	public static final int TIMEOUT = 2000;
@@ -81,13 +84,17 @@ public class Main {
 		InetAddress IPAddress = InetAddress.getByName(nodeList[addressToTry]);
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[16000];
+		byte[] sendData = new byte[16000];
 		while(true) {
 			if(addressToTry++ >= NUMBER_OF_NODES) {
 				addressToTry = 0;
 			}
-			byte[] sendData = new request("jointable", ""); //TODO
 			
-			
+			byte[] uniqueID = MessageFormatter.generateUniqueID();
+			for(int i = 0; i < 16; i++) {
+				sendData[i] = uniqueID[i];
+			}
+			sendData[17] = (byte)0x21;	
 			//Send the join table request
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4003);
 			clientSocket.send(sendPacket);
@@ -182,21 +189,7 @@ public class Main {
 				}
 			}
 		}
-		
-		
-
-		
 		clientSocket.close();
-			
-
-
-
-
-
-
-		
-
-
 	}
 	
 	public static String getIpAddress(byte[] rawBytes) {
