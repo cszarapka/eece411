@@ -34,3 +34,28 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+*.properties
+
+*.zip
+
+*.repositories
+
+*.lock
+
+*.fdt
+
+*.fdx
+
+*.fnm
+
+*.class
+
+*.class
+
+*.class
+
+*.frq
+
+*.nrm
+
+*.tii
