@@ -15,7 +15,7 @@ public class Node {
 		this.IP = IP;
 		this.nodeNumber = nodeNumber;
 	}
-
+	
 	public String getIP(){
 		return this.IP;
 	}
