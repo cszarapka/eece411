@@ -1,14 +1,16 @@
 package com.group11.eece411.A4;
 
 import java.net.DatagramPacket;
-import java.util.concurrent.ConcurrentHashMap;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerResponseThread extends Thread {
 	
 	private final ConcurrentHashMap<byte[], byte[]> db;
+	private ArrayList<ArrayList<byte[]>> uniqueIdList;
 
 	private MessageDigest md;
 	private final DatagramPacket requestPacket;
@@ -20,17 +22,21 @@ public class ServerResponseThread extends Thread {
 	private int keyHash;
 	
 	private byte[] value;
+	private byte[] uniqueId;
 	
 	public ServerResponseThread(DatagramPacket d,
 			ConcurrentHashMap<byte[], byte[]> db,
 			int nodeNumber,
-			int upperRange) {
+			int upperRange,
+			ArrayList<ArrayList<byte[]>> uniqueIdList) {
 		requestPacket = d;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
 		data = requestPacket.getData();
+		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
+		this.uniqueIdList = uniqueIdList;
 		
 		md = null;
 		try {
@@ -43,6 +49,14 @@ public class ServerResponseThread extends Thread {
 	
 	@Override
 	public void run() {	
+		synchronized (uniqueIdList) {
+			for (ArrayList<byte[]> list : uniqueIdList) {
+				if(list.contains(uniqueIdList)) {
+					// HOLY SHIT IT CONTAINS IT!
+					// TODO
+				}
+			}
+		}
 		switch (command) {
 		case 1:
 			put();
