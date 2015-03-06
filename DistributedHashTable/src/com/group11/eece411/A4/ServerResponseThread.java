@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerResponseThread extends Thread {
-	
+
 	private final ConcurrentHashMap<byte[], byte[]> db;
 	private byte[][][] uniqueIdList;
 
@@ -22,15 +22,17 @@ public class ServerResponseThread extends Thread {
 	private final int command;
 	private final int nodeNumber;
 	private final int upperRange;
+	private final SuccessorList successors;
 	private byte[] key;
 	private int keyHash;
-	
+
 	private byte[] value;
 	private byte[] uniqueId;
-	
+
 	public ServerResponseThread(byte[] d, InetAddress i,
-			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, byte[][][] u) {
+			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, byte[][][] u, SuccessorList s) {
 		data = d;
+		successors = s;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
@@ -38,7 +40,7 @@ public class ServerResponseThread extends Thread {
 		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
 		this.uniqueIdList = u;
-		
+
 		md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -46,7 +48,7 @@ public class ServerResponseThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {	
 		InetAddress responseTo;
@@ -64,7 +66,7 @@ public class ServerResponseThread extends Thread {
 					} catch (Exception e) {
 						//fuck it
 						System.out.println("couldn't find address");
-						shutdown();
+						return;
 					}
 					uniqueIdList[i] = uniqueIdList[uniqueIdList.length];
 					uniqueIdList = Arrays.copyOf(uniqueIdList, uniqueIdList.length - 1);
@@ -102,16 +104,17 @@ public class ServerResponseThread extends Thread {
 				//TODO test what happens when it is full
 				//TODO build response with code 0
 			} else {
-				//TODO send put request to node in successor list that has it/should have it, or farthest away successor
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
 
-	
+
+
 	private void get() {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
@@ -128,14 +131,15 @@ public class ServerResponseThread extends Thread {
 					//TODO build response with code 0
 				}
 			} else {
-				//TODO send request to next node
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void remove() {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
@@ -152,23 +156,57 @@ public class ServerResponseThread extends Thread {
 					//TODO build response with code 0
 				}
 			} else {
-				//TODO send request to next node
+				passQuery();
+				return;
 			}
 		} catch (DigestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void passQuery(){
+		InetAddress sendTo;
+		byte[] newMessageId = MessageFormatter.generateUniqueID();
+		byte[] oldMessageId = Arrays.copyOf(data,  16);
+		synchronized(successors) {
+			try {
+				if(keyHash < successors.getSuccessor(1).getNodeNum()) {
+					sendTo = InetAddress.getByName(successors.getSuccessor(0).getIP());
+				} else if(keyHash < successors.getSuccessor(2).getNodeNum()) {
+					sendTo = InetAddress.getByName(successors.getSuccessor(1).getIP());
+				} else {
+					sendTo = InetAddress.getByName(successors.getSuccessor(2).getIP());
+				}
+				for(int i = 0; i < 16; i++) {
+					data[i] = newMessageId[i];
+				}
+				DatagramSocket serverSocket = new DatagramSocket();
+				DatagramPacket sendPacket = new DatagramPacket(data, data.length, sendTo, 4003);
+				serverSocket.send(sendPacket);
+			} catch (Exception e) {
+				//fuck it
+				System.out.println("couldn't find address");
+				return;
+			}
+			synchronized(uniqueIdList) {
+				uniqueIdList = Arrays.copyOf(uniqueIdList, uniqueIdList.length);
+				uniqueIdList[uniqueIdList.length-1][0] = oldMessageId;
+				uniqueIdList[uniqueIdList.length-1][1] = newMessageId;
+				uniqueIdList[uniqueIdList.length-1][2] = senderAddress.getAddress();
+			}
+		}
+	}
+
 	private void shutdown() {
 		// kill this node
 		System.exit(0);
 	}
-	
+
 	private void joinTable(){
-		
+
 	}
-	
+
 	private boolean isInRange(int key) {
 		return (nodeNumber < upperRange && nodeNumber < key && upperRange >= key)
 				|| (nodeNumber > upperRange && (nodeNumber > key || upperRange <= key));
