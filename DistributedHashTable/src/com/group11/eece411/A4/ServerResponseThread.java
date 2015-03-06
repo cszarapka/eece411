@@ -1,18 +1,20 @@
 package com.group11.eece411.A4;
 
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerResponseThread extends Thread {
 	
 	private final ConcurrentHashMap<byte[], byte[]> db;
-	private ArrayList<ArrayList<byte[]>> uniqueIdList;
+	private byte[][][] uniqueIdList;
 
 	private MessageDigest md;
 	private final byte[] data;
@@ -27,7 +29,7 @@ public class ServerResponseThread extends Thread {
 	private byte[] uniqueId;
 	
 	public ServerResponseThread(byte[] d, InetAddress i,
-			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, ArrayList<ArrayList<byte[]>> u) {
+			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, byte[][][] u) {
 		data = d;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
@@ -41,18 +43,32 @@ public class ServerResponseThread extends Thread {
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	@Override
 	public void run() {	
+		InetAddress responseTo;
 		synchronized (uniqueIdList) {
-			for (ArrayList<byte[]> list : uniqueIdList) {
-				if(list.contains(uniqueIdList)) {
-					// HOLY SHIT IT CONTAINS IT!
-					// TODO
+			for (int i = 0; i < uniqueIdList.length; i++) {
+				if(Arrays.equals(uniqueIdList[i][1], uniqueId)) {
+					try {
+						responseTo = InetAddress.getByAddress(uniqueIdList[i][2]);
+						for(int j = 0; j < 16; j++) {
+							data[j] = uniqueIdList[i][0][j];
+						}
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(data, data.length, responseTo, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						shutdown();
+					}
+					uniqueIdList[i] = uniqueIdList[uniqueIdList.length];
+					uniqueIdList = Arrays.copyOf(uniqueIdList, uniqueIdList.length - 1);
+					return;
 				}
 			}
 		}
@@ -93,6 +109,8 @@ public class ServerResponseThread extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+
 	
 	private void get() {
 		// Get the key and hash it

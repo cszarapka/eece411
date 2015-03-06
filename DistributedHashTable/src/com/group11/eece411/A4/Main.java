@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
-	public ArrayList<ArrayList<byte[]>> uniqueIdList;
+	public static byte[][][] uniqueIdList;
 
 	//TOODOO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
 
@@ -57,7 +57,7 @@ public class Main {
 			}
 			sendData = receivePacket.getData();
 			ip = receivePacket.getAddress();
-			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIDList).start();
+			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIdList).start();
 
 		}
 	}
