@@ -1,11 +1,8 @@
 package com.group11.eece411.A4;
 
 import java.net.DatagramPacket;
-<<<<<<< HEAD
 import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
-=======
->>>>>>> origin/master
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,9 +33,6 @@ public class ServerResponseThread extends Thread {
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
 		senderAddress = i;
-		this.db = db;
-		this.nodeNumber = nodeNumber;
-		this.upperRange = upperRange;
 		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
 		this.uniqueIdList = uniqueIdList;
