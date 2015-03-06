@@ -1,6 +1,7 @@
 package com.group11.eece411.A4;
 
 import java.io.DataInputStream;
+import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
+	public ArrayList<ArrayList<byte[]>> uniqueIdList;
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
 	public static final int TIMEOUT = 2000;
