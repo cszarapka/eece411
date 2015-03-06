@@ -57,7 +57,8 @@ public class ServerResponseThread extends Thread {
 			shutdown();
 			break;
 		case 33: //0x21
-			jointable();
+			joinTable();
+			break;
 		}
 	}
 
@@ -133,7 +134,7 @@ public class ServerResponseThread extends Thread {
 		System.exit(0);
 	}
 	
-	private void jointable(){
+	private void joinTable(){
 		
 	}
 	
