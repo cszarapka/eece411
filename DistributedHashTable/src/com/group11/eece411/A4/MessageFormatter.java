@@ -69,8 +69,8 @@ public class MessageFormatter {
 				request[i + 16 + 1] = key[i];
 			}
 			int valueLength = value.length;
-			request[16 + 1 + 32] = (byte) (valueLength & 0xFF);
-			request[16 + 1 + 32 + 1] = (byte) ((valueLength >> 8) & 0xFF);
+			request[16 + 1 + 32 + 1] = (byte) (valueLength & 0xFF);
+			request[16 + 1 + 32] = (byte) ((valueLength >> 8) & 0xFF);
 			for(int i = 0; i < valueLength; i++ ) {
 				request[i + 16 + 1 + 32 + 2] = value[i];
 			}

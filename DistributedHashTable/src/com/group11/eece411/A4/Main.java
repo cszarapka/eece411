@@ -23,7 +23,7 @@ public class Main {
 
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
-	public static final int TIMEOUT = 1;//2000;
+	public static final int TIMEOUT = 1000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
 	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
@@ -45,7 +45,7 @@ public class Main {
 		joinTable();
 		System.out.println("exit joinTable" + "\n");
 
-		DatagramSocket serverSocket = new DatagramSocket(4004);
+		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
 		InetAddress ip;
@@ -98,7 +98,7 @@ public class Main {
 		DatagramSocket clientSocket;
 
 		try {
-			clientSocket = new DatagramSocket(4004);
+			clientSocket = new DatagramSocket(4003);
 
 
 
@@ -119,9 +119,9 @@ public class Main {
 					for(int i = 0; i < 16; i++) {
 						sendData[i] = uniqueID[i];
 					}
-					sendData[17] = (byte)0x21;	
+					sendData[16] = (byte)0x21;	
 					//Send the join table request
-					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4004);
+					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4003);
 					clientSocket.send(sendPacket);
 
 					clientSocket.setSoTimeout(TIMEOUT);
@@ -147,7 +147,7 @@ public class Main {
 					//get first IP and node num and make new node object
 					byte[] successorIP1 = Arrays.copyOfRange(receiveData, 17, 21);
 					String successorIP1str = getIpAddress(successorIP1);
-					int successorNum1 = receiveData[21];
+					int successorNum1 = receiveData[21] & 0xFF;
 					Node successor1 = new Node(successorIP1str, successorNum1);
 					UPPER_RANGE = successorNum1;
 					successors.addSuccessor(successor1, 1);
@@ -157,7 +157,7 @@ public class Main {
 					//get second IP and node num and make new node object
 					byte[] successorIP2 = Arrays.copyOfRange(receiveData, 22, 26);
 					String successorIP2str = getIpAddress(successorIP2);
-					int successorNum2 = receiveData[26];
+					int successorNum2 = receiveData[26] & 0xFF;
 					Node successor2 = new Node(successorIP2str, successorNum2);
 					successors.addSuccessor(successor2, 2);
 				}
@@ -166,7 +166,7 @@ public class Main {
 					//get third IP and node num and make new node object
 					byte[] successorIP3 = Arrays.copyOfRange(receiveData, 27, 31);
 					String successorIP3str = getIpAddress(successorIP3);
-					int successorNum3 = receiveData[31];
+					int successorNum3 = receiveData[31] & 0xFF;
 					Node successor3 = new Node(successorIP3str, successorNum3);
 					successors.addSuccessor(successor3, 3);
 				}
@@ -192,7 +192,7 @@ public class Main {
 							sendData = MessageFormatter.createRequest(2, key, null);
 
 							InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
-							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4004);
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
 							clientSocket.send(sendPacket);
 
 							clientSocket.setSoTimeout(TIMEOUT);

@@ -3,6 +3,10 @@ package com.group11.eece411.A4;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.ConcurrentHashMap;
 import java.security.DigestException;
 import java.security.MessageDigest;
@@ -88,7 +92,13 @@ public class ServerResponseThread extends Thread {
 			shutdown();
 			break;
 		case 33: //0x21
-			joinTable();
+			try {
+				joinTable();
+			} catch (SocketException e) {
+				//can't do anything from this end
+			} catch (UnknownHostException e) {
+				//can't do anything from this end
+			}
 			break;
 		case 34:
 			returnSuccessors();
@@ -283,8 +293,90 @@ public class ServerResponseThread extends Thread {
 		System.exit(0);
 	}
 
-	private void joinTable(){
+	private void joinTable() throws SocketException, UnknownHostException{
+		/*craft a response that sends:
+		*		16B 	[uniqueID]
+		*		1B		[assigned node number]
+		*		4B		[successor(1)]
+		*		1B		[successorNodeNum(1)]
+		*		4B		[successor(2)]
+		*		1B		[successorNodeNum(2)]
+		*		4B		[successor(3)]
+		*		1B		[successorNodeNum(3)]
+		*		4B		[file list length]
+		*		32B*file list length 	[hashed file names]		
+		*/
+		int newNodeNum = (((upperRange - nodeNumber)/2) + nodeNumber) & 0xFF;
+		
+		
+		byte[] successor1;
+		byte[] successor2;
+		byte[] successor3;
+		byte successorNodeNum1;
+		byte successorNodeNum2;
+		byte successorNodeNum3;
+		
+		byte nodeNum = (byte) newNodeNum;
+		synchronized(successors){
+			InetAddress ip = InetAddress.getByName(successors.getSuccessor(0).getIP());
+			successor1 = ip.getAddress();
+			int nodeNum1 = successors.getSuccessor(0).getNodeNum() & 0xFF;
+			successorNodeNum1 = (byte) nodeNum1;
+			
+			InetAddress ip2 = InetAddress.getByName(successors.getSuccessor(1).getIP());
+			successor2 = ip2.getAddress();
+			int nodeNum2 = successors.getSuccessor(1).getNodeNum() & 0xFF;
+			successorNodeNum2 = (byte) nodeNum2;
+			
+			InetAddress ip3 = InetAddress.getByName(successors.getSuccessor(2).getIP());
+			successor3 = ip3.getAddress();
+			int nodeNum3 = successors.getSuccessor(2).getNodeNum() & 0xFF;
+			successorNodeNum3 = (byte) nodeNum3;
+		}
+		
+		byte[] response = new byte[16000];
+		//add unique ID
+		for(int i = 0; i < 16; i++){
+			response[i] = uniqueId[i];
+		}
+		//add assigned node number
+		response[16] = nodeNum;
+		
+		//add successors
+		for(int i = 0; i<4; i++){
+			response[i+17] = successor1[i];
+		}
+		response[21] = successorNodeNum1;
 
+		for(int i = 0; i<4; i++){
+			response[i+22] = successor1[i];
+		}
+		response[26] = successorNodeNum1;
+
+		for(int i = 0; i<4; i++){
+			response[i+27] = successor1[i];
+		}
+		response[31] = successorNodeNum1;
+		
+		
+		int numFiles = db.size(); //do i mask this?
+		byte[] fileListLength = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(numFiles).array();
+		
+		for(int i =0; i<4;i++){
+			response[i+32]=fileListLength[i];
+		}
+		
+		int offset=0;
+		for( byte[] key : db.keySet()){
+			for(int i = 0; i < 32; i++){
+				response[i+36+(offset*32)]=key[i];
+			}
+		}
+		
+		DatagramSocket clientSocket;
+		clientSocket = new DatagramSocket(4003);
+		DatagramPacket sendPacket = new DatagramPacket(response, response.length, senderAddress, 4003);
+		
 	}
 
 	private boolean isInRange(int key) {
