@@ -13,9 +13,6 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
-<<<<<<< HEAD
-	
-=======
 
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
@@ -203,6 +200,4 @@ public class Main {
  
         return ipAddress;
     }
-
->>>>>>> origin/master
 }
