@@ -17,7 +17,7 @@ public class ServerResponseThread extends Thread {
 	private byte[][][] uniqueIdList;
 
 	private MessageDigest md;
-	private final byte[] data;
+	private byte[] data;
 	private final InetAddress senderAddress;
 	private final int command;
 	private final int nodeNumber;
@@ -26,7 +26,7 @@ public class ServerResponseThread extends Thread {
 	private byte[] key;
 	private int keyHash;
 
-	private byte[] value;
+	private byte[] value = null;
 	private byte[] uniqueId;
 
 	public ServerResponseThread(byte[] d, InetAddress i,
@@ -101,8 +101,16 @@ public class ServerResponseThread extends Thread {
 			// Only perform put if its in our range to screw with
 			if (isInRange(keyHash)) {
 				db.put(key, MessageFormatter.getValueRequest(data));
-				//TODO test what happens when it is full
-				//TODO build response with code 0
+				try {
+					byte[] message = MessageFormatter.createResponse(uniqueId, 0, null);
+					DatagramSocket serverSocket = new DatagramSocket();
+					DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+					serverSocket.send(sendPacket);
+				} catch (Exception e) {
+					//fuck it
+					System.out.println("couldn't find address");
+					return;
+				}
 			} else {
 				passQuery();
 				return;
@@ -124,11 +132,27 @@ public class ServerResponseThread extends Thread {
 				// they want a value we are responsible for; get it
 				value = db.get(key);
 				if (value == null) {
-					// we don't have this key-value pair, let em know
-					//TODO build response with code 1
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 1, null);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				} else {
-					// we've got it, give it to em
-					//TODO build response with code 0
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 0, value);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				}
 			} else {
 				passQuery();
@@ -148,12 +172,28 @@ public class ServerResponseThread extends Thread {
 			if(isInRange(keyHash)) {
 				// a value we are responsible for
 				value = db.remove(key);
-				if(value == null) {
-					// we don't have this key-value pair, let em know
-					//TODO build response with code 1
+				if (value == null) {
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 1, null);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				} else {
-					// we removed it
-					//TODO build response with code 0
+					try {
+						byte[] message = MessageFormatter.createResponse(uniqueId, 0, value);
+						DatagramSocket serverSocket = new DatagramSocket();
+						DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4003);
+						serverSocket.send(sendPacket);
+					} catch (Exception e) {
+						//fuck it
+						System.out.println("couldn't find address");
+						return;
+					}
 				}
 			} else {
 				passQuery();

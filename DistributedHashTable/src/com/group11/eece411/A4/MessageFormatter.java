@@ -16,9 +16,9 @@ public class MessageFormatter {
 	/**
 	 * Generates a byte array response
 	 */
-	public static byte[] createResponse(byte[] uniqueID, int responseCode, String value){
+	public static byte[] createResponse(byte[] uniqueID, int responseCode, byte[] val){
 		byte[] code = ByteBuffer.allocate(4).putInt(responseCode).array();
-		byte[] val = value.getBytes();
+		
 		byte[] retval = new byte[uniqueID.length + code.length + val.length];
 		for(int i = 0; i < uniqueID.length; i++) {
 			retval[i] = uniqueID[i];
