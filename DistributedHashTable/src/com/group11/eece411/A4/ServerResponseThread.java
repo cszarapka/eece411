@@ -90,9 +90,51 @@ public class ServerResponseThread extends Thread {
 		case 33: //0x21
 			joinTable();
 			break;
+		case 34:
+			returnSuccessors();
+			break;
+		case 35:
+			changeUpperRange();
+			break;
 		}
 	}
 
+	private void returnSuccessors() {
+		try {
+			byte[] message = MessageFormatter.createResponse(uniqueId, 34, null);
+			int length = message.length;
+			message = Arrays.copyOf(message,  length + 15);
+			byte[] address1 = InetAddress.getByName(successors.getSuccessor(0).getIP()).getAddress();
+			byte[] address2 = InetAddress.getByName(successors.getSuccessor(1).getIP()).getAddress();
+			byte[] address3 = InetAddress.getByName(successors.getSuccessor(2).getIP()).getAddress();
+			
+			for(int i = 0; i < 4; i++) {
+				message[length - 1 + i] = address1[i];
+			}
+			message[length + 5] = (byte)successors.getSuccessor(0).getNodeNum();
+			for(int i = 0; i < 4; i++) {
+				message[length + i + 5] = address1[i];
+			}
+			message[length + 10] = (byte)successors.getSuccessor(1).getNodeNum();;
+			for(int i = 0; i < 4; i++) {
+				message[length + i + 10] = address1[i];
+			}
+			message[length + 15] = (byte)successors.getSuccessor(2).getNodeNum();;
+			
+			DatagramSocket serverSocket = new DatagramSocket();
+			DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4008);
+			serverSocket.send(sendPacket);
+		} catch (Exception e) {
+			//fuck it
+			System.out.println("couldn't find address");
+			return;
+		}
+	}
+	
+	private void changeUpperRange() {
+		
+	}
+	
 	private void put() {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
@@ -159,7 +201,6 @@ public class ServerResponseThread extends Thread {
 				return;
 			}
 		} catch (DigestException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -200,7 +241,6 @@ public class ServerResponseThread extends Thread {
 				return;
 			}
 		} catch (DigestException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
