@@ -47,7 +47,7 @@ public class Main {
 				String sentence = new String( receivePacket.getData());
 				System.out.println("RECEIVED: " + sentence);
 			}
-			new ServerResponseThread(receivePacket, UPPER_RANGE).start();
+			new ServerResponseThread(receivePacket, db, NODE_NUM, UPPER_RANGE).start();
 
 		}
 	}
