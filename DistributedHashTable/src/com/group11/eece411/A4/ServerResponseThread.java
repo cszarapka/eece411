@@ -27,7 +27,7 @@ public class ServerResponseThread extends Thread {
 	private byte[] uniqueId;
 	
 	public ServerResponseThread(byte[] d, InetAddress i,
-			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange) {
+			ConcurrentHashMap<byte[], byte[]> db, int nodeNumber,	int upperRange, ArrayList<ArrayList<byte[]>> u) {
 		data = d;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
@@ -35,7 +35,7 @@ public class ServerResponseThread extends Thread {
 		senderAddress = i;
 		uniqueId = MessageFormatter.getUniqueID(data);
 		command = MessageFormatter.getCommand(data);
-		this.uniqueIdList = uniqueIdList;
+		this.uniqueIdList = u;
 		
 		md = null;
 		try {

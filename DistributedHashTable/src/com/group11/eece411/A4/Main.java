@@ -57,7 +57,7 @@ public class Main {
 			}
 			sendData = receivePacket.getData();
 			ip = receivePacket.getAddress();
-			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE).start();
+			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIDList).start();
 
 		}
 	}
