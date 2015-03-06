@@ -133,6 +133,10 @@ public class ServerResponseThread extends Thread {
 		System.exit(0);
 	}
 	
+	private void jointable(){
+		
+	}
+	
 	private boolean isInRange(int key) {
 		return (nodeNumber < upperRange && nodeNumber < key && upperRange >= key)
 				|| (nodeNumber > upperRange && (nodeNumber > key || upperRange <= key));
