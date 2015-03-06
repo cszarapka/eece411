@@ -23,27 +23,29 @@ public class Main {
 
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
-	public static final int TIMEOUT = 2000;
+	public static final int TIMEOUT = 1;//2000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
 	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
 	public static SuccessorList successors = new SuccessorList();
+	public static int i = 0;
 
 	public static void main(String [] args) throws IOException {
-		
+
 		//initialize successors to ip 0.0.0.0 and node number -1
 		Node node1 = new Node("0.0.0.0", -1);
 		Node node2 = new Node("0.0.0.0", -1);
 		Node node3 = new Node("0.0.0.0", -1);
-		successors.addSuccessor(node1, 1);
-		successors.addSuccessor(node2, 2);
-		successors.addSuccessor(node3, 3);
-		
+		successors.addSuccessor(node1, 0);
+		successors.addSuccessor(node2, 1);
+		successors.addSuccessor(node3, 2);
+
 		//set up table
+		System.out.println("enter joinTable" + "\n");
 		joinTable();
-		
-		
-		DatagramSocket serverSocket = new DatagramSocket(4003);
+		System.out.println("exit joinTable" + "\n");
+
+		DatagramSocket serverSocket = new DatagramSocket(4004);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
 		InetAddress ip;
@@ -59,6 +61,7 @@ public class Main {
 			ip = receivePacket.getAddress();
 			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIdList).start();
 
+
 		}
 	}
 
@@ -67,175 +70,182 @@ public class Main {
 
 	@SuppressWarnings("deprecation")
 	private static void joinTable() throws IOException {
+		System.out.println("opening file" + "\n");
+
 		//function for joining the table initially
 		FileInputStream fin;
 		String [] nodeList = new String[NUMBER_OF_NODES];
 		try	{
-		    // Open an input stream
-		    fin = new FileInputStream ("myfile.txt");
+			// Open an input stream
+			fin = new FileInputStream ("node.txt");
 
-		    // Read a line of text
-		    DataInputStream din = new DataInputStream(fin);
-		    for(int i = 0; i < NUMBER_OF_NODES; i++) {
-		    	nodeList[i] = din.readLine();
-		    }
-		    // Close our input stream
-		    fin.close();		
+			// Read a line of text
+			DataInputStream din = new DataInputStream(fin);
+			for(int i = 0; i < NUMBER_OF_NODES; i++) {
+				nodeList[i] = din.readLine();
+			}
+			// Close our input stream
+			fin.close();		
 		} catch (IOException e) {
 			System.err.println ("Unable to read from file");
 			System.exit(-1);
 		}
+		System.out.println("file opened" + "\n");
 		int addressToTry = (int)(Math.random()*NUMBER_OF_NODES);
 
-		
-		
+
+		System.out.println("try to contact server" + "\n");
 		DatagramSocket clientSocket;
-		
+
 		try {
-			clientSocket = new DatagramSocket(4003);
-		
-		
-		
-		InetAddress IPAddress;
-		try {
-			IPAddress = InetAddress.getByName(nodeList[addressToTry]);
-		
-		DatagramPacket receivePacket;
-		byte[] receiveData = new byte[16000];
-		byte[] sendData = new byte[16000];
-		while(true) {
-			if(addressToTry++ >= NUMBER_OF_NODES) {
-				addressToTry = 0;
-			}
-			
-			byte[] uniqueID = MessageFormatter.generateUniqueID();
-			for(int i = 0; i < 16; i++) {
-				sendData[i] = uniqueID[i];
-			}
-			sendData[17] = (byte)0x21;	
-			//Send the join table request
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4003);
-			clientSocket.send(sendPacket);
-			
-			clientSocket.setSoTimeout(TIMEOUT);
-			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			clientSocket = new DatagramSocket(4004);
+
+
+
+			DatagramPacket receivePacket = null;
+			InetAddress IPAddress;
 			try {
-				//Node's living
-				clientSocket.receive(receivePacket);
-				break;
-			} catch (SocketTimeoutException e) {
-				//Node's dead
-			}
-			
-			
-		}
-		
-		
-		//get the node number byte
-		byte nodeNum = receiveData[16];
-		NODE_NUM = nodeNum;
-		
-		if(receivePacket.getLength() >= 21){
-			//get first IP and node num and make new node object
-			byte[] successorIP1 = Arrays.copyOfRange(receiveData, 17, 21);
-			String successorIP1str = getIpAddress(successorIP1);
-			int successorNum1 = receiveData[21];
-			Node successor1 = new Node(successorIP1str, successorNum1);
-			UPPER_RANGE = successorNum1;
-			successors.addSuccessor(successor1, 1);
-		}
-		
-		if(receivePacket.getLength() >= 26){
-			//get second IP and node num and make new node object
-			byte[] successorIP2 = Arrays.copyOfRange(receiveData, 22, 26);
-			String successorIP2str = getIpAddress(successorIP2);
-			int successorNum2 = receiveData[26];
-			Node successor2 = new Node(successorIP2str, successorNum2);
-			successors.addSuccessor(successor2, 2);
-		}
-		
-		if(receivePacket.getLength() >= 31){
-			//get third IP and node num and make new node object
-			byte[] successorIP3 = Arrays.copyOfRange(receiveData, 27, 31);
-			String successorIP3str = getIpAddress(successorIP3);
-			int successorNum3 = receiveData[31];
-			Node successor3 = new Node(successorIP3str, successorNum3);
-			successors.addSuccessor(successor3, 3);
-		}
-		
-		//find the total file list size of the predecessor
-		byte[] fileListLength = Arrays.copyOfRange(receiveData,32,36);
-		ByteBuffer wrapped = ByteBuffer.wrap(fileListLength);
-		short length = wrapped.getShort();
-		
-		
-		byte[] receiveData2 = new byte[16000];
-		//send a request for each file that this node covers
-		
-		for(int i=0; i < length; i++){
-			byte[] key = Arrays.copyOfRange(receiveData, 36+(32*i), 68+(32*i));
-			try{
-				MessageDigest md = MessageDigest.getInstance("MD5");
-				int keyHash = md.digest(key, 0, 2);
+				IPAddress = InetAddress.getByName(nodeList[addressToTry]);
 				
-				// if the hash of the file is in range
-				if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
-					sendData = MessageFormatter.createRequest(2, key, null);
-					
-					InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
-					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
+				byte[] receiveData = new byte[16000];
+				byte[] sendData = new byte[16000];
+				boolean foundDht = false;
+				while(!foundDht) {
+					if(addressToTry++ >= NUMBER_OF_NODES) {
+						addressToTry = 0;
+					}
+					System.out.println("number of nodes tried: "+i+++"\n");
+					byte[] uniqueID = MessageFormatter.generateUniqueID();
+					for(int i = 0; i < 16; i++) {
+						sendData[i] = uniqueID[i];
+					}
+					sendData[17] = (byte)0x21;	
+					//Send the join table request
+					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4004);
 					clientSocket.send(sendPacket);
-					
+
 					clientSocket.setSoTimeout(TIMEOUT);
-					receivePacket = new DatagramPacket(receiveData2, receiveData2.length);
+					receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					try {
 						//Node's living
 						clientSocket.receive(receivePacket);
-						//check that both unique id's are the same
-						if(Arrays.equals(MessageFormatter.getUniqueID(sendData),
-								MessageFormatter.getUniqueID(receiveData2)) ){
-							int cmd = MessageFormatter.getCommand(receiveData2);
-							
-							//success
-							if(cmd == 0){
-								byte[] data = MessageFormatter.getValueResponse(receiveData2);
-								db.put(key, data);
+						foundDht = true;
+					} catch (SocketTimeoutException e) {
+						//Node's dead
+					}
+
+
+				}
+				System.out.println("sent and received data" + "\n");
+
+				System.out.println("breaking down message received" + "\n");
+				//get the node number byte
+				byte nodeNum = receiveData[16];
+				NODE_NUM = nodeNum;
+				
+				if(receivePacket.getLength() >= 21){
+					//get first IP and node num and make new node object
+					byte[] successorIP1 = Arrays.copyOfRange(receiveData, 17, 21);
+					String successorIP1str = getIpAddress(successorIP1);
+					int successorNum1 = receiveData[21];
+					Node successor1 = new Node(successorIP1str, successorNum1);
+					UPPER_RANGE = successorNum1;
+					successors.addSuccessor(successor1, 1);
+				}
+
+				if(receivePacket.getLength() >= 26){
+					//get second IP and node num and make new node object
+					byte[] successorIP2 = Arrays.copyOfRange(receiveData, 22, 26);
+					String successorIP2str = getIpAddress(successorIP2);
+					int successorNum2 = receiveData[26];
+					Node successor2 = new Node(successorIP2str, successorNum2);
+					successors.addSuccessor(successor2, 2);
+				}
+
+				if(receivePacket.getLength() >= 31){
+					//get third IP and node num and make new node object
+					byte[] successorIP3 = Arrays.copyOfRange(receiveData, 27, 31);
+					String successorIP3str = getIpAddress(successorIP3);
+					int successorNum3 = receiveData[31];
+					Node successor3 = new Node(successorIP3str, successorNum3);
+					successors.addSuccessor(successor3, 3);
+				}
+
+				//find the total file list size of the predecessor
+				byte[] fileListLength = Arrays.copyOfRange(receiveData,32,36);
+				ByteBuffer wrapped = ByteBuffer.wrap(fileListLength);
+				short length = wrapped.getShort();
+
+
+				byte[] receiveData2 = new byte[16000];
+				//send a request for each file that this node covers
+
+				System.out.println("requesting each file" + "\n");
+				for(int i=0; i < length; i++){
+					byte[] key = Arrays.copyOfRange(receiveData, 36+(32*i), 68+(32*i));
+					try{
+						MessageDigest md = MessageDigest.getInstance("MD5");
+						int keyHash = md.digest(key, 0, 2);
+
+						// if the hash of the file is in range
+						if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
+							sendData = MessageFormatter.createRequest(2, key, null);
+
+							InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4004);
+							clientSocket.send(sendPacket);
+
+							clientSocket.setSoTimeout(TIMEOUT);
+							receivePacket = new DatagramPacket(receiveData2, receiveData2.length);
+							try {
+								//Node's living
+								clientSocket.receive(receivePacket);
+								//check that both unique id's are the same
+								if(Arrays.equals(MessageFormatter.getUniqueID(sendData),
+										MessageFormatter.getUniqueID(receiveData2)) ){
+									int cmd = MessageFormatter.getCommand(receiveData2);
+
+									//success
+									if(cmd == 0){
+										byte[] data = MessageFormatter.getValueResponse(receiveData2);
+										db.put(key, data);
+									}
+								}
+
+							} catch (SocketTimeoutException e) {
+								//Node's dead TODO handle this case, shit just went down
+								// 					- kill process, start again another day
 							}
 						}
-						
-					} catch (SocketTimeoutException e) {
-						//Node's dead TODO handle this case, shit just went down
-						// 					- kill process, start again another day
+					} catch (Exception e){
+
 					}
+
 				}
-			} catch (Exception e){
-				
+				clientSocket.close();
+			} catch (UnknownHostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			
-		}
-		clientSocket.close();
-		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		System.out.println("exiting joinTable" + "\n");
 	}
-	
+
 	public static String getIpAddress(byte[] rawBytes) {
-        int i = 4;
-        String ipAddress = "";
-        for (byte raw : rawBytes)
-        {
-            ipAddress += (raw & 0xFF);
-            if (--i > 0)
-            {
-                ipAddress += ".";
-            }
-        }
- 
-        return ipAddress;
-    }
+		int i = 4;
+		String ipAddress = "";
+		for (byte raw : rawBytes)
+		{
+			ipAddress += (raw & 0xFF);
+			if (--i > 0)
+			{
+				ipAddress += ".";
+			}
+		}
+
+		return ipAddress;
+	}
 }
