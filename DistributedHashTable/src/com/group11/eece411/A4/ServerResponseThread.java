@@ -8,7 +8,6 @@ public class ServerResponseThread extends Thread {
 	
 	private final ConcurrentHashMap<byte[], byte[]> db;
 	private final MessageDigest md = MessageDigest.getInstance("MD5");
-	
 	private final DatagramPacket requestPacket;
 	private final byte[] data;
 	private final int command;
@@ -46,6 +45,8 @@ public class ServerResponseThread extends Thread {
 		case 4:
 			shutdown();
 			break;
+		case 33: //0x21
+			jointable();
 		}
 	}
 

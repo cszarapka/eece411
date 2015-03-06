@@ -180,21 +180,7 @@ public class Main {
 				}
 			}
 		}
-		
-		
-
-		
 		clientSocket.close();
-			
-
-
-
-
-
-
-		
-
-
 	}
 	
 	public static String getIpAddress(byte[] rawBytes) {
