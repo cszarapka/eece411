@@ -1,6 +1,7 @@
 package com.group11.eece411.A4;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
 import java.security.DigestException;
 import java.security.MessageDigest;
@@ -11,8 +12,8 @@ public class ServerResponseThread extends Thread {
 	private final ConcurrentHashMap<byte[], byte[]> db;
 
 	private MessageDigest md;
-	private final DatagramPacket requestPacket;
 	private final byte[] data;
+	private final InetAddress senderAddress;
 	private final int command;
 	private final int nodeNumber;
 	private final int upperRange;
@@ -21,15 +22,15 @@ public class ServerResponseThread extends Thread {
 	
 	private byte[] value;
 	
-	public ServerResponseThread(DatagramPacket d,
+	public ServerResponseThread(byte[] d, InetAddress i,
 			ConcurrentHashMap<byte[], byte[]> db,
 			int nodeNumber,
 			int upperRange) {
-		requestPacket = d;
+		data = d;
 		this.db = db;
 		this.nodeNumber = nodeNumber;
 		this.upperRange = upperRange;
-		data = requestPacket.getData();
+		senderAddress = i;
 		command = MessageFormatter.getCommand(data);
 		
 		md = null;
@@ -57,7 +58,8 @@ public class ServerResponseThread extends Thread {
 			shutdown();
 			break;
 		case 33: //0x21
-			jointable();
+			joinTable();
+			break;
 		}
 	}
 
@@ -133,7 +135,7 @@ public class ServerResponseThread extends Thread {
 		System.exit(0);
 	}
 	
-	private void jointable(){
+	private void joinTable(){
 		
 	}
 	

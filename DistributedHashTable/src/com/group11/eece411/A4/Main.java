@@ -1,12 +1,15 @@
 package com.group11.eece411.A4;
 
 import java.io.DataInputStream;
+import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -14,8 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
+	public ArrayList<ArrayList<byte[]>> uniqueIdList;
+
 	//TOODOO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
-	
+
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
 	public static final int TIMEOUT = 2000;
@@ -39,6 +44,7 @@ public class Main {
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
+		InetAddress ip;
 		while(true)
 		{
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -47,7 +53,9 @@ public class Main {
 				String sentence = new String( receivePacket.getData());
 				System.out.println("RECEIVED: " + sentence);
 			}
-			new ServerResponseThread(receivePacket, db, NODE_NUM, UPPER_RANGE).start();
+			sendData = receivePacket.getData();
+			ip = receivePacket.getAddress();
+			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE).start();
 
 		}
 	}
@@ -56,7 +64,7 @@ public class Main {
 
 
 	@SuppressWarnings("deprecation")
-	private static void joinTable() {
+	private static void joinTable() throws IOException {
 		//function for joining the table initially
 		FileInputStream fin;
 		String [] nodeList = new String[NUMBER_OF_NODES];
@@ -77,8 +85,19 @@ public class Main {
 		}
 		int addressToTry = (int)(Math.random()*NUMBER_OF_NODES);
 
-		DatagramSocket clientSocket = new DatagramSocket(4003);
-		InetAddress IPAddress = InetAddress.getByName(nodeList[addressToTry]);
+		
+		
+		DatagramSocket clientSocket;
+		
+		try {
+			clientSocket = new DatagramSocket(4003);
+		
+		
+		
+		InetAddress IPAddress;
+		try {
+			IPAddress = InetAddress.getByName(nodeList[addressToTry]);
+		
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[16000];
 		byte[] sendData = new byte[16000];
@@ -108,6 +127,7 @@ public class Main {
 			
 			
 		}
+		
 		
 		//get the node number byte
 		byte nodeNum = receiveData[16];
@@ -149,44 +169,57 @@ public class Main {
 		
 		byte[] receiveData2 = new byte[16000];
 		//send a request for each file that this node covers
+		
 		for(int i=0; i < length; i++){
 			byte[] key = Arrays.copyOfRange(receiveData, 36+(32*i), 68+(32*i));
-			
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			int keyHash = md.digest(key, 0, 2);
-			
-			// if the hash of the file is in range
-			if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
-				byte[] sendData = MessageFormatter.createRequest(2, key, null);
+			try{
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				int keyHash = md.digest(key, 0, 2);
 				
-				InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
-				clientSocket.send(sendPacket);
-				
-				clientSocket.setSoTimeout(TIMEOUT);
-				receivePacket = new DatagramPacket(receiveData2, receiveData2.length);
-				try {
-					//Node's living
-					clientSocket.receive(receivePacket);
-					//check that both unique id's are the same
-					if(Arrays.equals(MessageFormatter.getUniqueID(sendData),
-							MessageFormatter.getUniqueID(receiveData2)) ){
-						int cmd = MessageFormatter.getCommand(receiveData2);
-						
-						//success
-						if(cmd == 0){
-							byte[] data = MessageFormatter.getValueResponse(receiveData2);
-							db.put(key, data);
-						}
-					}
+				// if the hash of the file is in range
+				if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
+					sendData = MessageFormatter.createRequest(2, key, null);
 					
-				} catch (SocketTimeoutException e) {
-					//Node's dead TODO handle this case, shit just went down
-					// 					- kill process, start again another day
+					InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
+					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
+					clientSocket.send(sendPacket);
+					
+					clientSocket.setSoTimeout(TIMEOUT);
+					receivePacket = new DatagramPacket(receiveData2, receiveData2.length);
+					try {
+						//Node's living
+						clientSocket.receive(receivePacket);
+						//check that both unique id's are the same
+						if(Arrays.equals(MessageFormatter.getUniqueID(sendData),
+								MessageFormatter.getUniqueID(receiveData2)) ){
+							int cmd = MessageFormatter.getCommand(receiveData2);
+							
+							//success
+							if(cmd == 0){
+								byte[] data = MessageFormatter.getValueResponse(receiveData2);
+								db.put(key, data);
+							}
+						}
+						
+					} catch (SocketTimeoutException e) {
+						//Node's dead TODO handle this case, shit just went down
+						// 					- kill process, start again another day
+					}
 				}
+			} catch (Exception e){
+				
 			}
+			
 		}
 		clientSocket.close();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
 	public static String getIpAddress(byte[] rawBytes) {
