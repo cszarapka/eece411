@@ -1,0 +1,4 @@
+rcce|2|336K|132G|20:55:23 up  6:55,  5 users,  load average: 0.24, 0.16, 0.15
+planet1.cc.gt.atl.ga.us,0
+pl1.prakinf.tu-ilmenau.de,1
+pl2.prakinf.tu-ilmenau.de,1

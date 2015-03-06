@@ -1,0 +1,1 @@
+ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa pl1.6test.edu.cn "mkdir -p ~/group11/sockets" && scp Server.php pass.txt ubc_eece411_5@pl1.6test.edu.cn:~/group11/sockets && ssh -o StrictHostKeyChecking=no -l ubc_eece411_5 -i ~/.ssh/id_rsa pl1.6test.edu.cn "nohup php group11/sockets/Server.php > /dev/null 2>&1 &"
