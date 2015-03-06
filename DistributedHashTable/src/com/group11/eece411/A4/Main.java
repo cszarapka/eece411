@@ -19,11 +19,11 @@ public class Main {
 
 	public static byte[][][] uniqueIdList;
 
-	//TOODOO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
+	//TODO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
 
 	private static final boolean VERBOSE = true;
-	public static final int NUMBER_OF_NODES = 50;
-	public static final int TIMEOUT = 1000;
+	public static final int NUMBER_OF_NODES = 100;
+	public static final int TIMEOUT = 100;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
 	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
@@ -105,33 +105,40 @@ public class Main {
 			DatagramPacket receivePacket = null;
 			InetAddress IPAddress;
 			try {
-				IPAddress = InetAddress.getByName(nodeList[addressToTry]);
+				
 				
 				byte[] receiveData = new byte[16000];
 				byte[] sendData = new byte[16000];
 				boolean foundDht = false;
 				while(!foundDht) {
-					if(addressToTry++ >= NUMBER_OF_NODES) {
-						addressToTry = 0;
-					}
-					System.out.println("number of nodes tried: "+i+++"\n");
-					byte[] uniqueID = MessageFormatter.generateUniqueID();
-					for(int i = 0; i < 16; i++) {
-						sendData[i] = uniqueID[i];
-					}
-					sendData[16] = (byte)0x21;	
-					//Send the join table request
-					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4003);
-					clientSocket.send(sendPacket);
-
-					clientSocket.setSoTimeout(TIMEOUT);
-					receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					
 					try {
-						//Node's living
-						clientSocket.receive(receivePacket);
-						foundDht = true;
-					} catch (SocketTimeoutException e) {
-						//Node's dead
+						IPAddress = InetAddress.getByName(nodeList[addressToTry]);
+						if(addressToTry++ >= NUMBER_OF_NODES) {
+							addressToTry = 0;
+						}
+						System.out.println("number of nodes tried: "+i+++"\n" + "specific node tried: " + IPAddress.getHostName());
+						byte[] uniqueID = MessageFormatter.generateUniqueID();
+						for(int i = 0; i < 16; i++) {
+							sendData[i] = uniqueID[i];
+						}
+						sendData[16] = (byte)0x21;	
+						//Send the join table request
+						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 4003);
+						clientSocket.send(sendPacket);
+
+						clientSocket.setSoTimeout(TIMEOUT);
+						receivePacket = new DatagramPacket(receiveData, receiveData.length);
+						try {
+							//Node's living
+							clientSocket.receive(receivePacket);
+							foundDht = true;
+						} catch (SocketTimeoutException e) {
+							//Node's dead
+						}
+					} catch (UnknownHostException e) {
+						// ignore this host
+						break;
 					}
 
 
@@ -150,7 +157,7 @@ public class Main {
 					int successorNum1 = receiveData[21] & 0xFF;
 					Node successor1 = new Node(successorIP1str, successorNum1);
 					UPPER_RANGE = successorNum1;
-					successors.addSuccessor(successor1, 1);
+					successors.addSuccessor(successor1, 0);
 				}
 
 				if(receivePacket.getLength() >= 26){
@@ -159,7 +166,7 @@ public class Main {
 					String successorIP2str = getIpAddress(successorIP2);
 					int successorNum2 = receiveData[26] & 0xFF;
 					Node successor2 = new Node(successorIP2str, successorNum2);
-					successors.addSuccessor(successor2, 2);
+					successors.addSuccessor(successor2, 1);
 				}
 
 				if(receivePacket.getLength() >= 31){
@@ -168,7 +175,7 @@ public class Main {
 					String successorIP3str = getIpAddress(successorIP3);
 					int successorNum3 = receiveData[31] & 0xFF;
 					Node successor3 = new Node(successorIP3str, successorNum3);
-					successors.addSuccessor(successor3, 3);
+					successors.addSuccessor(successor3, 2);
 				}
 
 				//find the total file list size of the predecessor
