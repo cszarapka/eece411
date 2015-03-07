@@ -109,7 +109,8 @@ public class ServerResponseThread extends Thread {
 			break;
 		}
 	}
-
+	
+	//this may be wrong in terms of where bytes go and stuff
 	private void returnSuccessors() {
 		try {
 			byte[] message = MessageFormatter.createResponse(uniqueId, 34, null);
@@ -120,17 +121,17 @@ public class ServerResponseThread extends Thread {
 			byte[] address3 = InetAddress.getByName(successors.getSuccessor(2).getIP()).getAddress();
 			
 			for(int i = 0; i < 4; i++) {
-				message[length - 1 + i] = address1[i];
+				message[length + i] = address1[i];
 			}
-			message[length + 5] = (byte)successors.getSuccessor(0).getNodeNum();
+			message[length + 4] = (byte)successors.getSuccessor(0).getNodeNum();
 			for(int i = 0; i < 4; i++) {
 				message[length + i + 5] = address2[i];
 			}
-			message[length + 10] = (byte)successors.getSuccessor(1).getNodeNum();;
+			message[length + 9] = (byte)successors.getSuccessor(1).getNodeNum();;
 			for(int i = 0; i < 4; i++) {
 				message[length + i + 10] = address3[i];
 			}
-			message[length + 15] = (byte)successors.getSuccessor(2).getNodeNum();;
+			message[length + 14] = (byte)successors.getSuccessor(2).getNodeNum();;
 			
 			DatagramSocket serverSocket = new DatagramSocket();
 			DatagramPacket sendPacket = new DatagramPacket(message, message.length, senderAddress, 4008);
