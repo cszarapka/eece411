@@ -1,5 +1,6 @@
 package com.group11.eece411.A4;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -123,11 +124,11 @@ public class ServerResponseThread extends Thread {
 			}
 			message[length + 5] = (byte)successors.getSuccessor(0).getNodeNum();
 			for(int i = 0; i < 4; i++) {
-				message[length + i + 5] = address1[i];
+				message[length + i + 5] = address2[i];
 			}
 			message[length + 10] = (byte)successors.getSuccessor(1).getNodeNum();;
 			for(int i = 0; i < 4; i++) {
-				message[length + i + 10] = address1[i];
+				message[length + i + 10] = address3[i];
 			}
 			message[length + 15] = (byte)successors.getSuccessor(2).getNodeNum();;
 			
@@ -349,14 +350,14 @@ public class ServerResponseThread extends Thread {
 		response[21] = successorNodeNum1;
 
 		for(int i = 0; i<4; i++){
-			response[i+22] = successor1[i];
+			response[i+22] = successor2[i];
 		}
-		response[26] = successorNodeNum1;
+		response[26] = successorNodeNum2;
 
 		for(int i = 0; i<4; i++){
-			response[i+27] = successor1[i];
+			response[i+27] = successor3[i];
 		}
-		response[31] = successorNodeNum1;
+		response[31] = successorNodeNum3;
 		
 		
 		int numFiles = db.size(); //do i mask this?
@@ -374,9 +375,14 @@ public class ServerResponseThread extends Thread {
 		}
 		
 		DatagramSocket clientSocket;
-		clientSocket = new DatagramSocket(4003);
+		clientSocket = new DatagramSocket();
 		DatagramPacket sendPacket = new DatagramPacket(response, response.length, senderAddress, 4003);
-		
+		try {
+			clientSocket.send(sendPacket);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private boolean isInRange(int key) {
