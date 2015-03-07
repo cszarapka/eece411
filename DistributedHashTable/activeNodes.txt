@@ -1,0 +1,5 @@
+planetlab1.temple.edu
+planetlab2.unr.edu
+planetlab2.temple.edu
+planetlab1.virtues.fi
+planetlab1.fit.vutbr.cz

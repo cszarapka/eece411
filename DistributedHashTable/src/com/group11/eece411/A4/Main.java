@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
-	public static byte[][][] uniqueIdList;
+	public static byte[][][] uniqueIdList = new byte[1][3][16];
 
 	//TODO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
 
@@ -61,6 +61,7 @@ public class Main {
 			if(VERBOSE) {
 				String sentence = new String( receivePacket.getData());
 				System.out.println("RECEIVED: " + sentence);
+				System.out.println("FROM: " + receivePacket.getAddress().getHostName());
 			}
 			sendData = receivePacket.getData();
 			if(sendData[16] == (byte)0x35) {

@@ -151,6 +151,7 @@ public class ServerResponseThread extends Thread {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
 		try {
+			md.
 			keyHash = md.digest(key, 0, 2);
 			// Only perform put if its in our range to screw with
 			if (isInRange(keyHash)) {
@@ -181,7 +182,8 @@ public class ServerResponseThread extends Thread {
 		// Get the key and hash it
 		key = MessageFormatter.getKey(data);
 		try {
-			keyHash = md.digest(key, 0, 2);
+			
+			keyHash = md.digest(key, 0, 16);
 			if (isInRange(keyHash)) {
 				// they want a value we are responsible for; get it
 				value = db.get(key);
@@ -299,12 +301,14 @@ public class ServerResponseThread extends Thread {
 		/*craft a response that sends:
 		*		16B 	[uniqueID]
 		*		1B		[assigned node number]
+		*		1B		[number of successors]
 		*		4B		[successor(1)]
 		*		1B		[successorNodeNum(1)]
 		*		4B		[successor(2)]
 		*		1B		[successorNodeNum(2)]
 		*		4B		[successor(3)]
 		*		1B		[successorNodeNum(3)]
+		*			*******
 		*		4B		[file list length]
 		*		32B*file list length 	[hashed file names]		
 		*/
