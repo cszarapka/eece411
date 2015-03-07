@@ -113,10 +113,11 @@ public class Main {
 				while(!foundDht) {
 					
 					try {
-						IPAddress = InetAddress.getByName(nodeList[addressToTry]);
-						if(addressToTry++ >= NUMBER_OF_NODES) {
+						
+						if(++addressToTry >= NUMBER_OF_NODES) {
 							addressToTry = 0;
 						}
+						IPAddress = InetAddress.getByName(nodeList[addressToTry]);
 						System.out.println("number of nodes tried: "+i+++"\n" + "specific node tried: " + IPAddress.getHostName());
 						byte[] uniqueID = MessageFormatter.generateUniqueID();
 						for(int i = 0; i < 16; i++) {
@@ -138,7 +139,7 @@ public class Main {
 						}
 					} catch (UnknownHostException e) {
 						// ignore this host
-						break;
+						System.out.println("i am stuck");
 					}
 
 
