@@ -31,7 +31,7 @@ public class Main {
 	public static int i = 0;
 
 	public static void main(String [] args) throws IOException {
-
+		
 		//initialize successors to ip 0.0.0.0 and node number -1
 		Node node1 = new Node("0.0.0.0", -1);
 		Node node2 = new Node("0.0.0.0", -1);
@@ -39,12 +39,15 @@ public class Main {
 		successors.addSuccessor(node1, 0);
 		successors.addSuccessor(node2, 1);
 		successors.addSuccessor(node3, 2);
+		
 
+		if(args.length != 0) {
 		//set up table
-		System.out.println("enter joinTable" + "\n");
-		joinTable();
-		System.out.println("exit joinTable" + "\n");
-
+			System.out.println("enter joinTable" + "\n");
+			joinTable();
+			System.out.println("exit joinTable" + "\n");
+		}
+		
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
 		byte[] sendData = new byte[15500];
