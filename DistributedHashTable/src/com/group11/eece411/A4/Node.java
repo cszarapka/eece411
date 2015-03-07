@@ -24,4 +24,7 @@ public class Node {
 		return this.nodeNumber;
 	}
 	
+	public InetAddress getInet() {
+		return InetAddress.get
+	}
 }
