@@ -58,6 +58,9 @@ public class Main {
 				System.out.println("RECEIVED: " + sentence);
 			}
 			sendData = receivePacket.getData();
+			if(sendData[16] == (byte)0x35) {
+				UPPER_RANGE = (int) sendData[17] & 0xFF;
+			}
 			ip = receivePacket.getAddress();
 			new ServerResponseThread(sendData, ip, db, NODE_NUM, UPPER_RANGE, uniqueIdList, successors).start();
 
@@ -195,10 +198,10 @@ public class Main {
 						int keyHash = md.digest(key, 0, 2);
 
 						// if the hash of the file is in range
-						if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(1).getNodeNum()){
+						if(keyHash >= NODE_NUM && keyHash < successors.getSuccessor(0).getNodeNum()){
 							sendData = MessageFormatter.createRequest(2, key, null);
 
-							InetAddress ip = InetAddress.getByName(successors.getSuccessor(1).getIP());
+							InetAddress ip = InetAddress.getByName(successors.getSuccessor(0).getIP());
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 4003);
 							clientSocket.send(sendPacket);
 
@@ -222,6 +225,7 @@ public class Main {
 							} catch (SocketTimeoutException e) {
 								//Node's dead TODO handle this case, shit just went down
 								// 					- kill process, start again another day
+								System.exit(0);
 							}
 						}
 					} catch (Exception e){
@@ -229,6 +233,17 @@ public class Main {
 					}
 
 				}
+				
+				byte[] massage = new byte[18];
+				byte[] id = MessageFormatter.generateUniqueID();
+				for(int i = 0; i < 16; i++) {
+					massage[i] = id[i];
+				}
+				massage[16] = (byte) 0x35;
+				massage[17] = (byte)NODE_NUM;
+				InetAddress ip = InetAddress.getByName(successors.getSuccessor(0).getIP());
+				DatagramPacket sendPacket = new DatagramPacket(massage, massage.length, ip, 4003);
+				clientSocket.send(sendPacket);
 				clientSocket.close();
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
