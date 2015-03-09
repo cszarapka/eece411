@@ -191,12 +191,24 @@ public class Message {
 		
 	}
 	
+	/**
+	 * Returns the byte array representation of Message.rawData
+	 * @return 	byte array value
+	 */
 	public byte[] getBuffer() {
-		
+		byte[] rawBytes = new byte[rawData.length];
+		for (int i = 0; i < rawData.length; i++) {
+			rawBytes[i] = rawData[i].byteValue();
+		}
+		return rawBytes;
 	}
 	
+	/**
+	 * Returns the length of the buffer
+	 * @return	buffer length
+	 */
 	public int getBufferLength() {
-		
+		return rawData.length;
 	}
 	
 	public void buildMessage(int type) {
