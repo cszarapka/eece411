@@ -1,22 +1,26 @@
 <?php 
 $nodes
 =
-explode(
+explode
+(
 "\n"
 ,
-file_get_contents(
+file_get_contents
+(
 "activeNodes.txt"
 )
 )
 ;
-for(
+for
+(
 $i
 =
 0
 ;
 $i
 <
-count(
+count
+(
 $nodes
 )
 ;
@@ -24,18 +28,30 @@ $i++
 )
 {
 echo
-shell_exec(
+shell_exec
+(
 "scp Server.jar ubc_eece411_5@"
-.$nodes[$i]
-.":"
+.
+$nodes
+[
+$i
+]
+.
+":"
 )
-."Transferred to "
-.$i
-." of "
-.count(
+.
+"Transferred to "
+.
+$i
+.
+" of "
+.
+count
+(
 $nodes
 )
-."\n"
+.
+"\n"
 ;
 }
 ?>
