@@ -1,7 +1,11 @@
 package com.group11.eece411.A4;
 
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Representation of a message used in the DHT
@@ -211,11 +215,129 @@ public class Message {
 		return rawData.length;
 	}
 	
-	public void buildMessage(int type) {
+	/**
+	 * Builds a message to be sent based on the type specified and the
+	 * values passed.
+	 * @param type
+	 */
+	public boolean buildRequestMessage(String hostName, int port, int command) {
+		byte[] temp = generateUniqueID(hostName, port, Message.SEND_REQUEST);
+		for (int i = 0; i < temp.length; i++) {
+			this.uniqueID[i] = Byte.valueOf(temp[i]);
+		}
+		this.command = command;
 		
+		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.ARE_YOU_ALIVE) {
+			// nothing left to add to the message
+			return true;
+		}
+		return false;
 	}
 	
-	public void buildMessage(int type, )
+	public boolean buildEchoedPutRequestMessage(String hostName, int port, String originHostName, int originNodeNumber, Byte[] key, int valueLength, Byte[] value) {
+		boolean result = false;
+		
+		return result;
+	}
+		
+	public boolean buildEchoedRequestMessage(String hostName, int port, String originHostName, int originNodeNumber, Byte[] key) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	public boolean buildEchoedShutdownRequestMessage(String hostName, int port, String originHostName, int originNodeNumber) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	public boolean buildAppLevelRequestMessage(String hostName, int port, int command, Byte[] key) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	public boolean buildPutRequestMessage(String hostName, int port, Byte[] key, int valueLength, Byte[] value) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	
+	
+	{
+		int commandToUse = command;
+		int index = 17;
+		
+		// Check for an echoed command
+		if (command == Codes.ECHOED_CMD) {
+			originIP = new Byte[4];
+			originIP = Arrays.copyOfRange(rawData, index, index+4);
+			originNodeNumber = rawData[index+4].intValue();
+			echoedCommand = rawData[index+5].intValue();
+			index += 6;
+			commandToUse = echoedCommand;
+		}
+
+		// Get the 32-byte key
+		key = Arrays.copyOfRange(rawData, index, (index + 32));
+
+		// Get the value length and value if it's a put command
+		if (commandToUse == Codes.CMD_PUT) {
+			valueLength = bytesToValueLength((index + 33), (index + 32));
+			readValue(index + 34);
+		}
+	}
+	
+	/**
+	 * Generates the unique ID
+	 * @param hostName		the host name of the sending host
+	 * @param port			the port the message is sent on
+	 * @param messageType	the type of message following the unique id
+	 */
+	public byte[] generateUniqueID(String hostName, int port, int messageType) {
+		// Convert the hostname to an IP byte array
+		byte[] ip;
+		try {
+			ip = Arrays.copyOf(InetAddress.getByName(hostName).getAddress(), 4);
+		} catch (Exception e) {
+			System.out.println("Unknown host name in Generate Unique ID");
+			return null;
+		}
+		
+		// Convert the port into a 2 byte array
+		byte[] portBytes = intToByteArray(port);
+		
+		// Generate the random byte
+		Random rand = new Random();
+		byte randomByte = (byte) rand.nextInt(255);
+		
+		// Get the time stamp
+		byte[] timeStampBytes = longToByteArray(System.currentTimeMillis());
+		
+		// Put it all together
+		byte[] returnValue = new byte[16];
+		returnValue[0] = ip[0];
+		returnValue[1] = ip[1];
+		returnValue[2] = ip[2];
+		returnValue[3] = ip[3];
+		returnValue[4] = portBytes[0];
+		returnValue[5] = portBytes[1];
+		returnValue[6] = randomByte;
+		returnValue[7] = intToByteArray(messageType)[0];
+		returnValue[8] = timeStampBytes[0];
+		returnValue[9] = timeStampBytes[1];
+		returnValue[10] = timeStampBytes[2];
+		returnValue[11] = timeStampBytes[3];
+		returnValue[12] = timeStampBytes[4];
+		returnValue[13] = timeStampBytes[5];
+		returnValue[14] = timeStampBytes[6];
+		returnValue[15] = timeStampBytes[7];
+		
+		return returnValue;
+	}
+	
 
 	/**
 	 * Returns the integer value of 2 bytes in rawData
@@ -226,6 +348,33 @@ public class Message {
 	private int bytesToValueLength(int msb, int lsb) {
 		return (rawData[msb].intValue() << 8) + rawData[lsb].intValue();
 	}
+	
+	public static int byteArrayToInt(byte[] b) {
+	    final ByteBuffer bb = ByteBuffer.wrap(b);
+	    bb.order(ByteOrder.LITTLE_ENDIAN);
+	    return bb.getInt();
+	}
+	
+	public static byte[] intToByteArray(int i) {
+	    final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+	    bb.order(ByteOrder.LITTLE_ENDIAN);
+	    bb.putInt(i);
+	    return bb.array();
+	}
+	
+	public static long byteArrayToLong(byte[] b) {
+	    final ByteBuffer bb = ByteBuffer.wrap(b);
+	    bb.order(ByteOrder.LITTLE_ENDIAN);
+	    return bb.getLong();
+	}
+	
+	public static byte[] longToByteArray(long i) {
+	    final ByteBuffer bb = ByteBuffer.allocate(Long.SIZE / Byte.SIZE);
+	    bb.order(ByteOrder.LITTLE_ENDIAN);
+	    bb.putLong(i);
+	    return bb.array();
+	}
+	
 
 	/**
 	 * Reads the value from message's raw data into the local
