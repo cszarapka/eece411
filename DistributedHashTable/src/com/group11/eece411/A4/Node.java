@@ -3,7 +3,7 @@ package com.group11.eece411.A4;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * A representation of a physical node on the PlanetLab test-bed.
@@ -19,7 +19,7 @@ public class Node {
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
 	private int nodeNumber;
-	private SuccessorList successors;
+	private ArrayList<Successor> successors;
 	
 	/**
 	 * Builds a node with just information about the physical machine.
@@ -47,7 +47,7 @@ public class Node {
 		// Ensure the node number and successor list are correct
 		if (nodeNumber >= Node.minNodeNumber &&
 				nodeNumber <= Node.maxNodeNumber &&
-				successors.count() > 0) {
+				successors != null) {
 			result = true;
 		}
 		return result;
@@ -96,7 +96,6 @@ public class Node {
 		System.exit(0);
 	}
 	
-	
 	/*
 	 * Private thread classes
 	 */
@@ -131,6 +130,7 @@ public class Node {
 		public void run() {
 			// TODO: implement it
 			// message them, wait for a response, adjust successor list accordingly
+			// TODO: notify others of a dead node
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class Node {
 	 * Returns this node's successors as a SuccessorList.
 	 * @return	list of this node's successors
 	 */
-	public SuccessorList getSuccessorList() {
+	public ArrayList<Successor> getSuccessorList() {
 		return this.successors;
 	}
 	
@@ -175,38 +175,55 @@ public class Node {
 	 * @return the result (success = true) of the clear
 	 */
 	public boolean clearSuccessors() {
-		return successors.clear();
+		boolean result = false;
+		successors.clear();
+		if (successors.isEmpty()) {
+			result = true;
+		}
+		return result;
 	}
 	
 	/**
-	 * Adds the specified successor to our successor list.
+	 * Appends the specified successor to our successor list.
 	 * @param successor	the successor to add
 	 * @return			the result (success = true) of the add
 	 */
 	public boolean addSuccessor(Successor successor) {
-		return successors.addSuccessor(successor);
+		return successors.add(successor);
+	}
+	
+	/**
+	 * Adds the specified successor at the specified index
+	 * in our successor list.
+	 * @param index		the position to add to
+	 * @param successor	the successor to add
+	 * @return			the result (success = true) of the add
+	 */
+	public boolean addSuccessor(int index, Successor successor) {
+		boolean result = false;
+		successors.add(index, successor);
+		if(successors.get(index) == successor) {
+			result = true;
+		}
+		return result;
 	}
 	
 	/**
 	 * Removes the specified successor from the successor list.
 	 * @param successor	the successor to remove
-	 * @return			0 = success,
-	 * 					1 = successor was not in list
-	 * 					2 = fail for some other reason
+	 * @return			true if successor was in list and removed
 	 */
-	public int removeSuccessor(Successor successor) {
-		return successors.removeSuccessor(successor);
+	public boolean removeSuccessor(Successor successor) {
+		return successors.remove(successor);
 	}
 	
 	/**
 	 * Removes the specified successor from the successor list.
 	 * @param index	the index of the successor to remove
-	 * @return		0 = success,
-	 * 				1 = successor was not in list
-	 * 				2 = fail for some other reason
+	 * @return		true if successor is in list and removed
 	 */
-	public int removeSuccessor(int index) {
-		return successors.removeSuccessor(index);
+	public boolean removeSuccessor(int index) {
+		return (successors.remove(index) != null) ? true : false;
 	}
 	
 	/**
@@ -215,7 +232,7 @@ public class Node {
 	 * @return		the successor at the specified index
 	 */
 	public Successor getSuccessor(int index) {
-		return successors.getSuccessor(index);
+		return successors.get(index);
 	}
 	
 	/**
@@ -223,7 +240,7 @@ public class Node {
 	 * @return	the number of successors
 	 */
 	public int getNumberOfSuccessors() {
-		return successors.count();
+		return successors.size();
 	}
 }
 
