@@ -16,6 +16,9 @@ public class Message {
 
 	// The raw data received 
 	private Byte[] rawData;
+	
+	private String hostName;
+	private int port;
 
 	// The fields to be extracted or inserted into the raw data:
 	// Specific to professor's Wire Protocol:
@@ -50,8 +53,9 @@ public class Message {
 	 * Constructs an empty message to be built into a request
 	 * or response to be sent to another node
 	 */
-	public Message() {
-
+	public Message(String hostName, int port) {
+		this.hostName = hostName;
+		this.port = port;
 	}
 
 	/**
@@ -215,16 +219,17 @@ public class Message {
 		return rawData.length;
 	}
 	
+	/*
+	 * The building of the request messages
+	 */
+	
 	/**
 	 * Builds a message to be sent based on the type specified and the
 	 * values passed.
 	 * @param type
 	 */
-	public boolean buildRequestMessage(String hostName, int port, int command) {
-		byte[] temp = generateUniqueID(hostName, port, Message.SEND_REQUEST);
-		for (int i = 0; i < temp.length; i++) {
-			this.uniqueID[i] = Byte.valueOf(temp[i]);
-		}
+	public boolean buildRequestMessage(int command) {
+		setUniqueID(Message.SEND_REQUEST);
 		this.command = command;
 		
 		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.ARE_YOU_ALIVE) {
@@ -234,36 +239,66 @@ public class Message {
 		return false;
 	}
 	
-	public boolean buildEchoedPutRequestMessage(String hostName, int port, String originHostName, int originNodeNumber, Byte[] key, int valueLength, Byte[] value) {
+	public boolean buildEchoedPutRequestMessage(String originHostName, int originNodeNumber, Byte[] key, int valueLength, Byte[] value) {
 		boolean result = false;
 		
 		return result;
 	}
 		
-	public boolean buildEchoedRequestMessage(String hostName, int port, String originHostName, int originNodeNumber, Byte[] key) {
-		boolean result = false;
-		
-		return result;
-	}
-	
-	public boolean buildEchoedShutdownRequestMessage(String hostName, int port, String originHostName, int originNodeNumber) {
+	public boolean buildEchoedRequestMessage(String originHostName, int originNodeNumber, Byte[] key) {
 		boolean result = false;
 		
 		return result;
 	}
 	
-	public boolean buildAppLevelRequestMessage(String hostName, int port, int command, Byte[] key) {
+	public boolean buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
 		boolean result = false;
 		
 		return result;
 	}
 	
-	public boolean buildPutRequestMessage(String hostName, int port, Byte[] key, int valueLength, Byte[] value) {
+	public boolean buildAppLevelRequestMessage(int command, Byte[] key) {
 		boolean result = false;
 		
 		return result;
 	}
 	
+	public boolean buildPutRequestMessage(Byte[] key, int valueLength, Byte[] value) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	/*
+	 * The building of the response messages
+	 */
+	
+	public boolean buildWireResponseMessage(int command, int responseCode) {
+		if (command == Codes.CMD_PUT || command == Codes.CMD_REMOVE || command == Codes.CMD_SHUTDOWN) {
+			setUniqueID(Message.SEND_RESPONSE);
+			this.command = command;
+			this.responseCode = responseCode;
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean buildGetResponseMessage(int responseCode, int valueLength, Byte[] value) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	public boolean buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int fileListLength, byte[] fileNames) {
+		boolean result = false;
+		
+		return result;
+	}
+	
+	
+	/*
+	 * The building of the update messages
+	 */
 	
 	
 	{
@@ -296,7 +331,7 @@ public class Message {
 	 * @param port			the port the message is sent on
 	 * @param messageType	the type of message following the unique id
 	 */
-	public byte[] generateUniqueID(String hostName, int port, int messageType) {
+	public byte[] generateUniqueID(int messageType) {
 		// Convert the hostname to an IP byte array
 		byte[] ip;
 		try {
@@ -336,6 +371,14 @@ public class Message {
 		returnValue[15] = timeStampBytes[7];
 		
 		return returnValue;
+	}
+	
+	
+	private void setUniqueID(int messageType) {
+		byte[] temp = generateUniqueID(messageType);
+		for (int i = 0; i < temp.length; i++) {
+			this.uniqueID[i] = Byte.valueOf(temp[i]);
+		}
 	}
 	
 
