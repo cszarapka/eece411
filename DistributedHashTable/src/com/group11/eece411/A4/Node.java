@@ -1,30 +1,260 @@
 package com.group11.eece411.A4;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/*
- * Node data structure
+/**
+ * A representation of a physical node on the PlanetLab test-bed.
+ * @author Group 11
+ * @version a4
  */
 public class Node {
 
-	private String IP;
+	// Information about this physical machine:
+	private final String hostName;
+	
+	// Information relative to the DHT:
+	public static final int maxNodeNumber = 255;
+	public static final int minNodeNumber = 0;
 	private int nodeNumber;
+	private SuccessorList successors;
 	
-	public Node(String IP, int nodeNumber){
-		this.IP = IP;
-		this.nodeNumber = nodeNumber;
+	/**
+	 * Builds a node with just information about the physical machine.
+	 * @param hostName		the host name of the node
+	 */
+	public Node(String hostName){
+		this.hostName = hostName;
 	}
 	
-	public String getIP(){
-		return this.IP;
+	/*
+	 * DHT specific methods
+	 */
+	
+	/**
+	 * Causes this node to join the DHT, assigning values to the node's
+	 * fields relative to the DHT.
+	 * @param	a response to a join request made by this node
+	 * @return	true or false depending on the success of joinTable()
+	 */
+	public boolean joinTable(Message joinResponse) {
+		boolean result = false;
+		this.nodeNumber = joinResponse.getNodeNumber;
+		this.successors = joinResponse.getSuccessorList;
+		
+		// Ensure the node number and successor list are correct
+		if (nodeNumber >= Node.minNodeNumber &&
+				nodeNumber <= Node.maxNodeNumber &&
+				successors.count() > 0) {
+			result = true;
+		}
+		return result;
 	}
 	
-	public int getNodeNum(){
+	/**
+	 * Sends a message (request or response) to a specified node.
+	 * @param message	the message to send
+	 * @param host		the host to send the message to
+	 * @param port		the host's port to send the message to
+	 * @return			true/false = success/failure
+	 */
+	public boolean sendMessage(Message message, InetAddress host, int port) {
+		boolean result = false;
+		DatagramSocket socket = new DatagramSocket();
+		DatagramPacket packet = new DatagramPacket(message.getBuffer, message.getBufferLength, host, port);
+		socket.send(packet);
+		return result;
+	}
+	
+	/**
+	 * Starts a thread to respond to the specified message
+	 * @param message	the message to parse and respond to
+	 */
+	public void respondToMessage(Message message) {
+		Thread t = new Thread(new ResponseThread(message));
+		t.start();
+	}
+	
+	/**
+	 * Starts a thread to periodically check the status of successors
+	 */
+	public void startCheckingSuccessors() {
+		Thread t = new Thread(new CheckSuccessorsThread());
+		t.start();
+	}
+	
+	/**
+	 * Causes this node to leave the DHT. I do not know the proper
+	 * course of action here, for now we will just turn off this
+	 * node.
+	 */
+	public void leaveTable() {
+		System.out.println("Node: " + nodeNumber + " has left the DHT");
+		// TODO: alert others that I have left the DHT? Maybe just my successors?
+		System.exit(0);
+	}
+	
+	
+	/*
+	 * Private thread classes
+	 */
+	
+	/**
+	 * Implements the thread that will respond to each new message
+	 * received
+	 * @author Group 11
+	 * @version a4
+	 */
+	private static class ResponseThread implements Runnable {
+		private final Message tMessage;
+		
+		public ResponseThread(Message tMessage) {
+			this.tMessage = tMessage;
+		}
+		
+		public void run() {
+			// TODO:
+			// receive message from instigator
+			// parse and act accordingly
+		}
+	}
+	
+	/**
+	 * Implements the thread that will periodically check the status
+	 * of this node's successors
+	 * @author Group 11
+	 * @version a4
+	 */
+	private static class CheckSuccessorsThread implements Runnable {
+		public void run() {
+			// TODO: implement it
+			// message them, wait for a response, adjust successor list accordingly
+		}
+	}
+	
+	/*
+	 * Getters, setters, and some successorList modifiers from here on
+	 */
+	
+	/**
+	 * Returns the host name of this node.
+	 * @return	this node's host name
+	 */
+	public String getHostName() {
+		return this.hostName;
+	}
+	
+	/**
+	 * Returns this node's number (position in DHT).
+	 * @return	this node's number
+	 */
+	public int getNodeNumber(){
 		return this.nodeNumber;
 	}
 	
-	public InetAddress getInet() {
-		return InetAddress.get
+	/**
+	 * Returns this node's successors as a SuccessorList.
+	 * @return	list of this node's successors
+	 */
+	public SuccessorList getSuccessorList() {
+		return this.successors;
+	}
+	
+	/**
+	 * Set this node's number (position in DHT) to the specified value.
+	 * @param nodeNumber	the new position in DHT
+	 */
+	public void setNodeNumber(int nodeNumber) {
+		this.nodeNumber = nodeNumber;
+	}
+	
+	/**
+	 * Remove all of this node's successors
+	 * @return the result (success = true) of the clear
+	 */
+	public boolean clearSuccessors() {
+		return successors.clear();
+	}
+	
+	/**
+	 * Adds the specified successor to our successor list.
+	 * @param successor	the successor to add
+	 * @return			the result (success = true) of the add
+	 */
+	public boolean addSuccessor(Successor successor) {
+		return successors.addSuccessor(successor);
+	}
+	
+	/**
+	 * Removes the specified successor from the successor list.
+	 * @param successor	the successor to remove
+	 * @return			0 = success,
+	 * 					1 = successor was not in list
+	 * 					2 = fail for some other reason
+	 */
+	public int removeSuccessor(Successor successor) {
+		return successors.removeSuccessor(successor);
+	}
+	
+	/**
+	 * Removes the specified successor from the successor list.
+	 * @param index	the index of the successor to remove
+	 * @return		0 = success,
+	 * 				1 = successor was not in list
+	 * 				2 = fail for some other reason
+	 */
+	public int removeSuccessor(int index) {
+		return successors.removeSuccessor(index);
+	}
+	
+	/**
+	 * Returns the successor at the specified index
+	 * @param index	the index of the successor to retrieve
+	 * @return		the successor at the specified index
+	 */
+	public Successor getSuccessor(int index) {
+		return successors.getSuccessor(index);
+	}
+	
+	/**
+	 * Returns the number of successors
+	 * @return	the number of successors
+	 */
+	public int getNumberOfSuccessors() {
+		return successors.count();
 	}
 }
+
+/*
+ * I need to know my:
+ * 	IP address
+ * 	hostname
+ * 		(perhaps an object for all the network info)
+ * 	node #
+ * 	successor list
+ * 	state
+ * 		in table
+ * 		not in table
+ * 		crashed - recovering
+ * 	message
+ * 		received message: RequestMessage or ResponseMessage
+ *		message to send: ResponseMessage
+ */
+
+/*
+ * I need to be able to:
+ * 	join the table
+ * 		- set my nodenumber and successor list
+ * 	leave the table
+ * 		- set my nodenumber, alert successors
+ * 	get successor list - need a successor object, a successor could be a child of a node
+ * 	check successors, alive, dead, still in the system
+ * 	get node number
+ * build request
+ * build response
+ * send request
+ * send response
+ * 	
+ */

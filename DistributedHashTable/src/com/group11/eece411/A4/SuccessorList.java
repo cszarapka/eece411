@@ -16,4 +16,8 @@ public class SuccessorList {
 	public Node getSuccessor(int successorPosition){
 		return list[successorPosition];
 	}
+	
+	public int count() {
+		return 
+	}
 }
