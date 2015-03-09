@@ -329,16 +329,37 @@ public class Message {
 		return false;
 	}
 	
-	public boolean buildGetResponseMessage(int responseCode, int valueLength, Byte[] value) {
-		boolean result = false;
-		
-		return result;
+	/**
+	 * Builds a response message to the GET request
+	 * @param responseCode response code for the request
+	 * @param valueLength length of the value byte[] sent
+	 * @param value the message to be sent
+	 * @return
+	 */
+	public void buildGetResponseMessage(int responseCode, int valueLength, Byte[] value) {
+		setUniqueID(Message.SEND_RESPONSE);
+		this.responseCode = responseCode;
+		this.valueLength = valueLength;
+		this.value = value;
 	}
 	
-	public boolean buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int fileListLength, byte[] fileNames) {
-		boolean result = false;
+	/**
+	 * builds a message to respond to a table invite request
+	 * @param offeredNodeNumber the node number to be offered
+	 * @param successors an ArrayList of the successors
+	 * @param fileListLength length of the key list
+	 * @param keyNames byte[] 
+	 * @return
+	 */
+	public void buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keyNames) {
+		this.nodeNumber = offeredNodeNumber;
+		//TODO convert successors to successor hostnames and node numbers
 		
-		return result;
+		//TODO probably don't need keyListLength
+		
+		//TODO find how keys are going to be stored, probably won't be passed as byte[]
+		
+		
 	}
 	
 	
