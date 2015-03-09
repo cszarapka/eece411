@@ -41,8 +41,8 @@ public class Node {
 	 */
 	public boolean joinTable(Message joinResponse) {
 		boolean result = false;
-		this.nodeNumber = joinResponse.getNodeNumber;
-		this.successors = joinResponse.getSuccessorList;
+		this.nodeNumber = joinResponse.getNodeNumber();
+		this.successors = joinResponse.getSuccessorList();
 		
 		// Ensure the node number and successor list are correct
 		if (nodeNumber >= Node.minNodeNumber &&
@@ -62,9 +62,14 @@ public class Node {
 	 */
 	public boolean sendMessage(Message message, InetAddress host, int port) {
 		boolean result = false;
-		DatagramSocket socket = new DatagramSocket();
-		DatagramPacket packet = new DatagramPacket(message.getBuffer, message.getBufferLength, host, port);
-		socket.send(packet);
+		try {
+			DatagramSocket socket = new DatagramSocket();
+			DatagramPacket packet = new DatagramPacket(message.getBuffer(), message.getBufferLength(), host, port);
+			socket.send(packet);
+			socket.close();
+		} catch (Exception e) {
+			System.out.println("Node: Sending a message failed.");
+		}
 		return result;
 	}
 	

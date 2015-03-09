@@ -1,5 +1,6 @@
 package com.group11.eece411.A4;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -170,6 +171,22 @@ public class Message {
 
 	public byte[] getUniqueId() {
 
+	}
+	
+	public int getNodeNumber() {
+		
+	}
+	
+	public ArrayList<Successor> getSuccessorList() {
+		
+	}
+	
+	public byte[] getBuffer() {
+		
+	}
+	
+	public int getBufferLength() {
+		
 	}
 
 	/**
