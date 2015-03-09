@@ -149,8 +149,6 @@ public class Message {
 		
 		// Check for an invite to join message
 		if (command == Codes.INVITE_TO_JOIN) {
-			
-			command = rawData[COMMAND_POSITION];
 			nodeNumber = rawData[COMMAND_POSITION+1];
 			
 			// Get the number of successors following
@@ -233,9 +231,15 @@ public class Message {
 		return returnValue;
 	}
 	
+	/**
+	 * returns the node number assigned
+	 * @return assigned node number
+	 */
 	public int getNodeNumber() {
-		
+		return nodeNumber;
 	}
+	
+	
 	
 	public ArrayList<Successor> getSuccessorList() {
 		
