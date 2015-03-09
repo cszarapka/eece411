@@ -169,8 +169,18 @@ public class Message {
 		
 	}
 
-	public byte[] getUniqueId() {
-
+	/**
+	 * Returns the unique ID of the message as a byte array.
+	 * Warning - could be called on messages who do not
+	 * yet have a unique ID
+	 * @return	the unique ID as a byte array.
+	 */
+	public byte[] getUniqueID() {
+		byte[] returnValue = new byte[uniqueID.length];
+		for (int i = 0; i < uniqueID.length; i++) {
+			returnValue[i] = uniqueID[i].byteValue();
+		}
+		return returnValue;
 	}
 	
 	public int getNodeNumber() {
@@ -188,6 +198,12 @@ public class Message {
 	public int getBufferLength() {
 		
 	}
+	
+	public void buildMessage(int type) {
+		
+	}
+	
+	public void buildMessage(int type, )
 
 	/**
 	 * Returns the integer value of 2 bytes in rawData
@@ -305,7 +321,7 @@ public class Message {
 	 * Command: (int) 33
 	 * 
 	 * | command | offered node # | # of successors |  successors  | file list length | hashed file names (file list) |
-	 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |          unsure....			  |
+	 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |      up to 32 bytes each	  |
 	 * 
 	 * successors: 4 bytes for ip, 1 byte for node number
 	 * 
