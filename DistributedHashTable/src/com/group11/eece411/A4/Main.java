@@ -105,12 +105,9 @@ public class Main {
 			packet = new DatagramPacket(receiveData, receiveData.length);
 			socket.receive(packet);
 			message = new Message(packet.getData());
-<<<<<<< Updated upstream
 			message.parseReceivedRequestMessage();
 			System.out.println(packet.getData());
-=======
 			message.originIP = Node.toObjects(packet.getAddress().getAddress());
->>>>>>> Stashed changes
 			node.respondToMessage(message);
 		}
 
