@@ -30,7 +30,7 @@ $i++
 echo
 shell_exec
 (
-"scp server.jar ubc_eece411_5@"
+"timeout 3 scp server.jar ubc_eece411_5@"
 .
 $nodes
 [
@@ -43,7 +43,7 @@ $i
 echo
 shell_exec
 (
-"scp smallNodes.txt ubc_eece411_5@"
+"timeout 3 scp smallNodes.txt ubc_eece411_5@"
 .
 $nodes
 [
