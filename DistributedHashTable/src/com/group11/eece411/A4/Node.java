@@ -27,7 +27,7 @@ public class Node {
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
 	int nodeNumber;
-	private static ArrayList<Successor> successors;
+	static ArrayList<Successor> successors;
 	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
 
 	/**
@@ -522,7 +522,11 @@ public class Node {
 	 * @return	the number of successors
 	 */
 	public int getNumberOfSuccessors() {
-		return successors.size();
+		if(successors == null) {
+			return 0;
+		} else {
+			return successors.size();
+		}
 	}
 	
 	public int getFirstSuccessor() {

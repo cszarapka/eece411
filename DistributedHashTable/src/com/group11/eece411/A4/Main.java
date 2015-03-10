@@ -105,7 +105,7 @@ public class Main {
 			packet = new DatagramPacket(receiveData, receiveData.length);
 			socket.receive(packet);
 			message = new Message(packet.getData());
-			
+			message.parseReceivedRequestMessage();
 			System.out.println(packet.getData());
 			node.respondToMessage(message);
 		}
