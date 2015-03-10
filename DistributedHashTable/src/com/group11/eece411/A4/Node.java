@@ -265,7 +265,7 @@ public class Node {
 			case Codes.CMD_SHUTDOWN:
 				System.exit(0);
 				break;
-			case Codes.INVITE_TO_JOIN:
+			case Codes.ADD_SUCCESSOR:
 				tNode.addSuccessor(new Successor(tMessage.hostName, ((int)Node.toPrimitives(tMessage.value)[1]) * 16 + ((int)Node.toPrimitives(tMessage.value)[0])));
 				break;
 			case Codes.REQUEST_TO_JOIN:
@@ -286,7 +286,26 @@ public class Node {
 					}
 				}
 				response.buildInviteMessage(offeredNodeNumber, successors, tNode.KVStore.size(), fileList);
+				try {
+					sendMessage(response,InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4003);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				break;
+			case Codes.GET_SUCCESSOR_LIST:
+			{
+				Message re = new Message(tNode.getHostName(), 4009);
+				re.buildReturnSuccessors(tNode.getSuccessorList());
+				try {
+					sendMessage(re, InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4009);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				break;
+			}
 			}
 		}
 	}
