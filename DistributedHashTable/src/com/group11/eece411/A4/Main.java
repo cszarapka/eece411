@@ -26,7 +26,7 @@ public class Main {
 	public static final int TIMEOUT = 100;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
-	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
+	private static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
 	public static SuccessorList successors = new SuccessorList();
 	public static int i = 0;
 
