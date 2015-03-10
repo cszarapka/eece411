@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A representation of a physical node on the PlanetLab test-bed.
@@ -20,6 +21,7 @@ public class Node {
 	public static final int minNodeNumber = 0;
 	private int nodeNumber;
 	private ArrayList<Successor> successors;
+	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
 	
 	/**
 	 * Builds a node with just information about the physical machine.
