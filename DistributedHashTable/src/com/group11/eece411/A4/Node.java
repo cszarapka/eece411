@@ -14,15 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Node {
 
 	// Information about this physical machine:
-	private final String hostName;
-	
+	public final String hostName;
+
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
 	private int nodeNumber;
 	private ArrayList<Successor> successors;
 	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
-	
+
 	/**
 	 * Builds a node with just information about the physical machine.
 	 * @param hostName		the host name of the node
@@ -30,11 +30,11 @@ public class Node {
 	public Node(String hostName){
 		this.hostName = hostName;
 	}
-	
+
 	/*
 	 * DHT specific methods
 	 */
-	
+
 	/**
 	 * Causes this node to join the DHT, assigning values to the node's
 	 * fields relative to the DHT.
@@ -45,7 +45,8 @@ public class Node {
 		boolean result = false;
 		this.nodeNumber = joinResponse.getNodeNumber();
 		this.successors = joinResponse.getSuccessorList();
-		
+		// TODO: get files
+
 		// Ensure the node number and successor list are correct
 		if (nodeNumber >= Node.minNodeNumber &&
 				nodeNumber <= Node.maxNodeNumber &&
@@ -54,7 +55,7 @@ public class Node {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Sends a message (request or response) to a specified node.
 	 * @param message	the message to send
@@ -74,7 +75,7 @@ public class Node {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Starts a thread to respond to the specified message
 	 * @param message	the message to parse and respond to
@@ -83,7 +84,7 @@ public class Node {
 		Thread t = new Thread(new ResponseThread(message));
 		t.start();
 	}
-	
+
 	/**
 	 * Starts a thread to periodically check the status of successors
 	 */
@@ -91,7 +92,7 @@ public class Node {
 		Thread t = new Thread(new CheckSuccessorsThread());
 		t.start();
 	}
-	
+
 	/**
 	 * Causes this node to leave the DHT. I do not know the proper
 	 * course of action here, for now we will just turn off this
@@ -102,11 +103,11 @@ public class Node {
 		// TODO: alert others that I have left the DHT? Maybe just my successors?
 		System.exit(0);
 	}
-	
+
 	/*
 	 * Private thread classes
 	 */
-	
+
 	/**
 	 * Implements the thread that will respond to each new message
 	 * received
@@ -115,18 +116,43 @@ public class Node {
 	 */
 	private static class ResponseThread implements Runnable {
 		private final Message tMessage;
-		
+
 		public ResponseThread(Message tMessage) {
 			this.tMessage = tMessage;
 		}
-		
+
 		public void run() {
-			// TODO:
-			// receive message from instigator
-			// parse and act accordingly
+			if (tMessage.messageType)
+
+			switch (tMessage.command) {
+			case Codes.CMD_GET:
+				break;
+			case Codes.CMD_PUT:
+				break;
+			case Codes.CMD_REMOVE:
+				break;
+			case Codes.CMD_SHUTDOWN:
+				break;
+			case Codes.ECHOED_CMD:
+				switch (tMessage.echoedCommand) {
+				case Codes.CMD_GET:
+					break;
+				case Codes.CMD_PUT:
+					break;
+				case Codes.CMD_REMOVE:
+					break;
+				case Codes.CMD_SHUTDOWN:
+					break;
+				}
+				break;
+			case Codes.INVITE_TO_JOIN:
+				break;
+			case Codes.REQUEST_TO_JOIN:
+				break;
+			}
 		}
 	}
-	
+
 	/**
 	 * Implements the thread that will periodically check the status
 	 * of this node's successors
@@ -140,11 +166,11 @@ public class Node {
 			// TODO: notify others of a dead node
 		}
 	}
-	
+
 	/*
 	 * Getters, setters, and some successorList modifiers from here on
 	 */
-	
+
 	/**
 	 * Returns the host name of this node.
 	 * @return	this node's host name
@@ -152,7 +178,7 @@ public class Node {
 	public String getHostName() {
 		return this.hostName;
 	}
-	
+
 	/**
 	 * Returns this node's number (position in DHT).
 	 * @return	this node's number
@@ -160,7 +186,7 @@ public class Node {
 	public int getNodeNumber(){
 		return this.nodeNumber;
 	}
-	
+
 	/**
 	 * Returns this node's successors as a SuccessorList.
 	 * @return	list of this node's successors
@@ -168,7 +194,7 @@ public class Node {
 	public ArrayList<Successor> getSuccessorList() {
 		return this.successors;
 	}
-	
+
 	/**
 	 * Set this node's number (position in DHT) to the specified value.
 	 * @param nodeNumber	the new position in DHT
@@ -176,7 +202,7 @@ public class Node {
 	public void setNodeNumber(int nodeNumber) {
 		this.nodeNumber = nodeNumber;
 	}
-	
+
 	/**
 	 * Remove all of this node's successors
 	 * @return the result (success = true) of the clear
@@ -189,7 +215,7 @@ public class Node {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Appends the specified successor to our successor list.
 	 * @param successor	the successor to add
@@ -198,7 +224,7 @@ public class Node {
 	public boolean addSuccessor(Successor successor) {
 		return successors.add(successor);
 	}
-	
+
 	/**
 	 * Adds the specified successor at the specified index
 	 * in our successor list.
@@ -214,7 +240,7 @@ public class Node {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Removes the specified successor from the successor list.
 	 * @param successor	the successor to remove
@@ -223,7 +249,7 @@ public class Node {
 	public boolean removeSuccessor(Successor successor) {
 		return successors.remove(successor);
 	}
-	
+
 	/**
 	 * Removes the specified successor from the successor list.
 	 * @param index	the index of the successor to remove
@@ -232,7 +258,7 @@ public class Node {
 	public boolean removeSuccessor(int index) {
 		return (successors.remove(index) != null) ? true : false;
 	}
-	
+
 	/**
 	 * Returns the successor at the specified index
 	 * @param index	the index of the successor to retrieve
@@ -241,7 +267,7 @@ public class Node {
 	public Successor getSuccessor(int index) {
 		return successors.get(index);
 	}
-	
+
 	/**
 	 * Returns the number of successors
 	 * @return	the number of successors
