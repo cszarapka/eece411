@@ -31,6 +31,22 @@ public class Main {
 	public static int i = 0;
 
 	public static void main(String [] args) throws IOException {
+		
+		/*DatagramSocket s = new DatagramSocket(4003);
+		byte[] b = new byte[3];
+		b[1] = 1;
+		b[0] = 5;
+		b[2] = 3;
+		
+		InetAddress ip = InetAddress.getByName("planetlab2.cs.ubc.ca");
+		DatagramPacket p = new DatagramPacket(b, b.length, ip, 4003);
+		
+		System.out.println("About to send message to:    " + ip + "      port:   4003");
+		s.send(p);
+		s.close();
+		*/
+		
+		
 		Node node = new Node(InetAddress.getLocalHost().getHostName());
 
 		//Parse the node list and store it in nodeList
