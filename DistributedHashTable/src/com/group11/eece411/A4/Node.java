@@ -47,11 +47,70 @@ public class Node {
 	 * fields relative to the DHT.
 	 * @param	a response to a join request made by this node
 	 * @return	true or false depending on the success of joinTable()
+	 * @throws UnknownHostException 
 	 */
 	public boolean joinTable(Message joinResponse) {
 		boolean result = false;
 		this.nodeNumber = joinResponse.getNodeNumber();
 		this.successors = joinResponse.getSuccessorList();
+
+		// go through each key to determine if it should be get
+		for(int i = 0 ;joinResponse.keys.size() > i; i++){
+			Byte[] key = joinResponse.keys.get(i);
+			byte[] receiveData = new byte[15500];
+			
+			
+			
+			if(getIndexOfSuccessorThatCoversRangeOf(key) == -1){
+				
+				//build message
+				Message msg = new Message(hostName, 4003);
+				msg.buildAppLevelRequestMessage(Codes.CMD_GET, key);
+				
+				try {
+					sendMessage(msg, InetAddress.getByAddress(toPrimitives(joinResponse.originIP)), 4003);
+					
+					// receive message
+					DatagramSocket serverSocket = new DatagramSocket();
+					serverSocket.setSoTimeout(5000);
+					serverSocket = new DatagramSocket(4003);
+					
+					// try to receive message
+					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					serverSocket.receive(receivePacket);
+					Message receivedMessage = new Message(receiveData);
+					receivedMessage.parseReceivedResponseMessage();
+					byte[] value = toPrimitives(receivedMessage.value);
+					KVStore.put(toPrimitives(key), value);
+					
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+				} catch (SocketException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SocketTimeoutException e){
+					// data loss
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			/* //try to send message
+							byte[] receiveData = new byte[15500];
+							DatagramSocket serverSocket = new DatagramSocket();
+							serverSocket.setSoTimeout(TIMEOUT);
+							serverSocket = new DatagramSocket(RECEIVE_PORT);
+							
+							// try to receive message
+							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+							serverSocket.receive(receivePacket);
+							Message receivedMessage = new Message(receiveData);
+							receivedMessage.parseReceivedResponseMessage();
+							*/
+			
+			
+		}
 		// TODO: get files
 
 		// Ensure the node number and successor list are correct
@@ -265,12 +324,13 @@ public class Node {
 						// build and send message to successor i
 						Message msg = new Message(hostName, SEND_PORT);
 						msg.buildReturnSuccessors(successors);
+						//try to send message
 						sendMessage(msg, successors.get(i).getInetAddress(), SEND_PORT);
 						
 						
 						
 						try {
-							//try to send message
+							
 							byte[] receiveData = new byte[15500];
 							DatagramSocket serverSocket = new DatagramSocket();
 							serverSocket.setSoTimeout(TIMEOUT);
@@ -285,8 +345,30 @@ public class Node {
 							// get the successor's successorlist
 							for(int l = 0; l < receivedMessage.getSuccessorList().size(); l++){
 								ss.add(receivedMessage.getSuccessorList().get(l));
+							
 							}
-														
+							// TODO ADD SUCCESSORS'S SUCCESSORS IF THEY AREN'T ON THIS NODE'S SUCCESSOR LIST
+							
+							// get all the current node nums
+							ArrayList<Integer> successorNodeNums = new ArrayList<Integer>();
+							for(int p = 0; p < successors.size(); p++){
+								successorNodeNums.add(successors.get(p).getNodeNumber());
+							}
+							
+							// add successors if their node number isn't in the list already
+							for(int p = 0; p < receivedMessage.getSuccessorList().size(); p++){
+								
+								//check if the list doesn't contain the node with that number yet
+								if(!successorNodeNums.contains(receivedMessage.getSuccessorList().get(p).getNodeNumber())){
+									//if not then add it to the successor list
+									
+									String newSuccessorHostname = receivedMessage.getSuccessorList().get(p).getHostName();
+									int newSuccessorNodeNum = receivedMessage.getSuccessorList().get(p).getNodeNumber();
+									Successor newSuccessor = new Successor(newSuccessorHostname, newSuccessorNodeNum);
+									successors.add(newSuccessor);
+								}
+								// if already exists then do nothing
+							}
 							
 						} catch (SocketTimeoutException e){
 							// remove successor because it is dead
