@@ -112,10 +112,11 @@ public class Message {
 	 */
 	public void parseReceivedRequestMessage() {
 		
-		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.ARE_YOU_ALIVE) {
+		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.GET_SUCCESSOR_LIST) {
 			// nothing left to parse
 			return;
 		}
+
 		
 		int commandToUse = command;
 		int index = 17;
@@ -147,6 +148,10 @@ public class Message {
 	 */
 	public void parseReceivedResponseMessage() {
 		int index = 17;
+
+		if(command == Codes.GET_SUCCESSOR_LIST){
+			
+		}
 		
 		// Check for an invite to join message
 		if (command == Codes.INVITE_TO_JOIN) {
@@ -303,7 +308,7 @@ public class Message {
 		// Set the command
 		this.command = command;
 		
-		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.ARE_YOU_ALIVE) {
+		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.GET_SUCCESSOR_LIST) {
 			// nothing left to add to the message
 			// assemble the raw data, length is uniqueID.length + 1
 			rawData = new Byte[uniqueID.length + 1];
@@ -439,24 +444,29 @@ public class Message {
 	}
 	
 	/**
-	 * builds a message to respond to a  table invite request
-	 * @param offeredNodeNumber the node number to be offered
-	 * @param successors an ArrayList of the successors
-	 * @param fileListLength length of the key list
-	 * @param keyNames byte[] of all keys put together end to end (32 bytes each)
-	 * @return
+	 * builds a message to return a successor list in format:
+	 * 1B	num successors
+	 * 		then repeat for number of successors
+	 * 4B 	successor address
+	 * 1B 	successor nodeNum
+	 * @param successors ArrayList of successors
 	 */
-	public void buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keyNames) {
+	public void buildReturnSuccessors(ArrayList<Successor> successors){
 		setUniqueID(Message.SEND_RESPONSE);
-		this.responseCode = Codes.SUCCESS;
-		this.value[0] = Byte.valueOf(intToByteArray(offeredNodeNumber)[0]);
-		
-		
-		this.nodeNumber = offeredNodeNumber;
+		// get number of successors
 		int numSuccessors = successors.size();
-		this.value[1] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
 		
-		int BEGIN_SUCCESSORS = 2;
+		rawData = new Byte[16+1+5*numSuccessors];
+		for(int i = 0; i < 16; i++){
+			rawData[i] = uniqueID[i];
+		}
+		
+		this.responseCode = Codes.SUCCESS;
+		rawData[16] = Byte.valueOf(intToByteArray(this.responseCode)[0]);
+		
+		rawData[17] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
+		
+		int BEGIN_SUCCESSORS = 16;
 		Byte[] nextSuccessorAddress = new Byte[4];
 		// put data into successor message
 		for(int i = 0; i < numSuccessors; i++){
@@ -465,12 +475,63 @@ public class Message {
 			}
 			
 			for(int k = 0; k < nextSuccessorAddress.length; k++){
-				this.value[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
+				rawData[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
 			}
 			
 			// puts the node number into a byte[]
 			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
-			this.value[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
+			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
+		}
+		
+	}
+	
+	/**
+	 * builds a message to respond to a  table invite request
+	 * @param offeredNodeNumber the node number to be offered
+	 * @param successors an ArrayList of the successors
+	 * @param fileListLength length of the key list
+	 * @param keyNames byte[] of all keys put together end to end (32 bytes each)
+	 * @return
+	 */
+	public void buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keyNames) {
+		/*| command | offered node # | # of successors |  successors  | file list length | hashed file names (file list) |
+		 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |      up to 32 bytes each	  |
+		 */ 
+		
+		setUniqueID(Message.SEND_RESPONSE);
+
+		int numSuccessors = successors.size();
+		rawData = new Byte[16+1+5*numSuccessors+4+32*keyListLength];
+		
+		for(int i = 0; i < 16; i++){
+			rawData[i] = uniqueID[i];
+		}
+		
+		this.responseCode = Codes.SUCCESS;
+		rawData[16] = Byte.valueOf(intToByteArray(this.responseCode)[0]);
+		
+		
+		rawData[17] = Byte.valueOf(intToByteArray(offeredNodeNumber)[0]);
+		
+		
+		this.nodeNumber = offeredNodeNumber;
+		rawData[18] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
+		
+		int BEGIN_SUCCESSORS = 19;
+		Byte[] nextSuccessorAddress = new Byte[4];
+		// put data into successor message
+		for(int i = 0; i < numSuccessors; i++){
+			for(int k = 0; k < 4; k++){
+				nextSuccessorAddress[k] = Byte.valueOf(successors.get(i).getInetAddress().getAddress()[k]);
+			}
+			
+			for(int k = 0; k < nextSuccessorAddress.length; k++){
+				rawData[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
+			}
+			
+			// puts the node number into a byte[]
+			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
+			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
 		
 		int BEGIN_KEY_LIST_LENGTH = BEGIN_SUCCESSORS + numSuccessors*5;
@@ -478,7 +539,7 @@ public class Message {
 		// now get key list length and put it into value
 		int INT_LENGTH = 4;
 		for(int i = 0; i < INT_LENGTH; i++){
-			this.value[BEGIN_KEY_LIST_LENGTH+i] = Byte.valueOf(ByteBuffer.allocate(1).putInt(keyListLength).array()[i]); 
+			rawData[BEGIN_KEY_LIST_LENGTH+i] = Byte.valueOf(ByteBuffer.allocate(1).putInt(keyListLength).array()[i]); 
 		}
 		
 		int BEGIN_KEY_LIST = BEGIN_KEY_LIST_LENGTH + 4;
@@ -487,7 +548,7 @@ public class Message {
 		for(int i = 0; i < keyListLength; i++){
 			// copy key name
 			for(int k = 0; k < keyListLength; k++){
-				this.value[BEGIN_KEY_LIST+i*32+k] = Byte.valueOf(keyNames[i*32+k]);
+				rawData[BEGIN_KEY_LIST+i*32+k] = Byte.valueOf(keyNames[i*32+k]);
 			}
 		}	
 	}

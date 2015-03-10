@@ -16,7 +16,7 @@ public class Codes {
 	// Lower layer commands
 	public static final int REQUEST_TO_JOIN		= 30;
 	public static final int IM_LEAVING			= 31;
-	public static final int ARE_YOU_ALIVE		= 32;
+	public static final int GET_SUCCESSOR_LIST		= 32;
 	public static final int INVITE_TO_JOIN		= 33;
 	public static final int ECHOED_CMD			= 34;
 	public static final int IS_ALIVE			= 35;

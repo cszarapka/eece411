@@ -172,6 +172,8 @@ public class Node {
 							serverSocket = new DatagramSocket(RECEIVE_PORT);
 							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 							serverSocket.receive(receivePacket);
+							Message receivedMessage = new Message(receiveData);
+							receivedMessage.parseReceivedResponseMessage();
 						} catch (SocketTimeoutException e){
 							// remove successor because it is dead
 							successors.remove(i);
