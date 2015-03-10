@@ -41,7 +41,7 @@ public class Main {
 		String [] nodeList = new String[NUMBER_OF_NODES];
 		try	{
 			// Open an input stream
-			fin = new FileInputStream ("activeNodes.txt");
+			fin = new FileInputStream ("smallNodes.txt");
 
 			// Read a line of text
 			DataInputStream din = new DataInputStream(fin);

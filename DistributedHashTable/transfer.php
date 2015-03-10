@@ -7,7 +7,7 @@ explode
 ,
 file_get_contents
 (
-"activeNodes.txt"
+"smallNodes.txt"
 )
 )
 ;
@@ -30,7 +30,7 @@ $i++
 echo
 shell_exec
 (
-"scp Server.jar ubc_eece411_5@"
+"scp server.jar ubc_eece411_5@"
 .
 $nodes
 [
@@ -39,7 +39,7 @@ $i
 .
 ":"
 )
-.
+;
 echo
 shell_exec
 (
