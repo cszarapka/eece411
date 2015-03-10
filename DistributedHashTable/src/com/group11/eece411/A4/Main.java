@@ -60,7 +60,7 @@ public class Main {
 		byte[] receiveData = new byte[16000];
 		boolean foundDht = false;
 		int addressToTry = (int)(Math.random()*NUMBER_OF_NODES);
-		DatagramSocket socket = new DatagramSocket();
+		DatagramSocket socket = new DatagramSocket(4003);
 		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 		Message message;
 		
@@ -101,6 +101,7 @@ public class Main {
 
 		while(true)
 		{
+			System.out.println("waiting to receive");
 			packet = new DatagramPacket(receiveData, receiveData.length);
 			socket.receive(packet);
 			message = new Message(packet.getData());

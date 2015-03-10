@@ -587,7 +587,7 @@ public class Node {
 
 		byte[] bytes = new byte[oBytes.length];
 		for(int i = 0; i < oBytes.length; i++){
-			bytes[i] = oBytes[i];
+			bytes[i] = oBytes[i].byteValue();
 		}
 		return bytes;
 
