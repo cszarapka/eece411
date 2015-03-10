@@ -349,28 +349,22 @@ public class Message {
 		}
 	}
 		
-	public boolean buildEchoedRequestMessage(String originHostName, int originNodeNumber, Byte[] key) {
-		boolean result = false;
+	public void buildEchoedRequestMessage(String originHostName, int originNodeNumber, Byte[] key) {
 		
-		return result;
+		
+		
 	}
 	
-	public boolean buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
-		boolean result = false;
+	public void buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
 		
-		return result;
 	}
 	
-	public boolean buildAppLevelRequestMessage(int command, Byte[] key) {
-		boolean result = false;
+	public void buildAppLevelRequestMessage(int command, Byte[] key) {
 		
-		return result;
 	}
 	
-	public boolean buildPutRequestMessage(Byte[] key, int valueLength, Byte[] value) {
-		boolean result = false;
+	public void buildPutRequestMessage(Byte[] key, int valueLength, Byte[] value) {
 		
-		return result;
 	}
 	
 	/*
