@@ -124,16 +124,6 @@ public class Message {
 		
 		int commandToUse = command;
 		int index = 17;
-		
-		// Check for an echoed command
-		if (command == Codes.ECHOED_CMD) {
-			//originIP = new Byte[4];
-			//originIP = Arrays.copyOfRange(rawData, index, index+4);
-			originNodeNumber = rawData[index+4].intValue();
-			echoedCommand = rawData[index+5].intValue();
-			index += 6;
-			commandToUse = echoedCommand;
-		}
 
 		// Get the 32-byte key
 		key = Arrays.copyOfRange(rawData, index, (index + 32));
