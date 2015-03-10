@@ -594,6 +594,13 @@ public class Message {
 		return returnValue;
 	}
 	
+	public void setUniqueID(Byte[] id) {
+		
+		this.messageType = messageType;
+		for (int i = 0; i < Byte.SIZE; i++) {
+			this.uniqueID[i] = id[i];
+		}
+	}
 	
 	private void setUniqueID(int messageType) {
 		byte[] temp = generateUniqueID(messageType);
