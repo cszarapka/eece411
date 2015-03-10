@@ -26,7 +26,7 @@ public class Node {
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
-	private int nodeNumber;
+	public int nodeNumber;
 	private static ArrayList<Successor> successors;
 	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
 

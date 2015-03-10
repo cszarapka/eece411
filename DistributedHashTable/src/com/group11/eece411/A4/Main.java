@@ -64,30 +64,39 @@ public class Main {
 		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 		Message message;
 		
-
-		while(!foundDht) {
-
-			if(++addressToTry == NUMBER_OF_NODES) {
-				addressToTry = 0;
+		if(args.length == 0) {	
+			
+			while(!foundDht) {
+	
+				if(++addressToTry == NUMBER_OF_NODES) {
+					addressToTry = 0;
+				}
+	
+				message = new Message(node.getHostName(), 4003);
+				message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
+				Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
+	
+	
+				socket.setSoTimeout(TIMEOUT);
+				packet = new DatagramPacket(receiveData, receiveData.length);
+				try {
+					//Node's living
+					socket.receive(packet);
+					foundDht = true;
+				} catch (SocketTimeoutException e) {
+					//Node's dead
+				}
 			}
-
-			message = new Message(node.getHostName(), 4003);
-			message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
-			Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
-
-
-			socket.setSoTimeout(TIMEOUT);
-			packet = new DatagramPacket(receiveData, receiveData.length);
-			try {
-				//Node's living
-				socket.receive(packet);
-				foundDht = true;
-			} catch (SocketTimeoutException e) {
-				//Node's dead
-			}
+			node.joinTable(new Message(packet.getData()));
+		} else {
+			
+			// set node number
+			node.nodeNumber = 0;
+			// what else needs to be done?
+			
 		}
 
-		node.joinTable(new Message(packet.getData()));
+		
 		
 
 		while(true)
