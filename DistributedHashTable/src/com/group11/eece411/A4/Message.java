@@ -74,6 +74,10 @@ public class Message {
 		}
 		parseMessage();
 	}
+	
+	public int getCommand() {
+		
+	}
 
 	/**
 	 * Fills the local variables based on the content of the message
@@ -401,8 +405,8 @@ public class Message {
 	 * Builds an echoed GET or REMOVE request-message based on the command specified.
 	 * @param originHostName	the host name of the source of the request
 	 * @param originNodeNumber	the node number of the source of the request
-	 * @param command			either
-	 * @param key
+	 * @param command			either GET or REMOVE
+	 * @param key				the key to get or remove
 	 */
 	public void buildEchoedAppLevelRequestMessage(String originHostName, int originNodeNumber, int command, Byte[] key) {
 		this.command = Codes.ECHOED_CMD;
@@ -421,6 +425,7 @@ public class Message {
 		this.originNodeNumber = originNodeNumber;
 		
 		// Generate the unique ID
+		// FIXME: wrong, should be getting the previous message's unique ID
 		setUniqueID(Message.SEND_REQUEST);
 		
 		
@@ -583,29 +588,6 @@ public class Message {
 	 */
 	
 	
-	{
-		int commandToUse = command;
-		int index = 17;
-		
-		// Check for an echoed command
-		if (command == Codes.ECHOED_CMD) {
-			originIP = new Byte[4];
-			originIP = Arrays.copyOfRange(rawData, index, index+4);
-			originNodeNumber = rawData[index+4].intValue();
-			echoedCommand = rawData[index+5].intValue();
-			index += 6;
-			commandToUse = echoedCommand;
-		}
-
-		// Get the 32-byte key
-		key = Arrays.copyOfRange(rawData, index, (index + 32));
-
-		// Get the value length and value if it's a put command
-		if (commandToUse == Codes.CMD_PUT) {
-			valueLength = bytesToValueLength((index + 33), (index + 32));
-			readValue(index + 34);
-		}
-	}
 	
 	/**
 	 * Generates the unique ID
