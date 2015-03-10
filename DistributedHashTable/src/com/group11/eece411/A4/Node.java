@@ -129,7 +129,7 @@ public class Node {
 		public void run() {
 			// Check if the message is for me
 			if (tMessage.originNodeNumber == nodeNumber) {
-				// It is
+				
 			}
 
 			/*
