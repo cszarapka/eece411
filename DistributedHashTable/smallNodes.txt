@@ -1,0 +1,5 @@
+lefthand.eecs.harvard.edu
+planetlab1.cs.ucla.edu
+planetlab2.williams.edu
+planetlab-2.calpoly-netlab.net
+planetlab1.cs.uoregon.edu
