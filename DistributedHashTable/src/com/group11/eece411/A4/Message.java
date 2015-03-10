@@ -74,10 +74,6 @@ public class Message {
 		}
 		parseMessage();
 	}
-	
-	public int getCommand() {
-		
-	}
 
 	/**
 	 * Fills the local variables based on the content of the message
