@@ -200,6 +200,8 @@ public class Node {
 		private final int SEND_PORT = 4003;
 		private final int RECEIVE_PORT = 4003;
 		private final int TIMEOUT = 5000;
+		private ArrayList<Successor> ss = new ArrayList<Successor>();
+		ArrayList<Successor> successorCopy = new ArrayList<Successor>();
 		public void run() {
 			// TODO: implement it			
 			// wait some amount of time
@@ -218,20 +220,30 @@ public class Node {
 					for(int i = 0; i < numSuccessors; i++){
 						// build and send message to successor i
 						Message msg = new Message(hostName, SEND_PORT);
-						msg.buildRequestMessage(32);
+						msg.buildReturnSuccessors(successors);
 						sendMessage(msg, successors.get(i).getInetAddress(), SEND_PORT);
 						
 						
 						
 						try {
+							//try to send message
 							byte[] receiveData = new byte[15500];
 							DatagramSocket serverSocket = new DatagramSocket();
 							serverSocket.setSoTimeout(TIMEOUT);
 							serverSocket = new DatagramSocket(RECEIVE_PORT);
+							
+							// try to receive message
 							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 							serverSocket.receive(receivePacket);
 							Message receivedMessage = new Message(receiveData);
 							receivedMessage.parseReceivedResponseMessage();
+							
+							// get the successor's successorlist
+							for(int l = 0; l < receivedMessage.getSuccessorList().size(); l++){
+								ss.add(receivedMessage.getSuccessorList().get(l));
+							}
+														
+							
 						} catch (SocketTimeoutException e){
 							// remove successor because it is dead
 							successors.remove(i);
@@ -241,7 +253,13 @@ public class Node {
 						} catch (IOException e) {
 							// continue on
 							// TODO remove successor?
+						} finally {
+							//reorder successors
+							//add successor's successors if they aren't included already
 						}
+						
+						
+						
 						
 						
 					}

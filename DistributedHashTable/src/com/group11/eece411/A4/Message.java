@@ -150,7 +150,22 @@ public class Message {
 		int index = 17;
 
 		if(command == Codes.GET_SUCCESSOR_LIST){
+			// Get the number of successors following
+			int numSuccessors = rawData[COMMAND_POSITION+1].intValue();
+			final int BEGIN_SUCCESSORS = COMMAND_POSITION+2;
 			
+			// Get each successor
+			for(int i = 0; i < numSuccessors; i++){
+				
+				// Get each of the four bytes of the IP address, offset by the number of successors already received
+				for(int k = 0; k < 4; k++){
+					successorHostNames[i] = rawData[BEGIN_SUCCESSORS+k+i*5];
+				}
+				
+				// Get the node number, which is 4 past the beginning of the node, then offset 
+				//by the number of successor infomation already received
+				successorNodeNumbers[i] = rawData[BEGIN_SUCCESSORS+4+i*5];
+			}
 		}
 		
 		// Check for an invite to join message
