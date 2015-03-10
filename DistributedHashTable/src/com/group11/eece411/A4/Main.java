@@ -85,6 +85,7 @@ public class Main {
 		}
 
 		node.joinTable(new Message(packet.getData()));
+		
 
 		while(true)
 		{
