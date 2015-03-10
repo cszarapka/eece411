@@ -85,6 +85,8 @@ public class Message {
 		uniqueID = Arrays.copyOfRange(rawData, 0, 16);
 		System.out.println("uniqueID: " + uniqueID.toString());
 		System.out.println("uniqueID length: " + uniqueID.length);
+		
+		this.originIP = Arrays.copyOfRange(rawData, 0, 4);
 
 		// Get the message type, as an int
 		messageType = rawData[MESSAGE_TYPE_POSITION].intValue();
@@ -123,8 +125,8 @@ public class Message {
 		
 		// Check for an echoed command
 		if (command == Codes.ECHOED_CMD) {
-			originIP = new Byte[4];
-			originIP = Arrays.copyOfRange(rawData, index, index+4);
+			//originIP = new Byte[4];
+			//originIP = Arrays.copyOfRange(rawData, index, index+4);
 			originNodeNumber = rawData[index+4].intValue();
 			echoedCommand = rawData[index+5].intValue();
 			index += 6;
@@ -182,8 +184,8 @@ public class Message {
 		int commandToUse = command;
 		// Check for an echoed command
 		if (command == Codes.ECHOED_CMD) {
-			originIP = new Byte[4];
-			originIP = Arrays.copyOfRange(rawData, index, index+4);
+			//originIP = new Byte[4];
+			//originIP = Arrays.copyOfRange(rawData, index, index+4);
 			originNodeNumber = rawData[index+4].intValue();
 			echoedCommand = rawData[index+5].intValue();
 			index += 6;
@@ -303,124 +305,28 @@ public class Message {
 		return false;
 	}
 	
-	/**
-	 * Builds an echoed put request-message with the specified fields.
-	 * Assembles the raw data to be sent.
-	 * @param originHostName	the host name of the node who started the request
-	 * @param originNodeNumber	the node number of the node who started the request
-	 * @param key				the key of value to be put
-	 * @param valueLength		the length of the value to be put
-	 * @param value				the value to be put
-	 * @return					true if the message was built successfully
-	 */
-	public void buildEchoedPutRequestMessage(String originHostName, int originNodeNumber, Byte[] key, int valueLength, Byte[] value) {
-		command = Codes.ECHOED_CMD;
-		echoedCommand = Codes.CMD_PUT;
-		
-		// Get the IP of the origin
-		byte[] originIPbytes;
-		try {
-			originIPbytes = InetAddress.getByName(originHostName).getAddress();
-		} catch (UnknownHostException e) {
-			System.out.println("Message: Echoed Put Request-Message unknown host error");
-			return;
-		}
-		
-		// Get the node number of the origin as an int
-		this.originNodeNumber = originNodeNumber;
-		
-		// Get the key as a Byte array
-		this.key = key;
-		
-		// Get the value length; int
-		this.valueLength = valueLength;
-		
-		// Get the value
-		this.value = new Byte[valueLength];
-		this.value = value;
-		
-		/*
-		 * Assemble the raw data from all of this info
-		 */
-		setUniqueID(Message.SEND_REQUEST);
-		int index = 0;
-		rawData = new Byte[uniqueID.length + 1 + 5 + 1 + key.length + 1 + valueLength];
-		
-		// Add the unique ID
-		for (int i = index; i < uniqueID.length; i++) {
-			rawData[i] = uniqueID[i];
-		}
-		
-		// Add the command
-		rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
-		index = uniqueID.length + 1;
-		
-		// Add the origin: 4byte IP, then 1 byte node #
-		for (int i = index; i < originIPbytes.length + index; i++) {
-			rawData[i] = originIPbytes[i - index];
-		}
-		index = originIPbytes.length + index;
-		rawData[index] = Byte.valueOf(intToByteArray(originNodeNumber)[0]);
-		index += 1;
-		
-		// Add the key to be "put" to the raw data
-		for (int i = index; i < key.length + index; i++) {
-			rawData[i] = key[i-index];
-		}
-		index = key.length + index;
-		
-		// Add the value length
-		rawData[index] = Byte.valueOf(intToByteArray(valueLength)[0]);
-		index += 1;
-		
-		// Add the value 
-		for (int i = index; i < valueLength + index; i++) {
-			rawData[index] = value[i - index];
-		}
-	}
-		
-	/**
-	 * Builds an echoed GET or REMOVE request-message based on the command specified.
-	 * @param originHostName	the host name of the source of the request
-	 * @param originNodeNumber	the node number of the source of the request
-	 * @param command			either GET or REMOVE
-	 * @param key				the key to get or remove
-	 */
-	public void buildEchoedAppLevelRequestMessage(String originHostName, int originNodeNumber, int command, Byte[] key) {
-		this.command = Codes.ECHOED_CMD;
-		this.echoedCommand = command;
-		
-		// Get the IP of the origin
-		byte[] originIPbytes;
-		try {
-			originIPbytes = InetAddress.getByName(originHostName).getAddress();
-		} catch (UnknownHostException e) {
-			System.out.println("Message: Echoed Put Request-Message unknown host error");
-			return;
-		}
-		
-		// Get the node number of the origin as an int
-		this.originNodeNumber = originNodeNumber;
-		
-		// Generate the unique ID
-		// FIXME: wrong, should be getting the previous message's unique ID
-		setUniqueID(Message.SEND_REQUEST);
-		
-		
-		
-	}
-	
-	public void buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
-		
-	}
-	
 	public void buildAppLevelRequestMessage(int command, Byte[] key) {
+		// Set the unique ID
+		setUniqueID(Message.SEND_REQUEST);
 		
+		// set the command
+		this.command = command;
+		
+		if (command == Codes.CMD_GET || command == Codes.CMD_REMOVE) {
+			// add the key to the message
+			this.key = key;
+			rawData = new Byte[uniqueID.length + 1 + key.length];
+			for (int i = 0; i < uniqueID.length;) {
+				rawData[i] = uniqueID[i];
+			}
+			rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
+			int index = uniqueID.length + 1;
+			for (int i = index; i < key.length + index; i++) {
+				rawData[i] = key[i-index];
+			}
+		}
 	}
 	
-	public void buildPutRequestMessage(Byte[] key, int valueLength, Byte[] value) {
-		
-	}
 	
 	/*
 	 * The building of the response messages
