@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Node {
 
 	// Information about this physical machine:
-	private static String hostName;
+	public static String hostName;
 	
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
