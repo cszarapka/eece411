@@ -241,9 +241,35 @@ public class Message {
 	}
 	
 	
-	
+	/**
+	 * returns an ArrayList of all the successors
+	 * @return all the successors
+	 */
 	public ArrayList<Successor> getSuccessorList() {
+		ArrayList<Successor> als = new ArrayList<Successor>();
 		
+		// get number of successors
+		int numSuccessors = successorNodeNumbers.length;
+		
+		byte[] host = new byte[4];
+		for(int i = 0; i < numSuccessors; i++){
+			// get the Bytes for the ith successor's ip
+			for(int k = 0; k < 4; k++){
+				// offset by 4 per iteration
+				host[k] = successorHostNames[k+i*4].byteValue();
+				
+			}
+			
+			// convert the Byte of the successor's node number
+			int nodeNum = successorNodeNumbers[i].intValue();
+			
+			//TODO convert host to string representation
+			hostName = getIpAddress(host);
+			Successor success = new Successor(hostName, nodeNum);
+			als.add(success);
+		}
+		
+		return als;
 	}
 	
 	/**
@@ -404,28 +430,14 @@ public class Message {
 	 * @return
 	 */
 	public void buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keyNames) {
-		 /* Invite to join - made by a node responding to a request to join the DHT
-		 * Command: (int) 33
-		 * 
-		 * | command | offered node # | # of successors |  successors  | file list length | hashed file names (file list) |
-		 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |      up to 32 bytes each	  |
-		 */ 
-		
 		setUniqueID(Message.SEND_RESPONSE);
 		this.responseCode = Codes.SUCCESS;
 		this.value[0] = Byte.valueOf(intToByteArray(offeredNodeNumber)[0]);
 		
 		
 		this.nodeNumber = offeredNodeNumber;
-		//TODO convert successors to successor hostnames and node numbers
 		int numSuccessors = successors.size();
 		this.value[1] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
-		
-		// holds the message about the successors in the format:
-		// 	4B successor iP
-		// 	1B successor node number
-		//	repeat
-		byte[] successorMessage = new byte[numSuccessors*5];
 		
 		int BEGIN_SUCCESSORS = 2;
 		Byte[] nextSuccessorAddress = new Byte[4];
@@ -597,6 +609,26 @@ public class Message {
 		for (int i = 0; i < valueLength; i ++) {
 			value[i] = rawData[i + offset];
 		}
+	}
+	
+	/**
+	 * returns a string representation of an IP address
+	 * @param rawBytes the data to be converted into an IP address
+	 * @return IP address
+	 */
+	public static String getIpAddress(byte[] rawBytes) {
+		int i = 4;
+		String ipAddress = "";
+		for (byte raw : rawBytes)
+		{
+			ipAddress += (raw & 0xFF);
+			if (--i > 0)
+			{
+				ipAddress += ".";
+			}
+		}
+
+		return ipAddress;
 	}
 
 
