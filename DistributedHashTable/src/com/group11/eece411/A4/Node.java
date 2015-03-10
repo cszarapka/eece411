@@ -19,7 +19,7 @@ public class Node {
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
-	private int nodeNumber;
+	private static int nodeNumber;
 	private ArrayList<Successor> successors;
 	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
 
@@ -122,7 +122,10 @@ public class Node {
 		}
 
 		public void run() {
-			if (tMessage.messageType)
+			// Check if the message is for me
+			if (tMessage.originNodeNumber == nodeNumber) {
+				// It is
+			}
 
 			switch (tMessage.command) {
 			case Codes.CMD_GET:
