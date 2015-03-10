@@ -69,8 +69,9 @@ public class Main {
 			if(++addressToTry == NUMBER_OF_NODES) {
 				addressToTry = 0;
 			}
-
-			Node.sendMessage(new Message(node.getHostName(), 4003), InetAddress.getByName(nodeList[addressToTry]), 4003);	
+			message = new Message(node.getHostName(), 4003);
+			message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
+			Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
 
 			socket.setSoTimeout(TIMEOUT);
 			packet = new DatagramPacket(receiveData, receiveData.length);
