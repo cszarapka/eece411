@@ -367,7 +367,7 @@ public class Message {
 		
 		
 		// something to send
-		if(valueLength != 0) {
+		if(valueLength != 0 && value != null) {
 			// put value length
 			for(int i = 0; i < 4; i++){
 				rawData[i+17] = Byte.valueOf(ByteBuffer.allocate(4).putInt(valueLength).array()[i]);
