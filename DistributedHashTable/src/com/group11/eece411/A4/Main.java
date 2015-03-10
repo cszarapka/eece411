@@ -70,7 +70,7 @@ public class Main {
 			if(++addressToTry == NUMBER_OF_NODES) {
 				addressToTry = 0;
 			}
-
+			System.out.println(InetAddress.getByName(nodeList[addressToTry]));
 			Node.sendMessage(new Message(node.getHostName(), 4003), InetAddress.getByName(nodeList[addressToTry]), 4003);	
 
 			socket.setSoTimeout(TIMEOUT);

@@ -133,11 +133,14 @@ public class Node {
 		boolean result = false;
 		try {
 			DatagramSocket socket = new DatagramSocket();
+			System.out.println("point 0");
 			DatagramPacket packet = new DatagramPacket(message.getBuffer(), message.getBufferLength(), host, port);
+			System.out.println("point 1");
 			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {
 			System.out.println("Node: Sending a message failed.");
+			System.out.println("Exception: "+e);
 		}
 		return result;
 	}
