@@ -3,6 +3,8 @@ package com.group11.eece411.A4;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -127,6 +129,33 @@ public class Node {
 				// It is
 			}
 
+			/*
+			MessageDigest md = null;
+			try {
+				md = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			byte[] thedigest = md.digest(toPrimitives(message.key));
+			hashValue = ((int)thedigest[1]) * 16 + ((int)thedigest[0]);
+			int successorNodeNumber = NUMBER_OF_NODES;
+			for(int i = 0; i < NUMBER_OF_NODES; i++){
+				for(int j = 0; j < node.getNumberOfSuccessors(); j++){
+					if((node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES < successorNodeNumber) {
+						successorNodeNumber = (node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES;
+					}
+				}
+			}
+			successorNodeNumber = (successorNodeNumber + node.getNodeNumber()) % NUMBER_OF_NODES;
+			 
+			 if((hashValue - node.getNodeNumber()) % NUMBER_OF_NODES < (successorNodeNumber - node.getNodeNumber()) % NUMBER_OF_NODES) {
+			 	//WITHIN OUR RANGE
+			} else
+				//NOT WITHIN OUR RANGE
+			}
+			 */
+			
 			switch (tMessage.command) {
 			case Codes.CMD_GET:
 				break;
