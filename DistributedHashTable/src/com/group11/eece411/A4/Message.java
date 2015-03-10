@@ -633,7 +633,7 @@ public class Message {
 	 * @param rawBytes the data to be converted into an IP address
 	 * @return IP address
 	 */
-	public static String getIpAddress(byte[] rawBytes) {
+	private static String getIpAddress(byte[] rawBytes) {
 		int i = 4;
 		String ipAddress = "";
 		for (byte raw : rawBytes)

@@ -1,8 +1,11 @@
 package com.group11.eece411.A4;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,13 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Node {
 
 	// Information about this physical machine:
-	private final String hostName;
+	private static String hostName;
 	
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
 	private int nodeNumber;
-	private ArrayList<Successor> successors;
+	private static ArrayList<Successor> successors;
 	private ConcurrentHashMap<byte[], byte[]> KVStore = new ConcurrentHashMap<byte[], byte[]>();
 	
 	/**
@@ -62,7 +65,7 @@ public class Node {
 	 * @param port		the host's port to send the message to
 	 * @return			true/false = success/failure
 	 */
-	public boolean sendMessage(Message message, InetAddress host, int port) {
+	public static boolean sendMessage(Message message, InetAddress host, int port) {
 		boolean result = false;
 		try {
 			DatagramSocket socket = new DatagramSocket();
@@ -134,10 +137,56 @@ public class Node {
 	 * @version a4
 	 */
 	private static class CheckSuccessorsThread implements Runnable {
+		private final int WAIT_TIME = 10000;
+		private boolean forever = true;
+		private final int SEND_PORT = 4003;
+		private final int RECEIVE_PORT = 4003;
+		private final int TIMEOUT = 5000;
 		public void run() {
-			// TODO: implement it
-			// message them, wait for a response, adjust successor list accordingly
-			// TODO: notify others of a dead node
+			// TODO: implement it			
+			// wait some amount of time
+			while(forever){
+				try {
+					Thread.sleep(WAIT_TIME);
+				} catch (InterruptedException e) {
+					// continue
+				}
+				
+				// lock successors list
+				synchronized(successors){
+					
+					// check status of successors iteratively
+					int numSuccessors = successors.size();
+					for(int i = 0; i < numSuccessors; i++){
+						// build and send message to successor i
+						Message msg = new Message(hostName, SEND_PORT);
+						msg.buildRequestMessage(32);
+						sendMessage(msg, successors.get(i).getInetAddress(), SEND_PORT);
+						
+						
+						
+						try {
+							byte[] receiveData = new byte[15500];
+							DatagramSocket serverSocket = new DatagramSocket();
+							serverSocket.setSoTimeout(TIMEOUT);
+							serverSocket = new DatagramSocket(RECEIVE_PORT);
+							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+							serverSocket.receive(receivePacket);
+						} catch (SocketTimeoutException e){
+							// remove successor because it is dead
+							successors.remove(i);
+						} catch (SocketException e) {
+							// continue on
+							// TODO remove successor?
+						} catch (IOException e) {
+							// continue on
+							// TODO remove successor?
+						}
+						
+						
+					}
+				}
+			}
 		}
 	}
 	
