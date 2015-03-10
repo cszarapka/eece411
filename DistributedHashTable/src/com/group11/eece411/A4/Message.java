@@ -657,7 +657,6 @@ public class Message {
 	
 	public void setUniqueID(Byte[] id) {
 		
-		this.messageType = messageType;
 		for (int i = 0; i < Byte.SIZE; i++) {
 			this.uniqueID[i] = id[i];
 		}
