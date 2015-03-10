@@ -95,6 +95,8 @@ public class Message {
 		// Get the command code, as an int
 		command = rawData[COMMAND_POSITION].intValue();
 		System.out.println("Command: " + command);
+		
+		
 
 		// Parse the message based on whether it is a request or response
 		switch (messageType) {
