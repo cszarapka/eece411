@@ -135,7 +135,9 @@ public class Node {
 			DatagramSocket socket = new DatagramSocket();
 			System.out.println("point 0");
 			DatagramPacket packet = new DatagramPacket(message.getBuffer(), message.getBufferLength(), host, port);
-			System.out.println("point 1");
+			System.out.println(message.getBuffer());
+			System.out.println("Sent a message to IP:" + host + "   port:" + port);
+			System.out.println("actual host:" + packet.getAddress() + "    port:" + packet.getPort());
 			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {

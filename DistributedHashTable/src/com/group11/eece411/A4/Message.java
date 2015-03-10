@@ -357,8 +357,11 @@ public class Message {
 		this.responseCode = responseCode;
 		this.valueLength = valueLength;
 		this.value = value;
-		
-		rawData = new Byte[16+1+4+valueLength];
+		if(valueLength != 0){
+			rawData = new Byte[16+1+4+valueLength];
+		} else {
+			rawData = new Byte[16+1];
+		}
 		for(int i = 0; i < 16; i++){
 			rawData[i] = uniqueID[i];
 		}
