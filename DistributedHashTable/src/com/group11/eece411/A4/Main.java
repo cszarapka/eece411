@@ -24,7 +24,7 @@ public class Main {
 
 	private static final boolean VERBOSE = true;
 	public static final int NUMBER_OF_NODES = 100;
-	public static final int TIMEOUT = 100;
+	public static final int TIMEOUT = 10000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
 	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
@@ -41,7 +41,7 @@ public class Main {
 		String [] nodeList = new String[NUMBER_OF_NODES];
 		try	{
 			// Open an input stream
-			fin = new FileInputStream ("node.txt");
+			fin = new FileInputStream ("activeNodes.txt");
 
 			// Read a line of text
 			DataInputStream din = new DataInputStream(fin);
@@ -63,6 +63,7 @@ public class Main {
 		DatagramSocket socket = new DatagramSocket();
 		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 		Message message;
+		
 
 		while(!foundDht) {
 
