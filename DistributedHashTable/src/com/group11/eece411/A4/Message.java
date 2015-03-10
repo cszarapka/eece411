@@ -44,7 +44,7 @@ public class Message {
 	public Byte[] successorNodeNumbers;
 
 	// Message types
-	private int messageType;
+	public int messageType;
 	public static final int SEND_REQUEST 		= 0;
 	public static final int SEND_RESPONSE 		= 1;
 	public static final int SEND_UPDATE			= 2;
@@ -299,7 +299,7 @@ public class Message {
 	/**
 	 * Builds a message to be sent based on the type specified and the
 	 * values passed and assembles the raw data to be sent.
-	 * @param type
+	 * @param command shutdown, request to join, or Are You Alive
 	 */
 	public boolean buildRequestMessage(int command) {
 		// Set the unique ID
@@ -397,10 +397,34 @@ public class Message {
 		}
 	}
 		
-	public void buildEchoedRequestMessage(String originHostName, int originNodeNumber, Byte[] key) {
-		command = Codes.ECHOED_CMD;
-		echoedCommand = Codes.CMD_PUT;
-		rawData = new Byte[4 + 1 + 32];
+	/**
+	 * Builds an echoed GET or REMOVE request-message based on the command specified.
+	 * @param originHostName	the host name of the source of the request
+	 * @param originNodeNumber	the node number of the source of the request
+	 * @param command			either
+	 * @param key
+	 */
+	public void buildEchoedAppLevelRequestMessage(String originHostName, int originNodeNumber, int command, Byte[] key) {
+		this.command = Codes.ECHOED_CMD;
+		this.echoedCommand = command;
+		
+		// Get the IP of the origin
+		byte[] originIPbytes;
+		try {
+			originIPbytes = InetAddress.getByName(originHostName).getAddress();
+		} catch (UnknownHostException e) {
+			System.out.println("Message: Echoed Put Request-Message unknown host error");
+			return;
+		}
+		
+		// Get the node number of the origin as an int
+		this.originNodeNumber = originNodeNumber;
+		
+		// Generate the unique ID
+		setUniqueID(Message.SEND_REQUEST);
+		
+		
+		
 	}
 	
 	public void buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
@@ -634,6 +658,7 @@ public class Message {
 	
 	private void setUniqueID(int messageType) {
 		byte[] temp = generateUniqueID(messageType);
+		this.messageType = messageType;
 		for (int i = 0; i < temp.length; i++) {
 			this.uniqueID[i] = Byte.valueOf(temp[i]);
 		}

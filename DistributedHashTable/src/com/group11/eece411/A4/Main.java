@@ -12,6 +12,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,21 +27,187 @@ public class Main {
 	public static final int TIMEOUT = 100;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
-	private static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
-	public static SuccessorList successors = new SuccessorList();
+	private final static ConcurrentHashMap<byte[], byte[]> db = new ConcurrentHashMap<byte[], byte[]>();
 	public static int i = 0;
 
 	public static void main(String [] args) throws IOException {
+		Node node = new Node(InetAddress.getLocalHost().getHostName());
+
+		//Parse the node list and store it in nodeList
+		System.out.println("opening file" + "\n");
+
+		//function for joining the table initially
+		FileInputStream fin;
+		String [] nodeList = new String[NUMBER_OF_NODES];
+		try	{
+			// Open an input stream
+			fin = new FileInputStream ("node.txt");
+
+			// Read a line of text
+			DataInputStream din = new DataInputStream(fin);
+			for(int i = 0; i < NUMBER_OF_NODES; i++) {
+				nodeList[i] = din.readLine();
+			}
+			// Close our input stream
+			fin.close();		
+		} catch (IOException e) {
+			System.err.println ("Unable to read from file");
+			System.exit(-1);
+		}
+
+
+		//
+		byte[] receiveData = new byte[16000];
+		boolean foundDht = false;
+		int addressToTry = (int)(Math.random()*NUMBER_OF_NODES);
+		DatagramSocket socket = new DatagramSocket();
+		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
+		Message message;
+		int hashValue;
+
+		while(!foundDht) {
+
+			if(++addressToTry == NUMBER_OF_NODES) {
+				addressToTry = 0;
+			}
+
+			node.sendMessage(new Message(node.getHostName(), 4003), InetAddress.getByName(nodeList[addressToTry]), 4003);	
+
+			socket.setSoTimeout(TIMEOUT);
+			packet = new DatagramPacket(receiveData, receiveData.length);
+			try {
+				//Node's living
+				socket.receive(packet);
+				foundDht = true;
+			} catch (SocketTimeoutException e) {
+				//Node's dead
+			}
+		}
+
+		node.joinTable(new Message(packet.getData()));
+
+		while(true)
+		{
+			packet = new DatagramPacket(receiveData, receiveData.length);
+			socket.receive(packet);
+			message = new Message(packet.getData());
+			Message responseMessage;
+			MessageDigest md = null;
+			try {
+				md = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			byte[] thedigest = md.digest(toPrimitives(message.key));
+			hashValue = ((int)thedigest[1]) * 16 + ((int)thedigest[0]);
+			int successorNodeNumber = NUMBER_OF_NODES;
+			for(int i = 0; i < NUMBER_OF_NODES; i++){
+				for(int j = 0; j < node.getNumberOfSuccessors(); j++){
+					if((node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES < successorNodeNumber) {
+						successorNodeNumber = (node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES;
+					}
+				}
+			}
+			successorNodeNumber = (successorNodeNumber + node.getNodeNumber()) % NUMBER_OF_NODES;
+			if((hashValue - node.getNodeNumber()) % NUMBER_OF_NODES < (successorNodeNumber - node.getNodeNumber()) % NUMBER_OF_NODES) {
+				switch(message.command) {
+				case Codes.CMD_GET:
+					byte[] value = db.get(message.key);
+					if(value != null) {
+						responseMessage = new Message(InetAddress.getByAddress(toPrimitives(message.originIP)).getCanonicalHostName(), 4003);
+						responseMessage.buildGetResponseMessage(Codes.SUCCESS, value.length, toObjects(value));
+					} else {
+						
+						
+					}
+					break;
+				case Codes.CMD_PUT:
+
+					break;
+				case Codes.CMD_REMOVE:
+
+					break;
+				case Codes.CMD_SHUTDOWN:
+
+					break;
+				case Codes.REQUEST_TO_JOIN:
+
+					break;
+				case Codes.IM_LEAVING:
+
+					break;
+				case Codes.ARE_YOU_ALIVE:
+
+					break;
+				case Codes.INVITE_TO_JOIN:
+
+					break;
+				case Codes.ECHOED_CMD:
+
+					break;
+				case Codes.IS_ALIVE:
+
+					break;
+				case Codes.IS_DEAD:
+
+					break;
+				default:
+
+					break;
+
+				}
+
+
+			} else {
+
+			}
+
+
+		}
+
+
+	}
+
+
+
+	static Byte[] toObjects(byte[] bytesPrim) {
+
+		Byte[] bytes = new Byte[bytesPrim.length];
+		int i = 0;
+		for (byte b : bytesPrim) bytes[i++] = b; //Autoboxing
+		return bytes;
+
+	}
+
+	static byte[] toPrimitives(Byte[] oBytes)
+	{
+
+		byte[] bytes = new byte[oBytes.length];
+		for(int i = 0; i < oBytes.length; i++){
+			bytes[i] = oBytes[i];
+		}
+		return bytes;
+
+	}
+
+
+
+
+
+
+
+	/*
 		System.out.println("let's start: "+ args.length);
 		//initialize successors to ip 0.0.0.0 and node number -1
-		
+
 		Node node1 = new Node("0.0.0.0", -1);
 		Node node2 = new Node("0.0.0.0", -1);
 		Node node3 = new Node("0.0.0.0", -1);
 		successors.addSuccessor(node1, 0);
 		successors.addSuccessor(node2, 1);
 		successors.addSuccessor(node3, 2);
-		
+
 
 		if(args.length == 0) {
 		//set up table
@@ -48,7 +215,7 @@ public class Main {
 			joinTable();
 			System.out.println("exit joinTable" + "\n");
 		}
-		
+
 		//im a table
 		DatagramSocket serverSocket = new DatagramSocket(4003);
 		byte[] receiveData = new byte[15500];
@@ -72,10 +239,10 @@ public class Main {
 
 
 		}
-	}
+	}*/
 
 
-
+/*
 
 	@SuppressWarnings("deprecation")
 	private static void joinTable() throws IOException {
@@ -114,15 +281,15 @@ public class Main {
 			DatagramPacket receivePacket = null;
 			InetAddress IPAddress;
 			try {
-				
-				
+
+
 				byte[] receiveData = new byte[16000];
 				byte[] sendData = new byte[16000];
 				boolean foundDht = false;
 				while(!foundDht) {
-					
+
 					try {
-						
+
 						if(++addressToTry >= NUMBER_OF_NODES) {
 							addressToTry = 0;
 						}
@@ -159,7 +326,7 @@ public class Main {
 				//get the node number byte
 				byte nodeNum = receiveData[16];
 				NODE_NUM = nodeNum;
-				
+
 				if(receivePacket.getLength() >= 21){
 					//get first IP and node num and make new node object
 					byte[] successorIP1 = Arrays.copyOfRange(receiveData, 17, 21);
@@ -240,7 +407,7 @@ public class Main {
 					}
 
 				}
-				
+
 				byte[] massage = new byte[18];
 				byte[] id = MessageFormatter.generateUniqueID();
 				for(int i = 0; i < 16; i++) {
@@ -276,5 +443,5 @@ public class Main {
 		}
 
 		return ipAddress;
-	}
+	}*/
 }
