@@ -263,6 +263,7 @@ public class Message {
 	 * @return 	byte array value
 	 */
 	public byte[] getBuffer() {
+		System.out.println("getBuffer() rawData.length=" + rawData.length);
 		byte[] rawBytes = new byte[rawData.length];
 		for (int i = 0; i < rawData.length; i++) {
 			rawBytes[i] = rawData[i].byteValue();
@@ -356,6 +357,30 @@ public class Message {
 		this.responseCode = responseCode;
 		this.valueLength = valueLength;
 		this.value = value;
+		
+		rawData = new Byte[16+1+4+valueLength];
+		for(int i = 0; i < 16; i++){
+			rawData[i] = uniqueID[i];
+		}
+		rawData[16] = Byte.valueOf((byte) (responseCode & 0xFF));
+		
+		
+		
+		// something to send
+		if(valueLength != 0) {
+			// put value length
+			for(int i = 0; i < 4; i++){
+				rawData[i+17] = Byte.valueOf(ByteBuffer.allocate(4).putInt(valueLength).array()[i]);
+			}
+			
+			for(int i = 0; i < valueLength; i++){
+				rawData[21+i] = value[i];
+			}
+			
+			//put value
+		}
+		
+		
 	}
 	
 	/**
