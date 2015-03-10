@@ -396,11 +396,11 @@ public class Message {
 	}
 	
 	/**
-	 * builds a message to respond to a table invite request
+	 * builds a message to respond to a  table invite request
 	 * @param offeredNodeNumber the node number to be offered
 	 * @param successors an ArrayList of the successors
 	 * @param fileListLength length of the key list
-	 * @param keyNames byte[] 
+	 * @param keyNames byte[] of all keys put together end to end (32 bytes each)
 	 * @return
 	 */
 	public void buildInviteMessage(int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keyNames) {
@@ -435,26 +435,32 @@ public class Message {
 				nextSuccessorAddress[k] = Byte.valueOf(successors.get(i).getInetAddress().getAddress()[k]);
 			}
 			
-			
 			for(int k = 0; k < nextSuccessorAddress.length; k++){
 				this.value[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
 			}
+			
 			// puts the node number into a byte[]
-			byte[] nextSuccessorNodeNum = ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array();
-			this.value[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum[0];
+			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
+			this.value[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
 		
 		int BEGIN_KEY_LIST_LENGTH = BEGIN_SUCCESSORS + numSuccessors*5;
 		
-		// TODO now get key list length and put it into value
-		this.value[BEGIN_KEY_LIST_LENGTH] = 
+		// now get key list length and put it into value
+		int INT_LENGTH = 4;
+		for(int i = 0; i < INT_LENGTH; i++){
+			this.value[BEGIN_KEY_LIST_LENGTH+i] = Byte.valueOf(ByteBuffer.allocate(1).putInt(keyListLength).array()[i]); 
+		}
 		
+		int BEGIN_KEY_LIST = BEGIN_KEY_LIST_LENGTH + 4;
+		// get all key names and put into value
 		
-		// TODO get all key names and put into value
-		
-		
-		
-		
+		for(int i = 0; i < keyListLength; i++){
+			// copy key name
+			for(int k = 0; k < keyListLength; k++){
+				this.value[BEGIN_KEY_LIST+i*32+k] = Byte.valueOf(keyNames[i*32+k]);
+			}
+		}	
 	}
 	
 	
