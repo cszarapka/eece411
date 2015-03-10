@@ -40,6 +40,19 @@ $i
 ":"
 )
 .
+echo
+shell_exec
+(
+"scp smallNodes.txt ubc_eece411_5@"
+.
+$nodes
+[
+$i
+]
+.
+":"
+)
+.
 "Transferred to "
 .
 $i
