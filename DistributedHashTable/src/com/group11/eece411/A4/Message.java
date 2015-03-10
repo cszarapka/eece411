@@ -16,32 +16,32 @@ import java.util.Random;
 public class Message {
 
 	// The raw data received 
-	private Byte[] rawData;
+	public Byte[] rawData;
 	
-	private String hostName;
-	private int port;
+	public String hostName;
+	public int port;
 
 	// The fields to be extracted or inserted into the raw data:
 	// Specific to professor's Wire Protocol:
-	private Byte[] uniqueID = new Byte[16];
-	private int command;
-	private int echoedCommand;
-	private int responseCode;
-	private int nodeNumber;
-	private Byte[] key = new Byte[32];
-	private ArrayList<Byte[]> keys;
-	private int valueLength;
-	private Byte[] value;
+	public Byte[] uniqueID = new Byte[16];
+	public int command;
+	public int echoedCommand;
+	public int responseCode;
+	public int nodeNumber;
+	public Byte[] key = new Byte[32];
+	public ArrayList<Byte[]> keys;
+	public int valueLength;
+	public Byte[] value;
 	
-	private Byte[] originIP;
-	private int originNodeNumber;
+	public Byte[] originIP;
+	public int originNodeNumber;
 	
 	public static final int MESSAGE_TYPE_POSITION = 7;
 	public static final int COMMAND_POSITION = 16;
 	
 	// Values appended to these messages for our own purposes:
-	private Byte[] successorHostNames;
-	private Byte[] successorNodeNumbers;
+	public Byte[] successorHostNames;
+	public Byte[] successorNodeNumbers;
 
 	// Message types
 	private int messageType;
@@ -100,8 +100,8 @@ public class Message {
 			break;
 		case Message.RECEIVED_RESPONSE: parseReceivedResponseMessage();
 			break;
-		case Message.RECEIVED_UPDATE: parseReceivedUpdateMessage();
-			break;
+		//case Message.RECEIVED_UPDATE: parseReceivedUpdateMessage();
+			//break;
 		}
 	}
 
@@ -211,11 +211,6 @@ public class Message {
 			valueLength = bytesToValueLength(index+2, index+1);
 			readValue(index+3);
 		}
-	}
-	
-	
-	public void parseReceivedUpdateMessage() {
-		
 	}
 
 	/**
@@ -401,9 +396,6 @@ public class Message {
 		command = Codes.ECHOED_CMD;
 		echoedCommand = Codes.CMD_PUT;
 		rawData = new Byte[4 + 1 + 32];
-		
-		
-		
 	}
 	
 	public void buildEchoedShutdownRequestMessage(String originHostName, int originNodeNumber) {
