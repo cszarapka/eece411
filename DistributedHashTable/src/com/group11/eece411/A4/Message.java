@@ -75,9 +75,7 @@ public class Message {
 		parseMessage();
 	}
 	
-	public int getCommand() {
-		
-	}
+
 
 	/**
 	 * Fills the local variables based on the content of the message
@@ -173,46 +171,13 @@ public class Message {
 		}
 		
 		// Check for an invite to join message
-		if (command == Codes.INVITE_TO_JOIN) {
-			nodeNumber = rawData[COMMAND_POSITION+1];
-			
-			// Get the number of successors following
-			int numSuccessors = rawData[COMMAND_POSITION+2].intValue();
-			final int BEGIN_SUCCESSORS = COMMAND_POSITION+3;
-			
-			// Get each successor
-			for(int i = 0; i < numSuccessors; i++){
-				
-				// Get each of the four bytes of the IP address, offset by the number of successors already received
-				for(int k = 0; k < 4; k++){
-					successorHostNames[i] = rawData[BEGIN_SUCCESSORS+k+i*5];
-				}
-				
-				// Get the node number, which is 4 past the beginning of the node, then offset 
-				//by the number of successor infomation already received
-				successorNodeNumbers[i] = rawData[BEGIN_SUCCESSORS+4+i*5];
+		if (command == Codes.ADD_SUCCESSOR) {
+			final int BEGIN_SUCCESSORS = COMMAND_POSITION+1;
+			byte[] successorHostName = new byte[4];
+			for(int k = 0; k < 4; k++){
+				successorHostNames[k] = rawData[BEGIN_SUCCESSORS+k];
 			}
-			
-			// Offset the begin successors index by the number of successors to find the beginning of the key list length
-			final int BEGIN_KEY_LIST_LENGTH = BEGIN_SUCCESSORS + numSuccessors*5;
-			
-			// Get the file list length
-			int keyListLength = rawData[BEGIN_KEY_LIST_LENGTH].intValue();
-			
-			final int BEGIN_KEYS = BEGIN_KEY_LIST_LENGTH+4;
-			final int KEY_LENGTH = 32;
-			
-			// Get each key
-			Byte[] newKey = new Byte[32];
-			for(int i = 0; i < keyListLength; i++){
-				// Get each key
-				for(int k = 0; k < 32; k++){
-					newKey[k] = rawData[BEGIN_KEYS+i*KEY_LENGTH];
-				}
-				// Put each key in the ArrayList
-				keys.add(newKey);
-			}
-			
+			successorNodeNumbers[0] =rawData[BEGIN_SUCCESSORS+5];
 			return;
 		}
 		

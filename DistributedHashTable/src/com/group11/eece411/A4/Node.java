@@ -227,7 +227,26 @@ public class Node {
 					}
 				}
 				response.buildInviteMessage(offeredNodeNumber, successors, tNode.KVStore.size(), fileList);
+				try {
+					sendMessage(response,InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4003);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				break;
+			case Codes.GET_SUCCESSOR_LIST:
+			{
+				Message re = new Message(tNode.getHostName(), 4009);
+				re.buildReturnSuccessors(tNode.getSuccessorList());
+				try {
+					sendMessage(re, InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4009);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				break;
+			}
 			}
 		}
 	}
