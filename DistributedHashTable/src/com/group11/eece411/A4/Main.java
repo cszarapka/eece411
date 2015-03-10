@@ -63,7 +63,6 @@ public class Main {
 		DatagramSocket socket = new DatagramSocket();
 		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 		Message message;
-		int hashValue;
 
 		while(!foundDht) {
 
@@ -71,7 +70,7 @@ public class Main {
 				addressToTry = 0;
 			}
 
-			node.sendMessage(new Message(node.getHostName(), 4003), InetAddress.getByName(nodeList[addressToTry]), 4003);	
+			Node.sendMessage(new Message(node.getHostName(), 4003), InetAddress.getByName(nodeList[addressToTry]), 4003);	
 
 			socket.setSoTimeout(TIMEOUT);
 			packet = new DatagramPacket(receiveData, receiveData.length);
@@ -99,25 +98,6 @@ public class Main {
 
 
 
-	static Byte[] toObjects(byte[] bytesPrim) {
-
-		Byte[] bytes = new Byte[bytesPrim.length];
-		int i = 0;
-		for (byte b : bytesPrim) bytes[i++] = b; //Autoboxing
-		return bytes;
-
-	}
-
-	static byte[] toPrimitives(Byte[] oBytes)
-	{
-
-		byte[] bytes = new byte[oBytes.length];
-		for(int i = 0; i < oBytes.length; i++){
-			bytes[i] = oBytes[i];
-		}
-		return bytes;
-
-	}
 
 
 

@@ -6,9 +6,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -86,7 +88,7 @@ public class Node {
 	 * @param message	the message to parse and respond to
 	 */
 	public void respondToMessage(Message message) {
-		Thread t = new Thread(new ResponseThread(message));
+		Thread t = new Thread(new ResponseThread(message, this));
 		t.start();
 	}
 
@@ -121,68 +123,110 @@ public class Node {
 	 */
 	private static class ResponseThread implements Runnable {
 		private final Message tMessage;
+		private final Node tNode;
 
-		public ResponseThread(Message tMessage) {
+		public ResponseThread(Message tMessage, Node tNode) {
 			this.tMessage = tMessage;
+			this.tNode = tNode;
+			
 		}
 
 		public void run() {
 			// Check if the message is for me
-			if (tMessage.originNodeNumber == nodeNumber) {
-				// It is
+			if (tMessage.originNodeNumber == tNode.nodeNumber) {
+				
 			}
 
-			/*
-			MessageDigest md = null;
-			try {
-				md = MessageDigest.getInstance("MD5");
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			byte[] thedigest = md.digest(toPrimitives(message.key));
-			hashValue = ((int)thedigest[1]) * 16 + ((int)thedigest[0]);
-			int successorNodeNumber = NUMBER_OF_NODES;
-			for(int i = 0; i < NUMBER_OF_NODES; i++){
-				for(int j = 0; j < node.getNumberOfSuccessors(); j++){
-					if((node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES < successorNodeNumber) {
-						successorNodeNumber = (node.getSuccessor(j).getNodeNumber() - node.getNodeNumber()) % NUMBER_OF_NODES;
-					}
-				}
-			}
-			successorNodeNumber = (successorNodeNumber + node.getNodeNumber()) % NUMBER_OF_NODES;
-			 
-			 if((hashValue - node.getNodeNumber()) % NUMBER_OF_NODES < (successorNodeNumber - node.getNodeNumber()) % NUMBER_OF_NODES) {
-			 	//WITHIN OUR RANGE
-			} else
-				//NOT WITHIN OUR RANGE
-			}
-			 */
-			
+			int n;
 			switch (tMessage.command) {
 			case Codes.CMD_GET:
+				n = tNode.getIndexOfSuccessorThatCoversRangeOf(tMessage.key);
+				if(n == -1) {
+					byte[] value = tNode.KVStore.get(toPrimitives(tMessage.key));
+					Message response = new Message(tNode.getHostName(), 4003);
+					if(value == null) {
+						response.buildGetResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0, null);
+					} else {
+						response.buildGetResponseMessage(Codes.SUCCESS, value.length, toObjects(value));
+					}
+					response.setUniqueID(Node.toObjects(tMessage.getUniqueID()));
+					try {
+						sendMessage(response, InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4003);
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					sendMessage(tMessage, tNode.getSuccessor(n).getInetAddress(), 4003);
+				}
+
 				break;
 			case Codes.CMD_PUT:
-				break;
-			case Codes.CMD_REMOVE:
-				break;
-			case Codes.CMD_SHUTDOWN:
-				break;
-			case Codes.ECHOED_CMD:
-				switch (tMessage.echoedCommand) {
-				case Codes.CMD_GET:
-					break;
-				case Codes.CMD_PUT:
-					break;
-				case Codes.CMD_REMOVE:
-					break;
-				case Codes.CMD_SHUTDOWN:
-					break;
+				n = tNode.getIndexOfSuccessorThatCoversRangeOf(tMessage.key);
+				if(n == -1) {
+					byte[] value = tNode.KVStore.put(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
+					Message response = new Message(tNode.getHostName(), 4003);
+					//if(value == !value) {
+						//response.buildGetResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0, null);
+					//} else {
+						response.buildWireResponseMessage(Codes.CMD_PUT,Codes.SUCCESS);
+					//} 
+					response.setUniqueID(Node.toObjects(tMessage.getUniqueID()));
+					try {
+						sendMessage(response, InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4003);
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					sendMessage(tMessage, tNode.getSuccessor(n).getInetAddress(), 4003);
 				}
 				break;
+			case Codes.CMD_REMOVE:
+				n = tNode.getIndexOfSuccessorThatCoversRangeOf(tMessage.key);
+				if(n == -1) {
+					boolean value = tNode.KVStore.remove(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
+					Message response = new Message(tNode.getHostName(), 4003);
+					if(!value) {
+						response.buildWireResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0);
+					} else {
+						response.buildWireResponseMessage(Codes.CMD_REMOVE,Codes.SUCCESS);
+					} 
+					response.setUniqueID(Node.toObjects(tMessage.getUniqueID()));
+					try {
+						sendMessage(response, InetAddress.getByAddress(toPrimitives(tMessage.originIP)), 4003);
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					sendMessage(tMessage, tNode.getSuccessor(n).getInetAddress(), 4003);
+				}
+				break;
+			case Codes.CMD_SHUTDOWN:
+				System.exit(0);
+				break;
 			case Codes.INVITE_TO_JOIN:
+				tNode.addSuccessor(new Successor(tMessage.hostName, ((int)Node.toPrimitives(tMessage.value)[1]) * 16 + ((int)Node.toPrimitives(tMessage.value)[0])));
 				break;
 			case Codes.REQUEST_TO_JOIN:
+				Message response = new Message(tNode.getHostName(), 4003);
+				int offeredNodeNumber = (tNode.getNodeNumber() + Node.maxNodeNumber / 2) % Node.maxNodeNumber;
+				int firstSuccessor = tNode.getFirstSuccessor();
+				if(firstSuccessor != -1) {
+					offeredNodeNumber = ((firstSuccessor - tNode.getNodeNumber()) / 2) % Node.maxNodeNumber;
+				}
+				int size = tNode.KVStore.size();
+				Enumeration<byte[]> e = tNode.KVStore.keys();
+				byte[] fileList = new byte[size*32];
+				byte[] file = new byte[32];
+				for(int i = 0; i < size; i++) {
+					file = e.nextElement();
+					for(int j = 0; j < 32; j++) {
+						fileList[32*i+j] = file[j];
+					}
+				}
+				response.buildInviteMessage(offeredNodeNumber, successors, tNode.KVStore.size(), fileList);
 				break;
 			}
 		}
@@ -375,6 +419,74 @@ public class Node {
 	 */
 	public int getNumberOfSuccessors() {
 		return successors.size();
+	}
+	
+	public int getFirstSuccessor() {
+		int upper = this.nodeNumber;
+		int lower = this.nodeNumber;
+		int nodeIndex = -1;
+
+		for(int j = 0; j < this.getNumberOfSuccessors(); j++){
+			if((upper - this.getNodeNumber()) % 256 > (this.getSuccessor(j).getNodeNumber() - this.getNodeNumber()) % 256) {
+				upper = this.getSuccessor(j).getNodeNumber();
+				nodeIndex = j;
+			}
+			
+		}
+		return nodeIndex;
+		 
+	}
+	
+	public int getIndexOfSuccessorThatCoversRangeOf(Byte[] key) {
+
+		int hashValue;
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		byte[] thedigest = md.digest(toPrimitives(key));
+		hashValue = ((int)thedigest[1]) * 16 + ((int)thedigest[0]);
+		int upper = this.nodeNumber;
+		int lower = this.nodeNumber;
+		int nodeIndex = -1;
+
+		for(int j = 0; j < this.getNumberOfSuccessors(); j++){
+			if((hashValue - lower) % 256 > (hashValue - this.getSuccessor(j).getNodeNumber()) % 256) {
+				lower = this.getSuccessor(j).getNodeNumber();
+				nodeIndex = j;
+			}
+			
+			if((upper - hashValue) % 256 > (this.getSuccessor(j).getNodeNumber() - hashValue) % 256) {
+				upper = this.getSuccessor(j).getNodeNumber();
+			}
+			
+		}
+		return nodeIndex;
+		 
+	}
+	
+
+	static public Byte[] toObjects(byte[] bytesPrim) {
+
+		Byte[] bytes = new Byte[bytesPrim.length];
+		int i = 0;
+		for (byte b : bytesPrim) bytes[i++] = b; //Autoboxing
+		return bytes;
+
+	}
+
+	static public byte[] toPrimitives(Byte[] oBytes)
+	{
+
+		byte[] bytes = new byte[oBytes.length];
+		for(int i = 0; i < oBytes.length; i++){
+			bytes[i] = oBytes[i];
+		}
+		return bytes;
+
 	}
 }
 
