@@ -332,11 +332,8 @@ public class Message {
 	 * @return					true if the message was built successfully
 	 */
 	public void buildEchoedPutRequestMessage(String originHostName, int originNodeNumber, Byte[] key, int valueLength, Byte[] value) {
-		
 		command = Codes.ECHOED_CMD;
 		echoedCommand = Codes.CMD_PUT;
-		rawData = new Byte[4 + 1 + 32 + 1 + valueLength];
-		int index = 0;
 		
 		// Get the IP of the origin
 		byte[] originIPbytes;
@@ -346,36 +343,64 @@ public class Message {
 			System.out.println("Message: Echoed Put Request-Message unknown host error");
 			return;
 		}
-		for (int i = 0; i < originIPbytes.length; i++) {
-			rawData[i] = Byte.valueOf(originIPbytes[i]);
+		
+		// Get the node number of the origin as an int
+		this.originNodeNumber = originNodeNumber;
+		
+		// Get the key as a Byte array
+		this.key = key;
+		
+		// Get the value length; int
+		this.valueLength = valueLength;
+		
+		// Get the value
+		this.value = new Byte[valueLength];
+		this.value = value;
+		
+		/*
+		 * Assemble the raw data from all of this info
+		 */
+		setUniqueID(Message.SEND_REQUEST);
+		int index = 0;
+		rawData = new Byte[uniqueID.length + 1 + 5 + 1 + key.length + 1 + valueLength];
+		
+		// Add the unique ID
+		for (int i = index; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
 		}
 		
-		// Get the node number of the origin, as an int and a byte
-		this.originNodeNumber = originNodeNumber;
-		rawData[originIPbytes.length] = Byte.valueOf(intToByteArray(originNodeNumber)[0]);
-		index = originIPbytes.length + 1;
+		// Add the command
+		rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
+		index = uniqueID.length + 1;
 		
-		// Get the key and add it to raw data
-		this.key = key;
+		// Add the origin: 4byte IP, then 1 byte node #
+		for (int i = index; i < originIPbytes.length + index; i++) {
+			rawData[i] = originIPbytes[i - index];
+		}
+		index = originIPbytes.length + index;
+		rawData[index] = Byte.valueOf(intToByteArray(originNodeNumber)[0]);
+		index += 1;
+		
+		// Add the key to be "put" to the raw data
 		for (int i = index; i < key.length + index; i++) {
 			rawData[i] = key[i-index];
 		}
 		index = key.length + index;
 		
-		// Get the value length
-		this.valueLength = valueLength;
+		// Add the value length
 		rawData[index] = Byte.valueOf(intToByteArray(valueLength)[0]);
 		index += 1;
 		
-		// Get the value
-		this.value = new Byte[valueLength];
-		this.value = value;
+		// Add the value 
 		for (int i = index; i < valueLength + index; i++) {
 			rawData[index] = value[i - index];
 		}
 	}
 		
 	public void buildEchoedRequestMessage(String originHostName, int originNodeNumber, Byte[] key) {
+		command = Codes.ECHOED_CMD;
+		echoedCommand = Codes.CMD_PUT;
+		rawData = new Byte[4 + 1 + 32];
 		
 		
 		
