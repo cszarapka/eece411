@@ -206,7 +206,7 @@ public class Node {
 			case Codes.CMD_SHUTDOWN:
 				System.exit(0);
 				break;
-			case Codes.INVITE_TO_JOIN:
+			case Codes.ADD_SUCCESSOR:
 				tNode.addSuccessor(new Successor(tMessage.hostName, ((int)Node.toPrimitives(tMessage.value)[1]) * 16 + ((int)Node.toPrimitives(tMessage.value)[0])));
 				break;
 			case Codes.REQUEST_TO_JOIN:
