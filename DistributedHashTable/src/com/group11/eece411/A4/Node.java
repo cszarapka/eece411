@@ -140,7 +140,7 @@ public class Node {
 			socket.close();
 		} catch (Exception e) {
 			System.out.println("Node: Sending a message failed.");
-			System.out.println("Exception: "+e);
+			e.printStackTrace();
 		}
 		return result;
 	}

@@ -92,6 +92,7 @@ public class Main {
 			
 			// set node number
 			node.nodeNumber = 0;
+			node.successors = new ArrayList<Successor>();
 			// what else needs to be done?
 			
 		}
