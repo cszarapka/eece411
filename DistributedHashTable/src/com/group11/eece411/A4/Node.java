@@ -52,7 +52,7 @@ public class Node {
 		boolean result = false;
 		this.nodeNumber = joinResponse.getNodeNumber();
 		this.successors = joinResponse.getSuccessorList();
-		// TODO: get files
+		
 
 		// Ensure the node number and successor list are correct
 		if (nodeNumber >= Node.minNodeNumber &&
