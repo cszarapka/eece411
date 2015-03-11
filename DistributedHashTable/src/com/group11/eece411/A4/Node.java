@@ -53,15 +53,16 @@ public class Node {
 		boolean result = false;
 		this.nodeNumber = joinResponse.getNodeNumber();
 		this.successors = joinResponse.getSuccessorList();
-
+		
+		
 		// go through each key to determine if it should be get
 		if(joinResponse.keys != null) {
 			for(int i = 0 ;joinResponse.keys.size() > i; i++){
 				Byte[] key = joinResponse.keys.get(i);
 				byte[] receiveData = new byte[15500];
-
-
-
+				
+				
+				
 				if(getIndexOfSuccessorThatCoversRangeOf(key) == -1){
 
 					//build message

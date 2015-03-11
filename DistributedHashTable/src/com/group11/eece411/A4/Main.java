@@ -111,6 +111,16 @@ public class Main {
 				}
 			}
 			node.joinTable(new Message(packet.getData()));
+			
+			Successor newSuccessor = new Successor(nodeList[addressToTry], new Message(packet.getData()).originNodeNumber);
+			node.successors.add(newSuccessor);
+			System.out.println("THESE ARE MY SUCCESSORS:" + node.successors.get(0).getHostName());
+			
+			message = new Message(node.getHostName(), 4003);
+			message.buildRequestMessage(Codes.ADD_SUCCESSOR);
+			Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);
+			
+			socket.setSoTimeout(10000);
 		} else {
 
 			// set node number
@@ -120,16 +130,19 @@ public class Main {
 
 		}
 
-
+		
 
 
 		while(true)
 		{
 			System.out.println("waiting to receive");
 			packet = new DatagramPacket(receiveData, receiveData.length);
+			System.out.println("Packet created");
 			socket.setSoTimeout(0);
 			socket.receive(packet);
+			System.out.println("Packet received");
 			message = new Message(packet.getData());
+			System.out.println("Message: "+message);
 			message.parseReceivedRequestMessage();
 			System.out.println(packet.getData());
 			message.originIP = Node.toObjects(packet.getAddress().getAddress());

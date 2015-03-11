@@ -124,7 +124,7 @@ public class Message {
 
 		int commandToUse = command;
 		int index = 17;
-		
+
 		// Check for an echoed command
 		if (command == Codes.ECHOED_CMD) {
 			originIP = Arrays.copyOfRange(rawData, index, index+4);
@@ -135,7 +135,7 @@ public class Message {
 
 		// Get the 32-byte key
 		key = Arrays.copyOfRange(rawData, index, (index + 32));
-		
+
 		// Get the value length and value if it's a put command
 		if (commandToUse == Codes.CMD_PUT) {
 			valueLength = bytesToValueLength((index + 33), (index + 32));
@@ -262,9 +262,10 @@ public class Message {
 	 * @return 	byte array value
 	 */
 	public byte[] getBuffer() {
-		System.out.println("getBuffer() rawData.length=" + rawData.length);
 		byte[] rawBytes = new byte[rawData.length];
+		System.out.println("getBuffer() rawData.length=" + rawData.length + " " + rawBytes.length);
 		for (int i = 0; i < rawData.length; i++) {
+			System.out.println("\n" + i);
 			rawBytes[i] = rawData[i].byteValue();
 		}
 		return rawBytes;
@@ -586,9 +587,9 @@ public class Message {
 		// get number of successors
 
 		int numSuccessors = 0;		
-	
+
 		if(!successors.isEmpty()) {
-			 numSuccessors = successors.size();
+			numSuccessors = successors.size();
 		} 
 
 		rawData = new Byte[16+1+5*numSuccessors];
@@ -635,15 +636,12 @@ public class Message {
 		int numSuccessors = 0;
 
 		if(!successors.isEmpty()) {
-			 numSuccessors = successors.size();
+			numSuccessors = successors.size();
 		} 
 
 		setUniqueID(Message.SEND_RESPONSE);
-
-		if(!successors.isEmpty()) {
-			 numSuccessors = successors.size();
-		} 
-		rawData = new Byte[16+1+5*numSuccessors+4+32*keyListLength];
+		
+		rawData = new Byte[16+1+1+1+5*numSuccessors+4+32*keyListLength];
 
 		for(int i = 0; i < 16; i++){
 			rawData[i] = uniqueID[i];
@@ -657,7 +655,7 @@ public class Message {
 
 
 		this.nodeNumber = offeredNodeNumber;
-		rawData[18] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
+		rawData[18] = (byte)(numSuccessors & 0xFF);
 
 		int BEGIN_SUCCESSORS = 19;
 		Byte[] nextSuccessorAddress = new Byte[4];
@@ -672,24 +670,30 @@ public class Message {
 			}
 
 			// puts the node number into a byte[]
-			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
+			Byte nextSuccessorNodeNum = (byte)(successors.get(i).getNodeNumber() & 0xFF);
 			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
 
+		
 		int BEGIN_KEY_LIST_LENGTH = BEGIN_SUCCESSORS + numSuccessors*5;
-
+		
 		// now get key list length and put it into value
 		int INT_LENGTH = 4;
+		ByteBuffer b = ByteBuffer.allocate(4);
+		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
+		b.putInt(keyListLength);
+		byte[] result = b.array();
+		
 		for(int i = 0; i < INT_LENGTH; i++){
-			rawData[BEGIN_KEY_LIST_LENGTH+i] = Byte.valueOf(ByteBuffer.allocate(1).putInt(keyListLength).array()[i]); 
+			rawData[BEGIN_KEY_LIST_LENGTH+i] = result[i]; 
 		}
 
-		int BEGIN_KEY_LIST = BEGIN_KEY_LIST_LENGTH + 4;
+		int BEGIN_KEY_LIST = BEGIN_KEY_LIST_LENGTH+4;
 		// get all key names and put into value
 
 		for(int i = 0; i < keyListLength; i++){
 			// copy key name
-			for(int k = 0; k < keyListLength; k++){
+			for(int k = 0; k < 32; k++){
 				rawData[BEGIN_KEY_LIST+i*32+k] = Byte.valueOf(keyNames[i*32+k]);
 			}
 		}	
