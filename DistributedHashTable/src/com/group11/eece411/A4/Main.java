@@ -23,7 +23,7 @@ public class Main {
 	//TODO: BYTE IS SIGNED SO THAT MIGHT FUCK SHIT UP
 
 	private static final boolean VERBOSE = true;
-	public static final int NUMBER_OF_NODES = 100;
+	public static final int NUMBER_OF_NODES = 5;
 	public static final int TIMEOUT = 10000;
 	public static int NODE_NUM;
 	public static int UPPER_RANGE;
@@ -48,10 +48,10 @@ public class Main {
 	      DatagramSocket dsocket = new DatagramSocket();
 	      dsocket.send(packet);
 	      dsocket.close();
-		
-		
-		*/
-		
+
+
+		 */
+
 		Node node = new Node(InetAddress.getLocalHost().getHostName());
 
 		//Parse the node list and store it in nodeList
@@ -84,42 +84,44 @@ public class Main {
 		DatagramSocket socket = new DatagramSocket(4003);
 		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 		Message message;
-		
+
 		if(args.length == 0) {	
-			
+
 			while(!foundDht) {
-	
+
 				if(++addressToTry == NUMBER_OF_NODES) {
 					addressToTry = 0;
 				}
-	
-				message = new Message(node.getHostName(), 4003);
-				message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
-				Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
-	
-	
-				socket.setSoTimeout(TIMEOUT);
-				packet = new DatagramPacket(receiveData, receiveData.length);
-				try {
-					//Node's living
-					socket.receive(packet);
-					foundDht = true;
-				} catch (SocketTimeoutException e) {
-					//Node's dead
+				String myName = InetAddress.getLocalHost().getHostName();
+				if(myName != nodeList[addressToTry]) {
+					message = new Message(node.getHostName(), 4003);
+					message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
+					Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
+
+
+					socket.setSoTimeout(TIMEOUT);
+					packet = new DatagramPacket(receiveData, receiveData.length);
+					try {
+						//Node's living
+						socket.receive(packet);
+						foundDht = true;
+					} catch (SocketTimeoutException e) {
+						//Node's dead
+					}
 				}
 			}
 			node.joinTable(new Message(packet.getData()));
 		} else {
-			
+
 			// set node number
 			node.nodeNumber = 0;
 			node.successors = new ArrayList<Successor>();
 			// what else needs to be done?
-			
+
 		}
 
-		
-		
+
+
 
 		while(true)
 		{
@@ -191,7 +193,7 @@ public class Main {
 	}*/
 
 
-/*
+	/*
 
 	@SuppressWarnings("deprecation")
 	private static void joinTable() throws IOException {
