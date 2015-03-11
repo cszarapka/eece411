@@ -125,6 +125,7 @@ public class Main {
 		{
 			System.out.println("waiting to receive");
 			packet = new DatagramPacket(receiveData, receiveData.length);
+			socket.setSoTimeout(0);
 			socket.receive(packet);
 			message = new Message(packet.getData());
 			message.parseReceivedRequestMessage();
