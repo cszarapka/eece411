@@ -119,8 +119,6 @@ public class Main {
 			message = new Message(node.getHostName(), 4003);
 			message.buildRequestMessage(Codes.ADD_SUCCESSOR);
 			Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);
-			
-			socket.setSoTimeout(10000);
 		} else {
 
 			// set node number
@@ -136,6 +134,13 @@ public class Main {
 		while(true)
 		{
 			System.out.println("waiting to receive");
+			try{
+
+				System.out.println("THESE ARE MY SUCCESSORS:" + node.successors.get(0).getHostName());
+			} catch (IndexOutOfBoundsException e){
+				//welp nothing to print
+			}
+			
 			packet = new DatagramPacket(receiveData, receiveData.length);
 			System.out.println("Packet created");
 			socket.setSoTimeout(0);
