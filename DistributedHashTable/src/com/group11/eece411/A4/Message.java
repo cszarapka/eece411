@@ -17,7 +17,7 @@ public class Message {
 
 	// The raw data received 
 	public Byte[] rawData;
-	
+
 	public String hostName;
 	public int port;
 
@@ -32,13 +32,13 @@ public class Message {
 	public ArrayList<Byte[]> keys;
 	public int valueLength;
 	public Byte[] value;
-	
+
 	public Byte[] originIP = new Byte[4];
 	public int originNodeNumber;
-	
+
 	public static final int MESSAGE_TYPE_POSITION = 7;
 	public static final int COMMAND_POSITION = 16;
-	
+
 	// Values appended to these messages for our own purposes:
 	public Byte[] successorHostNames;
 	public Byte[] successorNodeNumbers;
@@ -85,7 +85,7 @@ public class Message {
 		uniqueID = Arrays.copyOfRange(rawData, 0, 16);
 		System.out.println("uniqueID: " + uniqueID.toString());
 		System.out.println("uniqueID length: " + uniqueID.length);
-		
+
 		this.originIP = Arrays.copyOfRange(rawData, 0, 4);
 
 		// Get the message type, as an int
@@ -95,17 +95,17 @@ public class Message {
 		// Get the command code, as an int
 		command = rawData[COMMAND_POSITION].intValue();
 		System.out.println("Command: " + command);
-		
-		
+
+
 
 		// Parse the message based on whether it is a request or response
 		switch (messageType) {
 		case Message.RECEIVED_REQUEST: parseReceivedRequestMessage();
-			break;
+		break;
 		case Message.RECEIVED_RESPONSE: parseReceivedResponseMessage();
-			break;
+		break;
 		//case Message.RECEIVED_UPDATE: parseReceivedUpdateMessage();
-			//break;
+		//break;
 		}
 	}
 
@@ -115,19 +115,27 @@ public class Message {
 	 * message format details.
 	 */
 	public void parseReceivedRequestMessage() {
-		
+
 		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.GET_SUCCESSOR_LIST) {
 			// nothing left to parse
+			// command is either get, remove, put, or an echo of these
 			return;
 		}
 
-		
 		int commandToUse = command;
 		int index = 17;
+		
+		// Check for an echoed command
+		if (command == Codes.ECHOED_CMD) {
+			originIP = Arrays.copyOfRange(rawData, index, index+4);
+			echoedCommand = rawData[index+4].intValue();
+			index += 5;
+			commandToUse = echoedCommand;
+		}
 
 		// Get the 32-byte key
 		key = Arrays.copyOfRange(rawData, index, (index + 32));
-
+		
 		// Get the value length and value if it's a put command
 		if (commandToUse == Codes.CMD_PUT) {
 			valueLength = bytesToValueLength((index + 33), (index + 32));
@@ -147,21 +155,21 @@ public class Message {
 			// Get the number of successors following
 			int numSuccessors = rawData[COMMAND_POSITION+1].intValue();
 			final int BEGIN_SUCCESSORS = COMMAND_POSITION+2;
-			
+
 			// Get each successor
 			for(int i = 0; i < numSuccessors; i++){
-				
+
 				// Get each of the four bytes of the IP address, offset by the number of successors already received
 				for(int k = 0; k < 4; k++){
 					successorHostNames[i] = rawData[BEGIN_SUCCESSORS+k+i*5];
 				}
-				
+
 				// Get the node number, which is 4 past the beginning of the node, then offset 
 				//by the number of successor infomation already received
 				successorNodeNumbers[i] = rawData[BEGIN_SUCCESSORS+4+i*5];
 			}
 		}
-		
+
 		// Check for an invite to join message
 		if (command == Codes.ADD_SUCCESSOR) {
 			final int BEGIN_SUCCESSORS = COMMAND_POSITION+1;
@@ -172,21 +180,19 @@ public class Message {
 			successorNodeNumbers[0] =rawData[BEGIN_SUCCESSORS+5];
 			return;
 		}
-		
+
 		int commandToUse = command;
 		// Check for an echoed command
 		if (command == Codes.ECHOED_CMD) {
-			//originIP = new Byte[4];
-			//originIP = Arrays.copyOfRange(rawData, index, index+4);
-			originNodeNumber = rawData[index+4].intValue();
-			echoedCommand = rawData[index+5].intValue();
-			index += 6;
+			originIP = Arrays.copyOfRange(rawData, index, index+4);
+			echoedCommand = rawData[index+4].intValue();
+			index += 5;
 			commandToUse = echoedCommand;
 		}
-		
+
 		// get the response code
 		responseCode = rawData[index].intValue();
-		
+
 		// If it is a successful GET command, read the value
 		if (commandToUse == Codes.CMD_GET && responseCode == Codes.SUCCESS) {
 			valueLength = bytesToValueLength(index+2, index+1);
@@ -207,7 +213,7 @@ public class Message {
 		}
 		return returnValue;
 	}
-	
+
 	/**
 	 * returns the node number assigned
 	 * @return assigned node number
@@ -215,39 +221,39 @@ public class Message {
 	public int getNodeNumber() {
 		return nodeNumber;
 	}
-	
-	
+
+
 	/**
 	 * returns an ArrayList of all the successors
 	 * @return all the successors
 	 */
 	public ArrayList<Successor> getSuccessorList() {
 		ArrayList<Successor> als = new ArrayList<Successor>();
-		
+
 		// get number of successors
 		int numSuccessors = successorNodeNumbers.length;
-		
+
 		byte[] host = new byte[4];
 		for(int i = 0; i < numSuccessors; i++){
 			// get the Bytes for the ith successor's ip
 			for(int k = 0; k < 4; k++){
 				// offset by 4 per iteration
 				host[k] = successorHostNames[k+i*4].byteValue();
-				
+
 			}
-			
+
 			// convert the Byte of the successor's node number
 			int nodeNum = successorNodeNumbers[i].intValue();
-			
+
 			//TODO convert host to string representation
 			hostName = getIpAddress(host);
 			Successor success = new Successor(hostName, nodeNum);
 			als.add(success);
 		}
-		
+
 		return als;
 	}
-	
+
 	/**
 	 * Returns the byte array representation of Message.rawData
 	 * @return 	byte array value
@@ -260,7 +266,7 @@ public class Message {
 		}
 		return rawBytes;
 	}
-	
+
 	/**
 	 * Returns the length of the buffer
 	 * @return	buffer length
@@ -268,11 +274,11 @@ public class Message {
 	public int getBufferLength() {
 		return rawData.length;
 	}
-	
+
 	/*
 	 * The building of the request messages
 	 */
-	
+
 	/**
 	 * Builds a message to be sent based on the type specified and the
 	 * values passed and assembles the raw data to be sent.
@@ -281,10 +287,10 @@ public class Message {
 	public boolean buildRequestMessage(int command) {
 		// Set the unique ID
 		setUniqueID(Message.SEND_REQUEST);
-		
+
 		// Set the command
 		this.command = command;
-		
+
 		if (command == Codes.CMD_SHUTDOWN || command == Codes.REQUEST_TO_JOIN || command == Codes.GET_SUCCESSOR_LIST) {
 			// nothing left to add to the message
 			// assemble the raw data, length is uniqueID.length + 1
@@ -297,14 +303,14 @@ public class Message {
 		}
 		return false;
 	}
-	
+
 	public void buildAppLevelRequestMessage(int command, Byte[] key) {
 		// Set the unique ID
 		setUniqueID(Message.SEND_REQUEST);
-		
+
 		// set the command
 		this.command = command;
-		
+
 		if (command == Codes.CMD_GET || command == Codes.CMD_REMOVE) {
 			// add the key to the message
 			this.key = key;
@@ -319,8 +325,8 @@ public class Message {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Builds an echoed put request-message with the specified fields.
 	 * Assembles the raw data to be sent.
@@ -373,7 +379,7 @@ public class Message {
 			rawData[i] = originIPbytes[i - index];
 		}
 		index = originIPbytes.length + index;
-		
+
 		// Add the echoed command (this is the original command from Matei)
 		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
 
@@ -392,7 +398,7 @@ public class Message {
 			rawData[index] = value[i - index];
 		}
 	}
-	
+
 	/**
 	 * Builds an echoed GET or REMOVE request-message
 	 * @param uniqueID		the unique ID to put at the front of this message
@@ -406,7 +412,7 @@ public class Message {
 			System.out.println("You passed me a command I don't accept: " + command);
 			return;
 		}
-		
+
 		this.command = Codes.ECHOED_CMD;
 		this.echoedCommand = command;
 
@@ -416,14 +422,14 @@ public class Message {
 		for (int i = 0; i < originIPbytes.length; i++) {
 			this.originIP[i] = Byte.valueOf(originIPbytes[i]);
 		}
-		
+
 		// Get the key as a Byte array
 		this.key = key;
-		
+
 		/*
 		 * Assemble the raw data
 		 */
-		
+
 		setUniqueID(uniqueID);
 		int index = 0;
 		rawData = new Byte[uniqueID.length + 1 + 4 + 1 + key.length];
@@ -442,7 +448,7 @@ public class Message {
 			rawData[i] = originIPbytes[i - index];
 		}
 		index = originIPbytes.length + index;
-		
+
 		// Add the echoed command (this is the original command from Matei)
 		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
 
@@ -461,7 +467,7 @@ public class Message {
 			System.out.println("You passed me a command I don't accept: " + command);
 			return;
 		}
-		
+
 		this.command = Codes.ECHOED_CMD;
 		this.echoedCommand = command;
 
@@ -471,11 +477,11 @@ public class Message {
 		for (int i = 0; i < originIPbytes.length; i++) {
 			this.originIP[i] = Byte.valueOf(originIPbytes[i]);
 		}
-		
+
 		/*
 		 * Assemble the raw data
 		 */
-		
+
 		setUniqueID(uniqueID);
 		int index = 0;
 		rawData = new Byte[uniqueID.length + 1 + 4 + 1 + key.length];
@@ -494,7 +500,7 @@ public class Message {
 			rawData[i] = originIPbytes[i - index];
 		}
 		index = originIPbytes.length + index;
-		
+
 		// Add the echoed command (this is the original command from Matei)
 		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
 	}
@@ -502,27 +508,27 @@ public class Message {
 	/*
 	 * The building of the response messages
 	 */
-	
+
 	public boolean buildWireResponseMessage(int command, int responseCode) {
 		if (command == Codes.CMD_PUT || command == Codes.CMD_REMOVE || command == Codes.CMD_SHUTDOWN) {
 			setUniqueID(Message.SEND_RESPONSE);
 			this.command = command;
 			this.responseCode = responseCode;
-			
+
 			rawData = new Byte[16+1];
-			
+
 			// assemble unique id and response
 			for(int i = 0; i < 16; i++){
 				rawData[i] = uniqueID[i];
 			}
-			
+
 			rawData[16] = Byte.valueOf((byte) (responseCode & 0xFF));
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Builds a response message to the GET request
 	 * @param responseCode response code for the request
@@ -544,26 +550,26 @@ public class Message {
 			rawData[i] = uniqueID[i];
 		}
 		rawData[16] = Byte.valueOf((byte) (responseCode & 0xFF));
-		
-		
-		
+
+
+
 		// something to send
 		if(valueLength != 0 && value != null) {
 			// put value length
 			for(int i = 0; i < 4; i++){
 				rawData[i+17] = Byte.valueOf(ByteBuffer.allocate(4).putInt(valueLength).array()[i]);
 			}
-			
+
 			for(int i = 0; i < valueLength; i++){
 				rawData[21+i] = value[i];
 			}
-			
+
 			//put value
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * builds a message to return a successor list in format:
 	 * 1B	num successors
@@ -576,17 +582,17 @@ public class Message {
 		setUniqueID(Message.SEND_RESPONSE);
 		// get number of successors
 		int numSuccessors = successors.size();
-		
+
 		rawData = new Byte[16+1+5*numSuccessors];
 		for(int i = 0; i < 16; i++){
 			rawData[i] = uniqueID[i];
 		}
-		
+
 		this.responseCode = Codes.SUCCESS;
 		rawData[16] = Byte.valueOf(intToByteArray(this.responseCode)[0]);
-		
+
 		rawData[17] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
-		
+
 		int BEGIN_SUCCESSORS = 16;
 		Byte[] nextSuccessorAddress = new Byte[4];
 		// put data into successor message
@@ -594,18 +600,18 @@ public class Message {
 			for(int k = 0; k < 4; k++){
 				nextSuccessorAddress[k] = Byte.valueOf(successors.get(i).getInetAddress().getAddress()[k]);
 			}
-			
+
 			for(int k = 0; k < nextSuccessorAddress.length; k++){
 				rawData[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
 			}
-			
+
 			// puts the node number into a byte[]
 			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
 			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
-		
+
 	}
-	
+
 	/**
 	 * builds a message to respond to a  table invite request
 	 * @param offeredNodeNumber the node number to be offered
@@ -618,26 +624,26 @@ public class Message {
 		/*| command | offered node # | # of successors |  successors  | file list length | hashed file names (file list) |
 		 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |      up to 32 bytes each	  |
 		 */ 
-		
+
 		setUniqueID(Message.SEND_RESPONSE);
 
 		int numSuccessors = successors.size();
 		rawData = new Byte[16+1+5*numSuccessors+4+32*keyListLength];
-		
+
 		for(int i = 0; i < 16; i++){
 			rawData[i] = uniqueID[i];
 		}
-		
+
 		this.responseCode = Codes.SUCCESS;
 		rawData[16] = Byte.valueOf(intToByteArray(this.responseCode)[0]);
-		
-		
+
+
 		rawData[17] = Byte.valueOf(intToByteArray(offeredNodeNumber)[0]);
-		
-		
+
+
 		this.nodeNumber = offeredNodeNumber;
 		rawData[18] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
-		
+
 		int BEGIN_SUCCESSORS = 19;
 		Byte[] nextSuccessorAddress = new Byte[4];
 		// put data into successor message
@@ -645,27 +651,27 @@ public class Message {
 			for(int k = 0; k < 4; k++){
 				nextSuccessorAddress[k] = Byte.valueOf(successors.get(i).getInetAddress().getAddress()[k]);
 			}
-			
+
 			for(int k = 0; k < nextSuccessorAddress.length; k++){
 				rawData[BEGIN_SUCCESSORS+k+i*5] = nextSuccessorAddress[k];
 			}
-			
+
 			// puts the node number into a byte[]
 			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
 			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
-		
+
 		int BEGIN_KEY_LIST_LENGTH = BEGIN_SUCCESSORS + numSuccessors*5;
-		
+
 		// now get key list length and put it into value
 		int INT_LENGTH = 4;
 		for(int i = 0; i < INT_LENGTH; i++){
 			rawData[BEGIN_KEY_LIST_LENGTH+i] = Byte.valueOf(ByteBuffer.allocate(1).putInt(keyListLength).array()[i]); 
 		}
-		
+
 		int BEGIN_KEY_LIST = BEGIN_KEY_LIST_LENGTH + 4;
 		// get all key names and put into value
-		
+
 		for(int i = 0; i < keyListLength; i++){
 			// copy key name
 			for(int k = 0; k < keyListLength; k++){
@@ -673,14 +679,14 @@ public class Message {
 			}
 		}	
 	}
-	
-	
+
+
 	/*
 	 * The building of the update messages
 	 */
-	
-	
-	
+
+
+
 	/**
 	 * Generates the unique ID
 	 * @param hostName		the host name of the sending host
@@ -696,17 +702,17 @@ public class Message {
 			System.out.println("Unknown host name in Generate Unique ID");
 			return null;
 		}
-		
+
 		// Convert the port into a 2 byte array
 		byte[] portBytes = intToByteArray(port);
-		
+
 		// Generate the random byte
 		Random rand = new Random();
 		byte randomByte = (byte) rand.nextInt(255);
-		
+
 		// Get the time stamp
 		byte[] timeStampBytes = longToByteArray(System.currentTimeMillis());
-		
+
 		// Put it all together
 		byte[] returnValue = new byte[16];
 		returnValue[0] = ip[0];
@@ -725,17 +731,17 @@ public class Message {
 		returnValue[13] = timeStampBytes[5];
 		returnValue[14] = timeStampBytes[6];
 		returnValue[15] = timeStampBytes[7];
-		
+
 		return returnValue;
 	}
-	
+
 	public void setUniqueID(Byte[] id) {
-		
+
 		for (int i = 0; i < Byte.SIZE; i++) {
 			this.uniqueID[i] = id[i];
 		}
 	}
-	
+
 	private void setUniqueID(int messageType) {
 		byte[] temp = generateUniqueID(messageType);
 		this.messageType = messageType;
@@ -743,7 +749,7 @@ public class Message {
 			this.uniqueID[i] = Byte.valueOf(temp[i]);
 		}
 	}
-	
+
 
 	/**
 	 * Returns the integer value of 2 bytes in rawData
@@ -754,33 +760,33 @@ public class Message {
 	private int bytesToValueLength(int msb, int lsb) {
 		return (rawData[msb].intValue() << 8) + rawData[lsb].intValue();
 	}
-	
+
 	public static int byteArrayToInt(byte[] b) {
-	    final ByteBuffer bb = ByteBuffer.wrap(b);
-	    bb.order(ByteOrder.LITTLE_ENDIAN);
-	    return bb.getInt();
+		final ByteBuffer bb = ByteBuffer.wrap(b);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		return bb.getInt();
 	}
-	
+
 	public static byte[] intToByteArray(int i) {
-	    final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
-	    bb.order(ByteOrder.LITTLE_ENDIAN);
-	    bb.putInt(i);
-	    return bb.array();
+		final ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.putInt(i);
+		return bb.array();
 	}
-	
+
 	public static long byteArrayToLong(byte[] b) {
-	    final ByteBuffer bb = ByteBuffer.wrap(b);
-	    bb.order(ByteOrder.LITTLE_ENDIAN);
-	    return bb.getLong();
+		final ByteBuffer bb = ByteBuffer.wrap(b);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		return bb.getLong();
 	}
-	
+
 	public static byte[] longToByteArray(long i) {
-	    final ByteBuffer bb = ByteBuffer.allocate(Long.SIZE / Byte.SIZE);
-	    bb.order(ByteOrder.LITTLE_ENDIAN);
-	    bb.putLong(i);
-	    return bb.array();
+		final ByteBuffer bb = ByteBuffer.allocate(Long.SIZE / Byte.SIZE);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.putLong(i);
+		return bb.array();
 	}
-	
+
 
 	/**
 	 * Reads the value from message's raw data into the local
@@ -793,7 +799,7 @@ public class Message {
 			value[i] = rawData[i + offset];
 		}
 	}
-	
+
 	/**
 	 * returns a string representation of an IP address
 	 * @param rawBytes the data to be converted into an IP address
