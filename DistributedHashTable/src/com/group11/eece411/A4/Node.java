@@ -348,7 +348,7 @@ public class Node {
 		private final int WAIT_TIME = 10000;
 		private boolean forever = true;
 		private final int SEND_PORT = 4003;
-		private final int RECEIVE_PORT = 4003;
+		private final int RECEIVE_PORT = 4009;
 		private final int TIMEOUT = 5000;
 		private ArrayList<Successor> ss = new ArrayList<Successor>();
 		ArrayList<Successor> successorCopy = new ArrayList<Successor>();
@@ -363,16 +363,16 @@ public class Node {
 				}
 
 				// lock successors list
-				synchronized(successors){
+				synchronized(Node.successors){
 
 					// check status of successors iteratively
-					int numSuccessors = successors.size();
+					int numSuccessors = Node.successors.size();
 					for(int i = 0; i < numSuccessors; i++){
 						// build and send message to successor i
 						Message msg = new Message(hostName, SEND_PORT);
-						msg.buildReturnSuccessors(successors);
+						msg.buildRequestMessage(Codes.GET_SUCCESSOR_LIST);
 						//try to send message
-						sendMessage(msg, successors.get(i).getInetAddress(), SEND_PORT);
+						sendMessage(msg, Node.successors.get(i).getInetAddress(), SEND_PORT);
 
 
 
@@ -389,22 +389,21 @@ public class Node {
 							Message receivedMessage = new Message(receiveData);
 							receivedMessage.parseReceivedResponseMessage();
 
-							// get the successor's successorlist
-							for(int l = 0; l < receivedMessage.getSuccessorList().size(); l++){
-								ss.add(receivedMessage.getSuccessorList().get(l));
+							// ADD SUCCESSORS'S SUCCESSORS IF THEY AREN'T ON THIS NODE'S SUCCESSOR LIST
 
-							}
-							// TODO ADD SUCCESSORS'S SUCCESSORS IF THEY AREN'T ON THIS NODE'S SUCCESSOR LIST
-
+							
+							
 							// get all the current node nums
 							ArrayList<Integer> successorNodeNums = new ArrayList<Integer>();
-							for(int p = 0; p < successors.size(); p++){
-								successorNodeNums.add(successors.get(p).getNodeNumber());
+							for(int p = 0; p < Node.successors.size(); p++){
+								successorNodeNums.add(Node.successors.get(p).getNodeNumber());
 							}
-
+							
+							
+							System.out.println("IM BEFORE PARSING SUCCESSORS" + receivedMessage.getSuccessorList().size());
 							// add successors if their node number isn't in the list already
 							for(int p = 0; p < receivedMessage.getSuccessorList().size(); p++){
-
+								System.out.println("THE MOTHERFUCKER HAS THIS ON HIS SUCCESSOR LIST: " + receivedMessage.getSuccessorList().get(p).getHostName());
 								//check if the list doesn't contain the node with that number yet
 								if(!successorNodeNums.contains(receivedMessage.getSuccessorList().get(p).getNodeNumber())){
 									//if not then add it to the successor list
@@ -412,14 +411,14 @@ public class Node {
 									String newSuccessorHostname = receivedMessage.getSuccessorList().get(p).getHostName();
 									int newSuccessorNodeNum = receivedMessage.getSuccessorList().get(p).getNodeNumber();
 									Successor newSuccessor = new Successor(newSuccessorHostname, newSuccessorNodeNum);
-									successors.add(newSuccessor);
+									Node.successors.add(newSuccessor);
 								}
 								// if already exists then do nothing
 							}
 
 						} catch (SocketTimeoutException e){
 							// remove successor because it is dead
-							successors.remove(i);
+							Node.successors.remove(i);
 						} catch (SocketException e) {
 							// continue on
 							// TODO remove successor?
@@ -438,8 +437,8 @@ public class Node {
 					}
 				}
 				try{
-					for(int i = 0; i < successors.size(); i++) {
-						System.out.println("THESE ARE MY SUCCESSORS:" + successors.get(i).getHostName());
+					for(int i = 0; i < Node.successors.size(); i++) {
+						System.out.println("THESE ARE MY SUCCESSORS:" + Node.successors.get(i).getHostName());
 					}
 				} catch (IndexOutOfBoundsException e){
 					//welp nothing to print

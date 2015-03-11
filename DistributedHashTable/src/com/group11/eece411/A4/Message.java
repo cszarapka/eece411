@@ -161,7 +161,7 @@ public class Message {
 
 				// Get each of the four bytes of the IP address, offset by the number of successors already received
 				for(int k = 0; k < 4; k++){
-					successorHostNames[i] = rawData[BEGIN_SUCCESSORS+k+i*5];
+					successorHostNames[i*4+k] = rawData[BEGIN_SUCCESSORS+k+i*5];
 				}
 
 				// Get the node number, which is 4 past the beginning of the node, then offset 
@@ -229,11 +229,12 @@ public class Message {
 	 */
 	public ArrayList<Successor> getSuccessorList() {
 		ArrayList<Successor> als = new ArrayList<Successor>();
-
+		
 		// get number of successors
 		int numSuccessors = 0;
 		if(successorNodeNumbers != null) {
-			numSuccessors = successorNodeNumbers.length;
+			//numSuccessors = successorNodeNumbers.length;
+			numSuccessors = rawData[COMMAND_POSITION+1].intValue();
 		}
 
 		byte[] host = new byte[4];
@@ -606,7 +607,7 @@ public class Message {
 			numSuccessors = successors.size();
 		} 
 
-		rawData = new Byte[16+1+5*numSuccessors];
+		rawData = new Byte[16+1+1+5*numSuccessors];
 		for(int i = 0; i < 16; i++){
 			rawData[i] = uniqueID[i];
 		}
@@ -616,7 +617,7 @@ public class Message {
 
 		rawData[17] = Byte.valueOf(intToByteArray(numSuccessors)[0]);
 
-		int BEGIN_SUCCESSORS = 16;
+		int BEGIN_SUCCESSORS = 18;
 		Byte[] nextSuccessorAddress = new Byte[4];
 		// put data into successor message
 		for(int i = 0; i < numSuccessors; i++){
@@ -629,7 +630,7 @@ public class Message {
 			}
 
 			// puts the node number into a byte[]
-			Byte nextSuccessorNodeNum = Byte.valueOf(ByteBuffer.allocate(1).putInt(successors.get(i).getNodeNumber()).array()[0]);
+			Byte nextSuccessorNodeNum = Byte.valueOf((byte)(successors.get(i).getNodeNumber() & 0xFF));
 			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
 
