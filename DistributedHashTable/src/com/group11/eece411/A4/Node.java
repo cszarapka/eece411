@@ -249,9 +249,11 @@ public class Node {
 			case Codes.CMD_REMOVE:
 				n = tNode.getIndexOfSuccessorThatCoversRangeOf(tMessage.key);
 				if(n == -1) {
-					boolean value = tNode.KVStore.remove(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
+					//boolean value = tNode.KVStore.remove(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
+					byte[] value = tNode.KVStore.remove(toPrimitives(tMessage.key));
+					
 					Message response = new Message(tNode.getHostName(), 4003);
-					if(!value) {
+					if(value == null) {
 						response.buildWireResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0);
 					} else {
 						response.buildWireResponseMessage(Codes.CMD_REMOVE,Codes.SUCCESS);
