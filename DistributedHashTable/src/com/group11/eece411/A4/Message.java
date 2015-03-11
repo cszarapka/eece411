@@ -306,6 +306,20 @@ public class Message {
 			return true;
 		}
 		return false;
+		
+	}
+	
+	public boolean buildAddSuccessorMessage(int nodeNum) {
+		
+		setUniqueID(Message.SEND_REQUEST);
+		this.command = Codes.ADD_SUCCESSOR;
+		rawData = new Byte[uniqueID.length + 2];
+		for (int i = 0; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
+		}
+		rawData[16] = Byte.valueOf(intToByteArray(command)[0]);
+		rawData[17] = (byte)(nodeNum & 0xFF);
+		return true;
 	}
 
 	public void buildAppLevelRequestMessage(int command, Byte[] key) {

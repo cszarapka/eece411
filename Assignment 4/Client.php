@@ -32,14 +32,15 @@ echo "\nMessage To server:  ".$message."\n";
 // create socket
 $socket = socket_create(AF_INET, SOCK_DGRAM, 0) or die("Could not create socket\n");
 
+socket_bind($socket, "0.0.0.0", $port);
+
 // send string to server
 socket_sendto($socket, $message, strlen($message), 0x00,$host, $port) or die("Could not send data to server\n");
 
 // get server response
-socket_recvfrom($socket, $result, 2048, 0,$a, $b) or die("Could not read server response\n");
+socket_recvfrom($socket, $result, 2048, 0, $a, $b) or die("Could not read server response\n");
 
 //parse server response
-$messageID = substr($result,0,16);
 $responseArray = unpack('H',substr($result,16,1));
 $returnStatus = $responseArray[1];
 if($command == "get" and $returnStatus == 0) {
