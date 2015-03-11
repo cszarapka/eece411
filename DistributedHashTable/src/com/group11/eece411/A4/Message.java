@@ -33,7 +33,7 @@ public class Message {
 	public int valueLength;
 	public Byte[] value;
 	
-	public Byte[] originIP;
+	public Byte[] originIP = new Byte[4];
 	public int originNodeNumber;
 	
 	public static final int MESSAGE_TYPE_POSITION = 7;
@@ -321,6 +321,184 @@ public class Message {
 	}
 	
 	
+	/**
+	 * Builds an echoed put request-message with the specified fields.
+	 * Assembles the raw data to be sent.
+	 * @param uniqueID			the unique ID to put at the front of this message
+	 * @param originAddress 	the IP address of the node who started the request
+	 * @param key 				the key of value to be put
+	 * @param valueLength 		the length of the value to be put
+	 * @param value 			the value to be put
+	 */
+	public void buildEchoedPutRequestMessage(Byte[] uniqueID, InetAddress originAddress, Byte[] key, int valueLength, Byte[] value) {
+		command = Codes.ECHOED_CMD;
+		echoedCommand = Codes.CMD_PUT;
+
+		// Get the IP of the origin
+		byte[] originIPbytes = originAddress.getAddress();
+		// Do the stupid byte - Byte transfer.
+		for (int i = 0; i < originIPbytes.length; i++) {
+			this.originIP[i] = Byte.valueOf(originIPbytes[i]);
+		}
+
+		// Get the key as a Byte array
+		this.key = key;
+
+		// Get the value length; int
+		this.valueLength = valueLength;
+
+		// Get the value
+		this.value = new Byte[valueLength];
+		this.value = value;
+
+		/*
+		 * Assemble the raw data from all of this info
+		 */
+
+		setUniqueID(uniqueID);
+		int index = 0;
+		rawData = new Byte[uniqueID.length + 1 + 4 + 1 + key.length + 1 + valueLength];
+
+		// Add the unique ID
+		for (int i = index; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
+		}
+
+		// Add the command
+		rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
+		index = uniqueID.length + 1;
+
+		// Add the origin: 4byte IP
+		for (int i = index; i < originIPbytes.length + index; i++) {
+			rawData[i] = originIPbytes[i - index];
+		}
+		index = originIPbytes.length + index;
+		
+		// Add the echoed command (this is the original command from Matei)
+		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
+
+		// Add the key to be "put" to the raw data
+		for (int i = index; i < key.length + index; i++) {
+			rawData[i] = key[i-index];
+		}
+		index = key.length + index;
+
+		// Add the value length
+		rawData[index] = Byte.valueOf(intToByteArray(valueLength)[0]);
+		index += 1;
+
+		// Add the value
+		for (int i = index; i < valueLength + index; i++) {
+			rawData[index] = value[i - index];
+		}
+	}
+	
+	/**
+	 * Builds an echoed GET or REMOVE request-message
+	 * @param uniqueID		the unique ID to put at the front of this message
+	 * @param originAddress the IP address of the node who started the request
+	 * @param command 		either GET or REMOVE
+	 * @param key 			the key of the value to get or remove
+	 */
+	public void buildEchoedAppLevelRequestMessage(Byte[] uniqueID, InetAddress originAddress, int command, Byte[] key) {
+		if (command != Codes.CMD_GET || command != Codes.CMD_REMOVE) {
+			System.out.println("Message: buildEchoedAppLevelRequestMessage:");
+			System.out.println("You passed me a command I don't accept: " + command);
+			return;
+		}
+		
+		this.command = Codes.ECHOED_CMD;
+		this.echoedCommand = command;
+
+		// Get the IP of the origin
+		byte[] originIPbytes = originAddress.getAddress();
+		// Do the stupid byte - Byte transfer.
+		for (int i = 0; i < originIPbytes.length; i++) {
+			this.originIP[i] = Byte.valueOf(originIPbytes[i]);
+		}
+		
+		// Get the key as a Byte array
+		this.key = key;
+		
+		/*
+		 * Assemble the raw data
+		 */
+		
+		setUniqueID(uniqueID);
+		int index = 0;
+		rawData = new Byte[uniqueID.length + 1 + 4 + 1 + key.length];
+
+		// Add the unique ID
+		for (int i = index; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
+		}
+
+		// Add the command
+		rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
+		index = uniqueID.length + 1;
+
+		// Add the origin: 4byte IP
+		for (int i = index; i < originIPbytes.length + index; i++) {
+			rawData[i] = originIPbytes[i - index];
+		}
+		index = originIPbytes.length + index;
+		
+		// Add the echoed command (this is the original command from Matei)
+		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
+
+		// Add the key to be "put" to the raw data
+		for (int i = index; i < key.length + index; i++) {
+			rawData[i] = key[i-index];
+		}
+		index = key.length + index;
+
+	}
+
+
+	public void buildEchoedShutdownRequestMessage(Byte[] uniqueID, InetAddress originAddress, int command) {
+		if (command != Codes.CMD_SHUTDOWN) {
+			System.out.println("Message: buildEchoedShutdownRequestMessage:");
+			System.out.println("You passed me a command I don't accept: " + command);
+			return;
+		}
+		
+		this.command = Codes.ECHOED_CMD;
+		this.echoedCommand = command;
+
+		// Get the IP of the origin
+		byte[] originIPbytes = originAddress.getAddress();
+		// Do the stupid byte - Byte transfer.
+		for (int i = 0; i < originIPbytes.length; i++) {
+			this.originIP[i] = Byte.valueOf(originIPbytes[i]);
+		}
+		
+		/*
+		 * Assemble the raw data
+		 */
+		
+		setUniqueID(uniqueID);
+		int index = 0;
+		rawData = new Byte[uniqueID.length + 1 + 4 + 1 + key.length];
+
+		// Add the unique ID
+		for (int i = index; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
+		}
+
+		// Add the command
+		rawData[uniqueID.length] = Byte.valueOf(intToByteArray(command)[0]);
+		index = uniqueID.length + 1;
+
+		// Add the origin: 4byte IP
+		for (int i = index; i < originIPbytes.length + index; i++) {
+			rawData[i] = originIPbytes[i - index];
+		}
+		index = originIPbytes.length + index;
+		
+		// Add the echoed command (this is the original command from Matei)
+		rawData[index] = Byte.valueOf(intToByteArray(echoedCommand)[0]);
+	}
+
 	/*
 	 * The building of the response messages
 	 */
