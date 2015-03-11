@@ -330,6 +330,16 @@ public class Message {
 			setUniqueID(Message.SEND_RESPONSE);
 			this.command = command;
 			this.responseCode = responseCode;
+			
+			rawData = new Byte[16+1];
+			
+			// assemble unique id and response
+			for(int i = 0; i < 16; i++){
+				rawData[i] = uniqueID[i];
+			}
+			
+			rawData[16] = Byte.valueOf((byte) (responseCode & 0xFF));
+			
 			return true;
 		}
 		return false;

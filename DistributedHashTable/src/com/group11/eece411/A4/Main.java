@@ -31,21 +31,26 @@ public class Main {
 	public static int i = 0;
 
 	public static void main(String [] args) throws IOException {
+		/*
+			String host = "planetlab2.cs.ubc.ca";
+	      int port = 4003;
+
+	      byte[] message = "Java Source and Support".getBytes();
+
+	      // Get the internet address of the specified host
+	      InetAddress address = InetAddress.getByName(host);
+
+	      // Initialize a datagram packet with data and address
+	      DatagramPacket packet = new DatagramPacket(message, message.length,
+	          address, port);
+
+	      // Create a datagram socket, send the packet through it, close it.
+	      DatagramSocket dsocket = new DatagramSocket();
+	      dsocket.send(packet);
+	      dsocket.close();
 		
-		/*DatagramSocket s = new DatagramSocket(4003);
-		byte[] b = new byte[3];
-		b[1] = 1;
-		b[0] = 5;
-		b[2] = 3;
 		
-		InetAddress ip = InetAddress.getByName("planetlab2.cs.ubc.ca");
-		DatagramPacket p = new DatagramPacket(b, b.length, ip, 4003);
-		
-		System.out.println("About to send message to:    " + ip + "      port:   4003");
-		s.send(p);
-		s.close();
 		*/
-		
 		
 		Node node = new Node(InetAddress.getLocalHost().getHostName());
 
