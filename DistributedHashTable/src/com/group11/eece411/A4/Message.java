@@ -225,8 +225,12 @@ public class Message {
 		ArrayList<Successor> als = new ArrayList<Successor>();
 		
 		// get number of successors
-		int numSuccessors = successorNodeNumbers.length;
 		
+		int numSuccessors = 0;
+		if(successorNodeNumbers != null) {
+			numSuccessors = successorNodeNumbers.length;
+		}
+
 		byte[] host = new byte[4];
 		for(int i = 0; i < numSuccessors; i++){
 			// get the Bytes for the ith successor's ip
@@ -575,7 +579,11 @@ public class Message {
 	public void buildReturnSuccessors(ArrayList<Successor> successors){
 		setUniqueID(Message.SEND_RESPONSE);
 		// get number of successors
-		int numSuccessors = successors.size();
+		int numSuccessors = 0;		
+	
+		if(!successors.isEmpty()) {
+			 numSuccessors = successors.size();
+		} 
 		
 		rawData = new Byte[16+1+5*numSuccessors];
 		for(int i = 0; i < 16; i++){
@@ -618,10 +626,18 @@ public class Message {
 		/*| command | offered node # | # of successors |  successors  | file list length | hashed file names (file list) |
 		 * | 1 byte  |     1 byte	  |     1 byte	    | 5 bytes each |      4 bytes     |      up to 32 bytes each	  |
 		 */ 
+		int numSuccessors = 0;
+
+		if(!successors.isEmpty()) {
+			 numSuccessors = successors.size();
+		} 
+		
 		
 		setUniqueID(Message.SEND_RESPONSE);
 
-		int numSuccessors = successors.size();
+		if(!successors.isEmpty()) {
+			 numSuccessors = successors.size();
+		} 
 		rawData = new Byte[16+1+5*numSuccessors+4+32*keyListLength];
 		
 		for(int i = 0; i < 16; i++){

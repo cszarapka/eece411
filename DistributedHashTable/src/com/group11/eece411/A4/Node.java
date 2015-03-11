@@ -22,7 +22,7 @@ public class Node {
 
 	// Information about this physical machine:
 	public static String hostName;
-	
+
 	// Information relative to the DHT:
 	public static final int maxNodeNumber = 255;
 	public static final int minNodeNumber = 0;
@@ -55,61 +55,63 @@ public class Node {
 		this.successors = joinResponse.getSuccessorList();
 
 		// go through each key to determine if it should be get
-		for(int i = 0 ;joinResponse.keys.size() > i; i++){
-			Byte[] key = joinResponse.keys.get(i);
-			byte[] receiveData = new byte[15500];
-			
-			
-			
-			if(getIndexOfSuccessorThatCoversRangeOf(key) == -1){
-				
-				//build message
-				Message msg = new Message(hostName, 4003);
-				msg.buildAppLevelRequestMessage(Codes.CMD_GET, key);
-				
-				try {
-					sendMessage(msg, InetAddress.getByAddress(toPrimitives(joinResponse.originIP)), 4003);
-					
-					// receive message
-					DatagramSocket serverSocket = new DatagramSocket();
-					serverSocket.setSoTimeout(5000);
-					serverSocket = new DatagramSocket(4003);
-					
-					// try to receive message
-					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-					serverSocket.receive(receivePacket);
-					Message receivedMessage = new Message(receiveData);
-					receivedMessage.parseReceivedResponseMessage();
-					byte[] value = toPrimitives(receivedMessage.value);
-					KVStore.put(toPrimitives(key), value);
-					
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-				} catch (SocketException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SocketTimeoutException e){
-					// data loss
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		if(joinResponse.keys != null) {
+			for(int i = 0 ;joinResponse.keys.size() > i; i++){
+				Byte[] key = joinResponse.keys.get(i);
+				byte[] receiveData = new byte[15500];
+
+
+
+				if(getIndexOfSuccessorThatCoversRangeOf(key) == -1){
+
+					//build message
+					Message msg = new Message(hostName, 4003);
+					msg.buildAppLevelRequestMessage(Codes.CMD_GET, key);
+
+					try {
+						sendMessage(msg, InetAddress.getByAddress(toPrimitives(joinResponse.originIP)), 4003);
+
+						// receive message
+						DatagramSocket serverSocket = new DatagramSocket();
+						serverSocket.setSoTimeout(5000);
+						serverSocket = new DatagramSocket(4003);
+
+						// try to receive message
+						DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+						serverSocket.receive(receivePacket);
+						Message receivedMessage = new Message(receiveData);
+						receivedMessage.parseReceivedResponseMessage();
+						byte[] value = toPrimitives(receivedMessage.value);
+						KVStore.put(toPrimitives(key), value);
+
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+					} catch (SocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SocketTimeoutException e){
+						// data loss
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-			
-			/* //try to send message
+
+				/* //try to send message
 							byte[] receiveData = new byte[15500];
 							DatagramSocket serverSocket = new DatagramSocket();
 							serverSocket.setSoTimeout(TIMEOUT);
 							serverSocket = new DatagramSocket(RECEIVE_PORT);
-							
+
 							// try to receive message
 							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 							serverSocket.receive(receivePacket);
 							Message receivedMessage = new Message(receiveData);
 							receivedMessage.parseReceivedResponseMessage();
-							*/
-			
-			
+				 */
+
+
+			}
 		}
 		// TODO: get files
 
@@ -192,13 +194,13 @@ public class Node {
 		public ResponseThread(Message tMessage, Node tNode) {
 			this.tMessage = tMessage;
 			this.tNode = tNode;
-			
+
 		}
 
 		public void run() {
 			// Check if the message is for me
 			if (tMessage.originNodeNumber == tNode.nodeNumber) {
-				
+
 			}
 
 			int n;
@@ -231,9 +233,9 @@ public class Node {
 					byte[] value = tNode.KVStore.put(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
 					Message response = new Message(tNode.getHostName(), 4003);
 					//if(value == !value) {
-						//response.buildGetResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0, null);
+					//response.buildGetResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0, null);
 					//} else {
-						response.buildWireResponseMessage(Codes.CMD_PUT,Codes.SUCCESS);
+					response.buildWireResponseMessage(Codes.CMD_PUT,Codes.SUCCESS);
 					//} 
 					response.setUniqueID(Node.toObjects(tMessage.getUniqueID()));
 					try {
@@ -251,7 +253,7 @@ public class Node {
 				if(n == -1) {
 					//boolean value = tNode.KVStore.remove(toPrimitives(tMessage.key), toPrimitives(tMessage.value));
 					byte[] value = tNode.KVStore.remove(toPrimitives(tMessage.key));
-					
+
 					Message response = new Message(tNode.getHostName(), 4003);
 					if(value == null) {
 						response.buildWireResponseMessage(Codes.KEY_DOES_NOT_EXIST, 0);
@@ -310,7 +312,7 @@ public class Node {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 				break;
 			}
 			}
@@ -340,10 +342,10 @@ public class Node {
 				} catch (InterruptedException e) {
 					// continue
 				}
-				
+
 				// lock successors list
 				synchronized(successors){
-					
+
 					// check status of successors iteratively
 					int numSuccessors = successors.size();
 					for(int i = 0; i < numSuccessors; i++){
@@ -352,42 +354,42 @@ public class Node {
 						msg.buildReturnSuccessors(successors);
 						//try to send message
 						sendMessage(msg, successors.get(i).getInetAddress(), SEND_PORT);
-						
-						
-						
+
+
+
 						try {
-							
+
 							byte[] receiveData = new byte[15500];
 							DatagramSocket serverSocket = new DatagramSocket();
 							serverSocket.setSoTimeout(TIMEOUT);
 							serverSocket = new DatagramSocket(RECEIVE_PORT);
-							
+
 							// try to receive message
 							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 							serverSocket.receive(receivePacket);
 							Message receivedMessage = new Message(receiveData);
 							receivedMessage.parseReceivedResponseMessage();
-							
+
 							// get the successor's successorlist
 							for(int l = 0; l < receivedMessage.getSuccessorList().size(); l++){
 								ss.add(receivedMessage.getSuccessorList().get(l));
-							
+
 							}
 							// TODO ADD SUCCESSORS'S SUCCESSORS IF THEY AREN'T ON THIS NODE'S SUCCESSOR LIST
-							
+
 							// get all the current node nums
 							ArrayList<Integer> successorNodeNums = new ArrayList<Integer>();
 							for(int p = 0; p < successors.size(); p++){
 								successorNodeNums.add(successors.get(p).getNodeNumber());
 							}
-							
+
 							// add successors if their node number isn't in the list already
 							for(int p = 0; p < receivedMessage.getSuccessorList().size(); p++){
-								
+
 								//check if the list doesn't contain the node with that number yet
 								if(!successorNodeNums.contains(receivedMessage.getSuccessorList().get(p).getNodeNumber())){
 									//if not then add it to the successor list
-									
+
 									String newSuccessorHostname = receivedMessage.getSuccessorList().get(p).getHostName();
 									int newSuccessorNodeNum = receivedMessage.getSuccessorList().get(p).getNodeNumber();
 									Successor newSuccessor = new Successor(newSuccessorHostname, newSuccessorNodeNum);
@@ -395,7 +397,7 @@ public class Node {
 								}
 								// if already exists then do nothing
 							}
-							
+
 						} catch (SocketTimeoutException e){
 							// remove successor because it is dead
 							successors.remove(i);
@@ -409,11 +411,11 @@ public class Node {
 							//reorder successors
 							//add successor's successors if they aren't included already
 						}
-						
-						
-						
-						
-						
+
+
+
+
+
 					}
 				}
 			}
@@ -532,7 +534,7 @@ public class Node {
 			return successors.size();
 		}
 	}
-	
+
 	public int getFirstSuccessor() {
 		int upper = this.nodeNumber;
 		int lower = this.nodeNumber;
@@ -543,12 +545,12 @@ public class Node {
 				upper = this.getSuccessor(j).getNodeNumber();
 				nodeIndex = j;
 			}
-			
+
 		}
 		return nodeIndex;
-		 
+
 	}
-	
+
 	public int getIndexOfSuccessorThatCoversRangeOf(Byte[] key) {
 
 		int hashValue;
@@ -570,16 +572,16 @@ public class Node {
 				lower = this.getSuccessor(j).getNodeNumber();
 				nodeIndex = j;
 			}
-			
+
 			if((upper - hashValue) % 256 > (this.getSuccessor(j).getNodeNumber() - hashValue) % 256) {
 				upper = this.getSuccessor(j).getNodeNumber();
 			}
-			
+
 		}
 		return nodeIndex;
-		 
+
 	}
-	
+
 
 	static public Byte[] toObjects(byte[] bytesPrim) {
 
