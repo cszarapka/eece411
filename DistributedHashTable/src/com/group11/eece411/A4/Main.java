@@ -132,17 +132,19 @@ public class Main {
 		}
 
 		
-
+		node.startCheckingSuccessors();
 
 		while(true)
 		{
 			System.out.println("waiting to receive");
 			try{
-
-				System.out.println("THESE ARE MY SUCCESSORS:" + node.successors.get(0).getHostName());
+				for(int i = 0; i < node.getNumberOfSuccessors(); i++) {
+					System.out.println("THESE ARE MY SUCCESSORS:" + node.successors.get(i).getHostName());
+				}
 			} catch (IndexOutOfBoundsException e){
 				//welp nothing to print
 			}
+			System.out.println("\n");
 			
 			packet = new DatagramPacket(receiveData, receiveData.length);
 			System.out.println("Packet created");

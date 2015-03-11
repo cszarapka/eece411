@@ -263,9 +263,9 @@ public class Message {
 	 */
 	public byte[] getBuffer() {
 		byte[] rawBytes = new byte[rawData.length];
-		System.out.println("getBuffer() rawData.length=" + rawData.length + " " + rawBytes.length);
+		//System.out.println("getBuffer() rawData.length=" + rawData.length + " " + rawBytes.length);
 		for (int i = 0; i < rawData.length; i++) {
-			System.out.println("\n" + i);
+			//System.out.println("\n" + i);
 			rawBytes[i] = rawData[i].byteValue();
 		}
 		return rawBytes;

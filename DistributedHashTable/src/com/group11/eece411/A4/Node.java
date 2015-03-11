@@ -276,10 +276,24 @@ public class Node {
 				System.exit(0);
 				break;
 			case Codes.ADD_SUCCESSOR:
-				
+			
 				synchronized(Node.successors){
-					Successor succker = new Successor(tMessage.hostName, tMessage.rawData[16].intValue() );
+					Successor succker = null;
+					try {
+						succker = new Successor(InetAddress.getByAddress(toPrimitives(tMessage.originIP)).getHostName(), tMessage.rawData[16].intValue() );
+					} catch (UnknownHostException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					Node.successors.add(succker);
+					System.out.println("\nadding successor: " + succker.getHostName() + " " + succker.getNodeNumber());
+					try{
+						for(int i = 0; i < tNode.getNumberOfSuccessors(); i++) {
+							System.out.println("THESE ARE MY SUCCESSORS:" + tNode.successors.get(i).getHostName());
+						}
+					} catch (IndexOutOfBoundsException e){
+						//welp nothing to print
+					}
 				}
 				break;
 			case Codes.REQUEST_TO_JOIN:
@@ -422,6 +436,13 @@ public class Node {
 
 
 					}
+				}
+				try{
+					for(int i = 0; i < successors.size(); i++) {
+						System.out.println("THESE ARE MY SUCCESSORS:" + successors.get(i).getHostName());
+					}
+				} catch (IndexOutOfBoundsException e){
+					//welp nothing to print
 				}
 			}
 		}
