@@ -93,7 +93,8 @@ public class Main {
 					addressToTry = 0;
 				}
 				String myName = InetAddress.getLocalHost().getHostName();
-				if(myName != nodeList[addressToTry]) {
+				System.out.println("CHECK THIS THING" + myName + nodeList[addressToTry]);
+				if(!myName.equals(nodeList[addressToTry])) {
 					message = new Message(node.getHostName(), 4003);
 					message.buildRequestMessage(Codes.REQUEST_TO_JOIN);
 					Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);	
@@ -116,8 +117,10 @@ public class Main {
 			node.successors.add(newSuccessor);
 			System.out.println("THESE ARE MY SUCCESSORS:" + node.successors.get(0).getHostName());
 			
+			
+			
 			message = new Message(node.getHostName(), 4003);
-			message.buildRequestMessage(Codes.ADD_SUCCESSOR);
+			message.buildAddSuccessorMessage(node.nodeNumber);
 			Node.sendMessage(message, InetAddress.getByName(nodeList[addressToTry]), 4003);
 		} else {
 

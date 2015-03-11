@@ -276,7 +276,11 @@ public class Node {
 				System.exit(0);
 				break;
 			case Codes.ADD_SUCCESSOR:
-				tNode.addSuccessor(new Successor(tMessage.hostName, ((int)Node.toPrimitives(tMessage.value)[1]) * 16 + ((int)Node.toPrimitives(tMessage.value)[0])));
+				
+				synchronized(Node.successors){
+					Successor succker = new Successor(tMessage.hostName, tMessage.rawData[16].intValue() );
+					Node.successors.add(succker);
+				}
 				break;
 			case Codes.REQUEST_TO_JOIN:
 				Message response = new Message(tNode.getHostName(), 4003);

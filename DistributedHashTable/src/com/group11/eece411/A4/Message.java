@@ -313,7 +313,7 @@ public class Message {
 		
 		setUniqueID(Message.SEND_REQUEST);
 		this.command = Codes.ADD_SUCCESSOR;
-		rawData = new Byte[uniqueID.length + 2];
+		rawData = new Byte[16+2];
 		for (int i = 0; i < uniqueID.length; i++) {
 			rawData[i] = uniqueID[i];
 		}
