@@ -310,7 +310,7 @@ public class Message {
 
 	public void buildAppLevelRequestMessage(int command, Byte[] key) {
 		// Set the unique ID
-		setUniqueID(Message.SEND_REQUEST);
+		//setUniqueID(Message.SEND_REQUEST);
 
 		// set the command
 		this.command = command;
@@ -619,6 +619,76 @@ public class Message {
 			rawData[BEGIN_SUCCESSORS+i*5 + 4] = nextSuccessorNodeNum;
 		}
 
+	}
+	
+	/**
+	 * Construct rawData so that can be sent as an invite to join the table.
+	 * An invite is a response to a request to join the table.
+	 * @param uniqueID			the unique ID of the request
+	 * @param offeredNodeNumber	the node number to offer the node requesting to join
+	 * @param successors		our successors
+	 * @param keyListLength		number of keys we are sending them
+	 * @param keys				the keys in our KVStore
+	 */
+	public void buildJoinResponse(Byte[] uniqueID, int offeredNodeNumber, ArrayList<Successor> successors, int keyListLength, byte[] keys) {
+		// Set the unique ID
+		this.uniqueID = uniqueID;
+		
+		// Set the command (response code)
+		this.command = Codes.SUCCESS;
+		
+		// Set the node number we will offer the node
+		this.nodeNumber = offeredNodeNumber;
+		
+		// Number of successors
+		int numOfSuccessors = successors.size();
+		
+		// Create new Byte[] for the rawData
+		rawData = new Byte[uniqueID.length + 1 + 1 + 1 + (5*numOfSuccessors) + keyListLength + (32*keyListLength)];
+		
+		/*
+		 * Assemble the raw  data
+		 */
+		int index = 0;
+		// Add the unique id
+		for (int i = index; i < uniqueID.length; i++) {
+			rawData[i] = uniqueID[i];
+		}
+		index = uniqueID.length;
+		
+		// Add the command/response code
+		rawData[index] = Byte.valueOf(intToByteArray(this.command)[0]);
+		index++;
+		
+		// Add the offered node number
+		rawData[index] = Byte.valueOf(intToByteArray(this.nodeNumber)[0]);
+		index++;
+		
+		// Add the number of successors
+		rawData[index] = Byte.valueOf(intToByteArray(numOfSuccessors)[0]);
+		//index++;
+		
+		// Only add successors if there are any to add
+		byte[] address = new byte[4];
+		for (int i = 0; i < numOfSuccessors; i++) {
+			address = successors.get(i).getInetAddress().getAddress();
+			rawData[++index] = address[0];
+			rawData[++index] = address[1];
+			rawData[++index] = address[2];
+			rawData[++index] = address[3];
+			rawData[++index] = Byte.valueOf(intToByteArray(successors.get(i).getNodeNumber())[0]);
+		}
+		index++;
+		
+		// Add the key list length
+		rawData[index] = Byte.valueOf(intToByteArray(keyListLength)[0]);
+		
+		// Only add keys if there are any to add
+		if (keyListLength > 0) {
+			for (int i = 0; i < keys.length; i++) {
+				rawData[++index] = keys[i];
+			}
+		}
 	}
 
 	/**
